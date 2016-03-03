@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Command">
+    <Assembly>TestProject.dll</Assembly>
+    <ClientId>fd2d0c1d-5c3e-4129-885a-6b7b9d69af48</ClientId>
+    <FullClassName>PCFExport</FullClassName>
+    <Text>PCFExport</Text>
+    <Description>""</Description>
+    <VisibilityMode>AlwaysVisible</VisibilityMode>
+    <VendorId>ADSK</VendorId>
+    <VendorDescription>Autodesk, www.autodesk.com</VendorDescription>
+  </AddIn>
+</RevitAddIns>
