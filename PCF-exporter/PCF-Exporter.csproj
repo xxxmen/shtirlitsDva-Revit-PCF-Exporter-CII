@@ -83,6 +83,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PCF_Exporter_form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PCF_Exporter_form.Designer.cs">
+      <DependentUpon>PCF_Exporter_form.cs</DependentUpon>
+    </Compile>
     <Compile Include="PCF_Functions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="PCF_Accessories.cs" />
@@ -93,6 +99,11 @@
     <Compile Include="PCF_Pipes.cs" />
     <Compile Include="PCF_Taps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +138,15 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PCF_Exporter_form.resx">
+      <DependentUpon>PCF_Exporter_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
