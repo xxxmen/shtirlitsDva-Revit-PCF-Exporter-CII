@@ -16,5 +16,13 @@ namespace PCF_Functions
         {
             InitializeComponent();
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                string excelPath = openFileDialog1.FileName;
+            }
+        }
     }
 }
