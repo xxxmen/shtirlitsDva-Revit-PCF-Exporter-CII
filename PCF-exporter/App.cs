@@ -26,68 +26,55 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
+using System.Linq;
 
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using Autodesk.Revit.DB;
+
 
 namespace PCF_Exporter
 {
 
-   [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
-   [Autodesk.Revit.Attributes.Regeneration(Autodesk.Revit.Attributes.RegenerationOption.Manual)]
-   public class App : IExternalApplication
-   {
-      static Autodesk.Revit.DB.AddInId m_appId = new Autodesk.Revit.DB.AddInId(new Guid("356CDA5A-E6C5-4c2f-A9EF-B4222116B8C8"));
-      // get the absolute path of this assembly
-      static string ExecutingAssemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-      // private AppDocEvents m_appDocEvents; *Legacy
+    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
+    [Autodesk.Revit.Attributes.Regeneration(Autodesk.Revit.Attributes.RegenerationOption.Manual)]
+    public class App : IExternalApplication
+    {
+        //static Autodesk.Revit.DB.AddInId m_appId = new Autodesk.Revit.DB.AddInId(new Guid("709a7080-e6f5-49b4-810a-edd5bf5cb88d"));
+        // get the absolute path of this assembly
+        static string ExecutingAssemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
-      public Autodesk.Revit.UI.Result OnStartup(UIControlledApplication application)
-      {
+        public Autodesk.Revit.UI.Result OnStartup(UIControlledApplication application)
+        {
+            AddMenu(application);
+            return Autodesk.Revit.UI.Result.Succeeded;
+        }
 
-         // Call this method explicitly in App.cs when Revit starts up because 
-         // in .Net 4, the static variables will not be initialized until use them,
-         // Snoop.Collectors.CollectorObj.InitializeCollectors(); *Legacy
-         AddMenu(application);
-         //AddAppDocEvents(application.ControlledApplication);
+        public Autodesk.Revit.UI.Result OnShutdown(UIControlledApplication application)
+        {
+            return Autodesk.Revit.UI.Result.Succeeded;
+        }
+        
+        private void AddMenu(UIControlledApplication app)
+        {
+            Autodesk.Revit.UI.RibbonPanel rvtRibbonPanel = app.CreateRibbonPanel("PCF Exporter");
+            PushButtonData data = new PushButtonData("PCF Exporter","PCF Exporter",ExecutingAssemblyPath,"PCF_Exporter.FormCaller");
+            PushButton pushButton = rvtRibbonPanel.AddItem(data) as PushButton;
+            //RibbonItem item = rvtRibbonPanel.AddItem(data);
+        }
+    }
 
-         return Autodesk.Revit.UI.Result.Succeeded;
-      }
+    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
+    class FormCaller : IExternalCommand
+    {
+        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        {
+            PCF_Exporter_form fm = new PCF_Exporter_form(commandData);
+            fm.ShowDialog();
 
-      public Autodesk.Revit.UI.Result OnShutdown(UIControlledApplication application)
-      {
-         //RemoveAppDocEvents();
-
-         return Autodesk.Revit.UI.Result.Succeeded;
-      }
-
-      private void AddMenu(UIControlledApplication app)
-      {
-         Autodesk.Revit.UI.RibbonPanel rvtRibbonPanel = app.CreateRibbonPanel("PCF Exporter");
-         PushButtonData data = new PushButtonData("PCF Exporter","PCF Exporter",ExecutingAssemblyPath,);
-
-         RibbonItem item = rvtRibbonPanel.AddItem(data);
-         //PulldownButton optionsBtn = item as PulldownButton;
-
-         //optionsBtn.AddPushButton(new PushButtonData("HelloWorld", "Hello World...", ExecutingAssemblyPath, "RevitLookup.HelloWorld"));
-         //optionsBtn.AddPushButton(new PushButtonData("Snoop Db..", "Snoop DB...", ExecutingAssemblyPath, "RevitLookup.CmdSnoopDb"));
-         //optionsBtn.AddPushButton(new PushButtonData("Snoop Current Selection...", "Snoop Current Selection...", ExecutingAssemblyPath, "RevitLookup.CmdSnoopModScope"));
-         //optionsBtn.AddPushButton(new PushButtonData("Snoop Active View...", "Snoop Active View...", ExecutingAssemblyPath, "RevitLookup.CmdSnoopActiveView"));
-         //optionsBtn.AddPushButton(new PushButtonData("Snoop Application...", "Snoop Application...", ExecutingAssemblyPath, "RevitLookup.CmdSnoopApp"));
-         //optionsBtn.AddPushButton(new PushButtonData("Test Framework...", "Test Framework...", ExecutingAssemblyPath, "RevitLookup.CmdTestShell"));
-         //optionsBtn.AddPushButton(new PushButtonData("Events...", "Events...", ExecutingAssemblyPath, "RevitLookup.CmdEvents"));
-      }
-
-      //private void AddAppDocEvents(Autodesk.Revit.ApplicationServices.ControlledApplication app)
-      //{
-      //   m_appDocEvents = new AppDocEvents(app);
-      //   m_appDocEvents.EnableEvents();
-      //}
-
-      //private void RemoveAppDocEvents()
-      //{
-      //   m_appDocEvents.DisableEvents();
-      //}
-   }
+            fm.Close();
+            return Result.Succeeded;
+        }
+    }
 }
