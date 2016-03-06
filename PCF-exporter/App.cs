@@ -64,19 +64,19 @@ namespace PCF_Exporter
 
       private void AddMenu(UIControlledApplication app)
       {
-         Autodesk.Revit.UI.RibbonPanel rvtRibbonPanel = app.CreateRibbonPanel("Revit Lookup");
-         PulldownButtonData data = new PulldownButtonData("Options", "Revit Lookup");
+         Autodesk.Revit.UI.RibbonPanel rvtRibbonPanel = app.CreateRibbonPanel("PCF Exporter");
+         PushButtonData data = new PushButtonData("PCF Exporter","PCF Exporter",ExecutingAssemblyPath,);
 
          RibbonItem item = rvtRibbonPanel.AddItem(data);
-         PulldownButton optionsBtn = item as PulldownButton;
+         //PulldownButton optionsBtn = item as PulldownButton;
 
-         optionsBtn.AddPushButton(new PushButtonData("HelloWorld", "Hello World...", ExecutingAssemblyPath, "RevitLookup.HelloWorld"));
-         optionsBtn.AddPushButton(new PushButtonData("Snoop Db..", "Snoop DB...", ExecutingAssemblyPath, "RevitLookup.CmdSnoopDb"));
-         optionsBtn.AddPushButton(new PushButtonData("Snoop Current Selection...", "Snoop Current Selection...", ExecutingAssemblyPath, "RevitLookup.CmdSnoopModScope"));
-         optionsBtn.AddPushButton(new PushButtonData("Snoop Active View...", "Snoop Active View...", ExecutingAssemblyPath, "RevitLookup.CmdSnoopActiveView"));
-         optionsBtn.AddPushButton(new PushButtonData("Snoop Application...", "Snoop Application...", ExecutingAssemblyPath, "RevitLookup.CmdSnoopApp"));
-         optionsBtn.AddPushButton(new PushButtonData("Test Framework...", "Test Framework...", ExecutingAssemblyPath, "RevitLookup.CmdTestShell"));
-         optionsBtn.AddPushButton(new PushButtonData("Events...", "Events...", ExecutingAssemblyPath, "RevitLookup.CmdEvents"));
+         //optionsBtn.AddPushButton(new PushButtonData("HelloWorld", "Hello World...", ExecutingAssemblyPath, "RevitLookup.HelloWorld"));
+         //optionsBtn.AddPushButton(new PushButtonData("Snoop Db..", "Snoop DB...", ExecutingAssemblyPath, "RevitLookup.CmdSnoopDb"));
+         //optionsBtn.AddPushButton(new PushButtonData("Snoop Current Selection...", "Snoop Current Selection...", ExecutingAssemblyPath, "RevitLookup.CmdSnoopModScope"));
+         //optionsBtn.AddPushButton(new PushButtonData("Snoop Active View...", "Snoop Active View...", ExecutingAssemblyPath, "RevitLookup.CmdSnoopActiveView"));
+         //optionsBtn.AddPushButton(new PushButtonData("Snoop Application...", "Snoop Application...", ExecutingAssemblyPath, "RevitLookup.CmdSnoopApp"));
+         //optionsBtn.AddPushButton(new PushButtonData("Test Framework...", "Test Framework...", ExecutingAssemblyPath, "RevitLookup.CmdTestShell"));
+         //optionsBtn.AddPushButton(new PushButtonData("Events...", "Events...", ExecutingAssemblyPath, "RevitLookup.CmdEvents"));
       }
 
       //private void AddAppDocEvents(Autodesk.Revit.ApplicationServices.ControlledApplication app)
