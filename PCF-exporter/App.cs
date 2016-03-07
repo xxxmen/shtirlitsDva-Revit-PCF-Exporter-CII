@@ -38,13 +38,12 @@ namespace PCF_Exporter
 {
 
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
-    [Autodesk.Revit.Attributes.Regeneration(Autodesk.Revit.Attributes.RegenerationOption.Manual)]
+    //[Autodesk.Revit.Attributes.Regeneration(Autodesk.Revit.Attributes.RegenerationOption.Manual)]
     public class App : IExternalApplication
     {
         //static Autodesk.Revit.DB.AddInId m_appId = new Autodesk.Revit.DB.AddInId(new Guid("709a7080-e6f5-49b4-810a-edd5bf5cb88d"));
         // get the absolute path of this assembly
         static string ExecutingAssemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-
         public Autodesk.Revit.UI.Result OnStartup(UIControlledApplication application)
         {
             AddMenu(application);
@@ -56,10 +55,10 @@ namespace PCF_Exporter
             return Autodesk.Revit.UI.Result.Succeeded;
         }
         
-        private void AddMenu(UIControlledApplication app)
+        private void AddMenu(UIControlledApplication application)
         {
-            Autodesk.Revit.UI.RibbonPanel rvtRibbonPanel = app.CreateRibbonPanel("PCF Exporter");
-            PushButtonData data = new PushButtonData("PCF Exporter","PCF Exporter",ExecutingAssemblyPath,"PCF_Exporter.FormCaller");
+            Autodesk.Revit.UI.RibbonPanel rvtRibbonPanel = application.CreateRibbonPanel("PCF Tools");
+            PushButtonData data = new PushButtonData("PCFExporter","PCF Exporter",ExecutingAssemblyPath,"PCF_Exporter.FormCaller");
             PushButton pushButton = rvtRibbonPanel.AddItem(data) as PushButton;
             //RibbonItem item = rvtRibbonPanel.AddItem(data);
         }
@@ -73,7 +72,7 @@ namespace PCF_Exporter
             PCF_Exporter_form fm = new PCF_Exporter_form(commandData);
             fm.ShowDialog();
 
-            fm.Close();
+            //fm.Close();
             return Result.Succeeded;
         }
     }

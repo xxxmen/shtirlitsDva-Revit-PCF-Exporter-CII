@@ -18,19 +18,17 @@ using Autodesk.Revit.Attributes;
 
 namespace PCF_Exporter
 {
+    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     public partial class PCF_Exporter_form : System.Windows.Forms.Form
     {
         ExternalCommandData commandData;
         public PCF_Exporter_form(ExternalCommandData cData)
         {
+            InitializeComponent();
             commandData = cData;
             UIApplication app = commandData.Application;
             UIDocument uidoc = app.ActiveUIDocument;
             Document doc = uidoc.Document;
-
-
-
-            InitializeComponent();
         }
 
         private void button4_Click(object sender, EventArgs e)
