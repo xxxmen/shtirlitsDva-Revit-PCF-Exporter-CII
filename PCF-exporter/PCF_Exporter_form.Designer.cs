@@ -53,9 +53,9 @@ namespace PCF_Exporter
             this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.button5 = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.button5 = new System.Windows.Forms.Button();
             this.Tabs.SuspendLayout();
             this.TabSetup.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -148,6 +148,7 @@ namespace PCF_Exporter
             this.button1.TabIndex = 0;
             this.button1.Text = "Import PCF parameters";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // tabPage2
             // 
@@ -170,6 +171,15 @@ namespace PCF_Exporter
             this.tabPage3.Text = "Run";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(101, 150);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(164, 65);
+            this.button5.TabIndex = 0;
+            this.button5.Text = "Export to PCF";
+            this.button5.UseVisualStyleBackColor = true;
+            // 
             // tabPage4
             // 
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
@@ -183,15 +193,6 @@ namespace PCF_Exporter
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(101, 150);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(164, 65);
-            this.button5.TabIndex = 0;
-            this.button5.Text = "Export to PCF";
-            this.button5.UseVisualStyleBackColor = true;
             // 
             // PCF_Exporter_form
             // 

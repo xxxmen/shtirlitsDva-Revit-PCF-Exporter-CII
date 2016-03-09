@@ -60,15 +60,16 @@ namespace PCF_Functions
         public static ParameterType PCF_ELEM_TAP3_parameterType = ParameterType.Text;
 
         #region ParameterList
+        //parameterAllNames and parameterTypes must correspond to each other in element position
         public static IList<string> parameterAllNames = new List<string>()
         {
-            PCF_ELEM_BP1, PCF_ELEM_CATEGORY, PCF_ELEM_COMPID, PCF_MAT_DESCR, PCF_MAT_ID, PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_END1,
+            PCF_ELEM_CATEGORY, PCF_ELEM_BP1, PCF_ELEM_COMPID, PCF_MAT_DESCR, PCF_MAT_ID, PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_END1,
             PCF_ELEM_END2, PCF_ELEM_TAP1, PCF_ELEM_TAP2, PCF_ELEM_TAP3
         };
 
         public static IList<string> parameterNames = new List<string>()
         {
-            PCF_ELEM_BP1, PCF_ELEM_CATEGORY, PCF_MAT_DESCR, PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_END1,
+            PCF_ELEM_CATEGORY, PCF_ELEM_BP1, PCF_MAT_DESCR, PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_END1,
             PCF_ELEM_END2
         };
 

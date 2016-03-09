@@ -140,10 +140,10 @@ namespace PCF_Parameters
     {
         public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
         {
-            return ExecuteMyCommand(data.Application, ref msg, elements);
+            return ExecuteMyCommand(data.Application, ref msg);
         }
 
-        internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg, ElementSet elements)
+        internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg)
         {
             // UIApplication uiApp = commandData.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
@@ -160,11 +160,13 @@ namespace PCF_Parameters
             catSet.Insert(fittingCat);
             catSet.Insert(accessoryCat);
 
-            DefinitionFile file = app.OpenSharedParameterFile();
-            if(null == file) Util.ErrorMsg("Error getting the shared prameters file.");
+            string ExecutingAssemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string oriFile = app.SharedParametersFilename;
+            string tempFile = ExecutingAssemblyPath + "Temp.txt";
 
-            DefinitionGroup group = file.Groups.get_Item(InputVars.PCF_GROUP_NAME);
-            if (null == group) Util.ErrorMsg("Error getting the shared parameters group.");
+            
+            int i = 0;
+            
             
             //Create parameter bindings
             try
@@ -173,19 +175,22 @@ namespace PCF_Parameters
                 trans.Start();
                 foreach (string name in InputVars.parameterAllNames)
                 {
-                    IEnumerable<ExternalDefinition> v = from ExternalDefinition d in @group.Definitions where d.Name == name select d;
-                    if (v == null || v.Count() < 1) throw new Exception("Invalid Name Input!");
-                    ExternalDefinition def = v.First();
-                    Binding binding = ca.NewInstanceBinding(catSet);
-                    BindingMap map = (new UIApplication(app)).ActiveUIDocument.Document.ParameterBindings;
+                    using (File.Create(tempFile)) { }
+                    app.SharedParametersFilename = tempFile;
+                    ExternalDefinitionCreationOptions options = new ExternalDefinitionCreationOptions(name, InputVars.parameterTypes[i]);
+                    ExternalDefinition def = app.OpenSharedParameterFile().Groups.Create("TemporaryDefinitionGroup").Definitions.
+                        Create(options) as ExternalDefinition;
+                    i++;
+
+                    BindingMap map = doc.ParameterBindings;
+                    Binding binding = app.Create.NewInstanceBinding(catSet);
                     map.Insert(def, binding, InputVars.PCF_BUILTIN_GROUP_NAME);
+                    File.Delete(tempFile);
                 }
                 trans.Commit();
             }
-            catch (Autodesk.Revit.Exceptions.OperationCanceledException)
-            {
-                return Result.Cancelled;
-            }
+
+            catch (Autodesk.Revit.Exceptions.OperationCanceledException){return Result.Cancelled;}
 
             catch (Exception ex)
             {
@@ -193,8 +198,10 @@ namespace PCF_Parameters
                 return Result.Failed;
             }
 
-            return Result.Succeeded;
+            app.SharedParametersFilename = oriFile;
 
+            return Result.Succeeded;
+           
         }
     }
 
@@ -258,10 +265,7 @@ namespace PCF_Parameters
                 }
             }
 
-            if (def != null)
-            {
-                map.Remove(def);
-            }
+            if (def != null) map.Remove(def);
 
             return false;
         }

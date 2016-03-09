@@ -15,20 +15,28 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
+using PCF_Parameters;
+using PCF_Exporter;
 
 namespace PCF_Exporter
 {
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     public partial class PCF_Exporter_form : System.Windows.Forms.Form
     {
-        ExternalCommandData commandData;
-        public PCF_Exporter_form(ExternalCommandData cData)
+        public static ExternalCommandData _commandData;
+        public static UIApplication _uiapp;
+        public static UIDocument _uidoc;
+        public static Document _doc;
+        public string _message;
+
+        public PCF_Exporter_form(ExternalCommandData cData, string message)
         {
             InitializeComponent();
-            commandData = cData;
-            UIApplication app = commandData.Application;
-            UIDocument uidoc = app.ActiveUIDocument;
-            Document doc = uidoc.Document;
+            _commandData = cData;
+            _uiapp = _commandData.Application;
+            _uidoc = _uiapp.ActiveUIDocument;
+            _doc = _uidoc.Document;
+            _message = message;
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -37,6 +45,12 @@ namespace PCF_Exporter
             {
                 string excelPath = openFileDialog1.FileName;
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            CreateParameterBindings CPB = new CreateParameterBindings();
+            CPB.ExecuteMyCommand(_uiapp, ref _message);
         }
     }
 }

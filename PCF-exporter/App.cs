@@ -28,11 +28,14 @@ using System.Text;
 using System.Windows.Forms;
 using System.Linq;
 
-using Autodesk.Revit.ApplicationServices;
-using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
-
+using Autodesk.Revit.DB.Architecture;
+using Autodesk.Revit.DB.Plumbing;
+using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Selection;
+using Autodesk.Revit.ApplicationServices;
+using Autodesk.Revit.Attributes;
+using Autodesk.Revit.DB.Structure;
 
 namespace PCF_Exporter
 {
@@ -42,6 +45,7 @@ namespace PCF_Exporter
     public class App : IExternalApplication
     {
         //static Autodesk.Revit.DB.AddInId m_appId = new Autodesk.Revit.DB.AddInId(new Guid("709a7080-e6f5-49b4-810a-edd5bf5cb88d"));
+        
         // get the absolute path of this assembly
         static string ExecutingAssemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
         public Autodesk.Revit.UI.Result OnStartup(UIControlledApplication application)
@@ -60,7 +64,6 @@ namespace PCF_Exporter
             Autodesk.Revit.UI.RibbonPanel rvtRibbonPanel = application.CreateRibbonPanel("PCF Tools");
             PushButtonData data = new PushButtonData("PCFExporter","PCF Exporter",ExecutingAssemblyPath,"PCF_Exporter.FormCaller");
             PushButton pushButton = rvtRibbonPanel.AddItem(data) as PushButton;
-            //RibbonItem item = rvtRibbonPanel.AddItem(data);
         }
     }
 
@@ -69,11 +72,22 @@ namespace PCF_Exporter
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            PCF_Exporter_form fm = new PCF_Exporter_form(commandData);
-            fm.ShowDialog();
+            try
+            {
+                PCF_Exporter_form fm = new PCF_Exporter_form(commandData, message);
+                fm.ShowDialog();
 
-            //fm.Close();
-            return Result.Succeeded;
+                fm.Close();
+                return Result.Succeeded;
+            }
+
+            catch (Autodesk.Revit.Exceptions.OperationCanceledException) { return Result.Cancelled; }
+
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                return Result.Failed;
+            }
         }
     }
 }
