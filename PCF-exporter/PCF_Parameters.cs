@@ -163,10 +163,8 @@ namespace PCF_Parameters
             string ExecutingAssemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             string oriFile = app.SharedParametersFilename;
             string tempFile = ExecutingAssemblyPath + "Temp.txt";
-
             
             int i = 0;
-            
             
             //Create parameter bindings
             try
@@ -178,6 +176,7 @@ namespace PCF_Parameters
                     using (File.Create(tempFile)) { }
                     app.SharedParametersFilename = tempFile;
                     ExternalDefinitionCreationOptions options = new ExternalDefinitionCreationOptions(name, InputVars.parameterTypes[i]);
+                    options.GUID = InputVars.ParameterGUID[i];
                     ExternalDefinition def = app.OpenSharedParameterFile().Groups.Create("TemporaryDefinitionGroup").Definitions.
                         Create(options) as ExternalDefinition;
                     i++;
@@ -212,10 +211,10 @@ namespace PCF_Parameters
     {
         public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
         {
-            return ExecuteMyCommand(data.Application, ref msg, elements);
+            return ExecuteMyCommand(data.Application, ref msg);
         }
 
-        internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg, ElementSet elements)
+        internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg)
         {
             // UIApplication uiApp = commandData.Application;
             Document doc = uiApp.ActiveUIDocument.Document;

@@ -34,30 +34,53 @@ namespace PCF_Functions
         public const BuiltInParameterGroup PCF_BUILTIN_GROUP_NAME = BuiltInParameterGroup.PG_ANALYTICAL_MODEL;
 
         //Parameter definition, remember to add new parameters to the ParameterList in the next region
-        public static String PCF_ELEM_BP1 = "PCF_ELEM_BP1";
+        public static string PCF_ELEM_BP1 = "PCF_ELEM_BP1";
         public static ParameterType PCF_ELEM_BP1_parameterType = ParameterType.Text;
-        public static String PCF_ELEM_CATEGORY = "PCF_ELEM_CATEGORY";
+        public static Guid PCF_ELEM_BP1_GUID = new Guid("89b1e62e-f9b8-48c3-ab3a-1861a772bda8");
+
+        public static string PCF_ELEM_CATEGORY = "PCF_ELEM_CATEGORY";
         public static ParameterType PCF_ELEM_CATEGORY_parameterType = ParameterType.Text;
-        public static String PCF_ELEM_COMPID = "PCF_ELEM_COMPID";
+        public static Guid PCF_ELEM_CATEGORY_GUID = new Guid("35efc6ed-2f20-4aca-bf05-d81d3b79dce2");
+
+        public static string PCF_ELEM_COMPID = "PCF_ELEM_COMPID";
         public static ParameterType PCF_ELEM_COMPID_parameterType = ParameterType.Integer;
-        public static String PCF_MAT_DESCR = "PCF_MAT_DESCR";
+        public static Guid PCF_ELEM_COMPID_GUID = new Guid("876d2334-f860-4b5a-8c24-507e2c545fc0");
+
+        public static string PCF_MAT_DESCR = "PCF_MAT_DESCR";
         public static ParameterType PCF_MAT_DESCR_parameterType = ParameterType.Text;
-        public static String PCF_MAT_ID = "PCF_MAT_ID";
+        public static Guid PCF_MAT_DESCR_GUID = new Guid("d39418f2-fcb3-4dd1-b0be-3d647486ebe6");
+
+        public static string PCF_MAT_ID = "PCF_MAT_ID";
         public static ParameterType PCF_MAT_ID_parameterType = ParameterType.Integer;
-        public static String PCF_ELEM_TYPE = "PCF_ELEM_TYPE";
+        public static Guid PCF_MAT_ID_GUID = new Guid("fc5d3b19-af5b-47f6-a269-149b701c9364");
+
+        public static string PCF_ELEM_TYPE = "PCF_ELEM_TYPE";
         public static ParameterType PCF_ELEM_TYPE_parameterType = ParameterType.Text;
-        public static String PCF_ELEM_SKEY = "PCF_ELEM_SKEY";
+        public static Guid PCF_ELEM_TYPE_GUID = new Guid("bfc7b779-786d-47cd-9194-8574a5059ec8");
+
+        public static string PCF_ELEM_SKEY = "PCF_ELEM_SKEY";
         public static ParameterType PCF_ELEM_SKEY_parameterType = ParameterType.Text;
-        public static String PCF_ELEM_END1 = "PCF_ELEM_END1";
+        public static Guid PCF_ELEM_SKEY_GUID = new Guid("3feebd29-054c-4ce8-bc64-3cff75ed6121");
+
+        public static string PCF_ELEM_END1 = "PCF_ELEM_END1";
         public static ParameterType PCF_ELEM_END1_parameterType = ParameterType.Text;
-        public static String PCF_ELEM_END2 = "PCF_ELEM_END2";
+        public static Guid PCF_ELEM_END1_GUID = new Guid("cbc10825-c0a1-471e-9902-075a41533738");
+
+        public static string PCF_ELEM_END2 = "PCF_ELEM_END2";
         public static ParameterType PCF_ELEM_END2_parameterType = ParameterType.Text;
-        public static String PCF_ELEM_TAP1 = "PCF_ELEM_TAP1";
+        public static Guid PCF_ELEM_END2_GUID = new Guid("ecaf3f8a-c28b-4a89-8496-728af3863b09");
+
+        public static string PCF_ELEM_TAP1 = "PCF_ELEM_TAP1";
         public static ParameterType PCF_ELEM_TAP1_parameterType = ParameterType.Text;
-        public static String PCF_ELEM_TAP2 = "PCF_ELEM_TAP2";
+        public static Guid PCF_ELEM_TAP1_GUID = new Guid("5fda303c-5536-429b-9fcc-afb40d14c7b3");
+
+        public static string PCF_ELEM_TAP2 = "PCF_ELEM_TAP2";
         public static ParameterType PCF_ELEM_TAP2_parameterType = ParameterType.Text;
-        public static String PCF_ELEM_TAP3 = "PCF_ELEM_TAP3";
+        public static Guid PCF_ELEM_TAP2_GUID = new Guid("e1e9bc3b-ce75-4f3a-ae43-c270f4fde937");
+
+        public static string PCF_ELEM_TAP3 = "PCF_ELEM_TAP3";
         public static ParameterType PCF_ELEM_TAP3_parameterType = ParameterType.Text;
+        public static Guid PCF_ELEM_TAP3_GUID = new Guid("12693653-8029-4743-be6a-310b1fbc0620");
 
         #region ParameterList
         //parameterAllNames and parameterTypes must correspond to each other in element position
@@ -67,10 +90,11 @@ namespace PCF_Functions
             PCF_ELEM_END2, PCF_ELEM_TAP1, PCF_ELEM_TAP2, PCF_ELEM_TAP3
         };
 
-        public static IList<string> parameterNames = new List<string>()
+        public static IList<Guid> ParameterGUID = new List<Guid>()
         {
-            PCF_ELEM_CATEGORY, PCF_ELEM_BP1, PCF_MAT_DESCR, PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_END1,
-            PCF_ELEM_END2
+            PCF_ELEM_CATEGORY_GUID, PCF_ELEM_BP1_GUID, PCF_ELEM_COMPID_GUID, PCF_MAT_DESCR_GUID, PCF_MAT_ID_GUID,
+            PCF_ELEM_TYPE_GUID, PCF_ELEM_SKEY_GUID, PCF_ELEM_END1_GUID, PCF_ELEM_END2_GUID, PCF_ELEM_TAP1_GUID, PCF_ELEM_TAP2_GUID,
+            PCF_ELEM_TAP3_GUID
         };
 
         public static IList<ParameterType> parameterTypes = new List<ParameterType>()
@@ -79,6 +103,13 @@ namespace PCF_Functions
             PCF_ELEM_TYPE_parameterType, PCF_ELEM_SKEY_parameterType, PCF_ELEM_END1_parameterType, PCF_ELEM_END2_parameterType, PCF_ELEM_TAP1_parameterType,
             PCF_ELEM_TAP2_parameterType, PCF_ELEM_TAP3_parameterType
         };
+
+        public static IList<string> parameterNames = new List<string>()
+        {
+            PCF_ELEM_CATEGORY, PCF_ELEM_BP1, PCF_MAT_DESCR, PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_END1,
+            PCF_ELEM_END2
+        };
+
         #endregion
 
         //PCF specification

@@ -52,5 +52,11 @@ namespace PCF_Exporter
             CreateParameterBindings CPB = new CreateParameterBindings();
             CPB.ExecuteMyCommand(_uiapp, ref _message);
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            DeleteParameters DP = new DeleteParameters();
+            DP.ExecuteMyCommand(_uiapp, ref _message);
+        }
     }
 }
