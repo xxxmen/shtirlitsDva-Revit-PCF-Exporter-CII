@@ -29,14 +29,16 @@ namespace PCF_Parameters
     {
         public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
         {
-            return ExecuteMyCommand(data.Application, ref msg, elements);
+            return Result.Succeeded;
+            //return ExecuteMyCommand(data.Application, ref msg);
         }
 
-        internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg, ElementSet elements)
+        internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg, string path)
         {
             // UIApplication uiApp = commandData.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
             Application app = doc.Application;
+            string filename = path;
 
             //Two collectors are made because I couldn't figure out a way to obta
             FilteredElementCollector eCollector = new FilteredElementCollector(doc);
@@ -49,7 +51,7 @@ namespace PCF_Parameters
             FilteredElementCollector pCollector = new FilteredElementCollector(doc);
             pCollector.OfCategory(BuiltInCategory.OST_PipeCurves).OfClass(typeof(Pipe));
             
-            string filename = InputVars.ExcelFilePath + InputVars.ExcelFileName;
+            //string filename = InputVars.ExcelFilePath + InputVars.ExcelFileName; //Legacy code
             
             //Use ExcelDataReader to import data from the excel to a dataset
             FileStream stream = File.Open(filename, FileMode.Open, FileAccess.Read);

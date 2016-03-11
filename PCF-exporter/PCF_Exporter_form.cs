@@ -28,6 +28,7 @@ namespace PCF_Exporter
         public static UIDocument _uidoc;
         public static Document _doc;
         public string _message;
+        public string _excelPath = null;
 
         public PCF_Exporter_form(ExternalCommandData cData, string message)
         {
@@ -41,10 +42,7 @@ namespace PCF_Exporter
 
         private void button4_Click(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                string excelPath = openFileDialog1.FileName;
-            }
+            if (openFileDialog1.ShowDialog() == DialogResult.OK) _excelPath = openFileDialog1.FileName;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -57,6 +55,17 @@ namespace PCF_Exporter
         {
             DeleteParameters DP = new DeleteParameters();
             DP.ExecuteMyCommand(_uiapp, ref _message);
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            _excelPath = textBox1.Text;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            PopulateParameters PP = new PopulateParameters();
+            PP.ExecuteMyCommand(_uiapp, ref _message, _excelPath);
         }
     }
 }
