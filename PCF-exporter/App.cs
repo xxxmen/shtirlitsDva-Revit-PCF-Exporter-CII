@@ -76,7 +76,7 @@ namespace PCF_Exporter
             {
                 PCF_Exporter_form fm = new PCF_Exporter_form(commandData, message);
                 fm.ShowDialog();
-
+                
                 fm.Close();
                 return Result.Succeeded;
             }

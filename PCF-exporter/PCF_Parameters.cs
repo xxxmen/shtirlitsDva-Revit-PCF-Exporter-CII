@@ -22,16 +22,16 @@ using BuildingCoder;
 
 namespace PCF_Parameters
 {
-    [TransactionAttribute(TransactionMode.Manual)]
-    [RegenerationAttribute(RegenerationOption.Manual)]
+    //[TransactionAttribute(TransactionMode.Manual)]
+    //[RegenerationAttribute(RegenerationOption.Manual)]
 
-    public class PopulateParameters : IExternalCommand
+    public class PopulateParameters // : IExternalCommand
     {
-        public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
-        {
-            return Result.Succeeded;
-            //return ExecuteMyCommand(data.Application, ref msg);
-        }
+        //public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
+        //{
+        //    return Result.Succeeded;
+        //    //return ExecuteMyCommand(data.Application, ref msg);
+        //}
 
         internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg, string path)
         {
@@ -135,15 +135,15 @@ namespace PCF_Parameters
         }
     }
 
-    [TransactionAttribute(TransactionMode.Manual)]
-    [RegenerationAttribute(RegenerationOption.Manual)]
+    //[TransactionAttribute(TransactionMode.Manual)]
+    //[RegenerationAttribute(RegenerationOption.Manual)]
 
-    public class CreateParameterBindings : IExternalCommand
+    public class CreateParameterBindings //: IExternalCommand
     {
-        public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
-        {
-            return ExecuteMyCommand(data.Application, ref msg);
-        }
+        //public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
+        //{
+        //    return ExecuteMyCommand(data.Application, ref msg);
+        //}
 
         internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg)
         {
@@ -167,6 +167,7 @@ namespace PCF_Parameters
             string tempFile = ExecutingAssemblyPath + "Temp.txt";
             
             int i = 0;
+            StringBuilder sbFeedback = new StringBuilder();
             
             //Create parameter bindings
             try
@@ -185,10 +186,18 @@ namespace PCF_Parameters
 
                     BindingMap map = doc.ParameterBindings;
                     Binding binding = app.Create.NewInstanceBinding(catSet);
-                    map.Insert(def, binding, InputVars.PCF_BUILTIN_GROUP_NAME);
+
+                    if (map.Contains(def)) sbFeedback.Append("Parameter " + name + " already exists.\n");
+                    else
+                    {
+                        map.Insert(def, binding, InputVars.PCF_BUILTIN_GROUP_NAME);
+                        if (map.Contains(def)) sbFeedback.Append("Parameter " + name + " added to project.\n");
+                        else sbFeedback.Append("Creation of parameter " + name + " failed for some reason.\n");
+                    }
                     File.Delete(tempFile);
                 }
                 trans.Commit();
+                Util.InfoMsg(sbFeedback.ToString());
             }
 
             catch (Autodesk.Revit.Exceptions.OperationCanceledException){return Result.Cancelled;}
@@ -206,15 +215,16 @@ namespace PCF_Parameters
         }
     }
 
-    [TransactionAttribute(TransactionMode.Manual)]
-    [RegenerationAttribute(RegenerationOption.Manual)]
+    //[TransactionAttribute(TransactionMode.Manual)]
+    //[RegenerationAttribute(RegenerationOption.Manual)]
 
-    public class DeleteParameters : IExternalCommand
+    public class DeleteParameters //: IExternalCommand
     {
-        public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
-        {
-            return ExecuteMyCommand(data.Application, ref msg);
-        }
+        //public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
+        //{
+        //    return ExecuteMyCommand(data.Application, ref msg);
+        //}
+        private StringBuilder sbFeedback = new StringBuilder();
 
         internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg)
         {
@@ -233,6 +243,7 @@ namespace PCF_Parameters
                     i++;
                 }
                 trans.Commit();
+                Util.InfoMsg(sbFeedback.ToString());
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
@@ -250,7 +261,7 @@ namespace PCF_Parameters
         }
 
         //Method deletes parameters
-        public static bool RemoveSharedParameterBinding(Application app, string name, ParameterType type)
+        public void RemoveSharedParameterBinding(Application app, string name, ParameterType type)
         {
             BindingMap map = (new UIApplication(app)).ActiveUIDocument.Document.ParameterBindings;
             DefinitionBindingMapIterator it = map.ForwardIterator();
@@ -266,9 +277,15 @@ namespace PCF_Parameters
                 }
             }
 
-            if (def != null) map.Remove(def);
+            if (map.Contains(def) == false) sbFeedback.Append("Parameter " + name + " does not exist.\n");
+            else
+            {
+                map.Remove(def);
+                if (map.Contains(def)) sbFeedback.Append("Failed to delete parameter " + name + " for some reason.\n");
+                else sbFeedback.Append("Parameter " + name + " deleted.\n");
+            }
 
-            return false;
+            //if (def != null) map.Remove(def); //Legacy code
         }
 
     }
