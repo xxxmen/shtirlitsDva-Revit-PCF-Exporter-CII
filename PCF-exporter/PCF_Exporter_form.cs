@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,8 +16,10 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
+using Excel;
 using PCF_Parameters;
 using PCF_Exporter;
+using PCF_Functions;
 
 namespace PCF_Exporter
 {
@@ -29,6 +32,8 @@ namespace PCF_Exporter
         public static Document _doc;
         public string _message;
         public string _excelPath = null;
+        private IList<string> PCF_DATA_TABLE_NAMES = new List<string>();
+
 
         public PCF_Exporter_form(ExternalCommandData cData, string message)
         {
@@ -42,7 +47,21 @@ namespace PCF_Exporter
 
         private void button4_Click(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK) _excelPath = openFileDialog1.FileName;
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                _excelPath = openFileDialog1.FileName;
+                FileStream stream = File.Open(_excelPath, FileMode.Open, FileAccess.Read);
+                IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
+                excelReader.IsFirstRowAsColumnNames = true;
+                DataSet PCF_DATA_SOURCE = excelReader.AsDataSet();
+                DataTableCollection PCF_DATA_TABLES = PCF_DATA_SOURCE.Tables;
+                foreach (DataTable VARIABLE in PCF_DATA_TABLES)
+                {
+                    PCF_DATA_TABLE_NAMES.Add(VARIABLE.TableName);
+                }
+                excelReader.Close();
+                comboBox1.DataSource = PCF_DATA_TABLE_NAMES;
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -59,13 +78,18 @@ namespace PCF_Exporter
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            _excelPath = textBox1.Text;
+            InputVars.ExcelSheet = textBox1.Text;
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
             PopulateParameters PP = new PopulateParameters();
             PP.ExecuteMyCommand(_uiapp, ref _message, _excelPath);
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

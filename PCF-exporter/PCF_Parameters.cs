@@ -2,7 +2,6 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Dynamic;
 using System.Text;
 using System.Data;
 
@@ -94,7 +93,7 @@ namespace PCF_Parameters
                 foreach (Element element in eCollector)
                 {
                     FamilyInstance fInstance = element as FamilyInstance;
-                    eFamilyType = fInstance.Symbol.FamilyName.ToString() + ": " + element.Name.ToString();
+                    eFamilyType = fInstance.Symbol.FamilyName + ": " + element.Name;
                     foreach (string parameterName in InputVars.parameterNames)
                     {
                         columnName = parameterName;
@@ -277,7 +276,7 @@ namespace PCF_Parameters
                 }
             }
 
-            if (map.Contains(def) == false) sbFeedback.Append("Parameter " + name + " does not exist.\n");
+            if (def == null) sbFeedback.Append("Parameter " + name + " does not exist.\n");
             else
             {
                 map.Remove(def);
