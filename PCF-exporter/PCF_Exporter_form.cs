@@ -94,5 +94,24 @@ namespace PCF_Exporter
             InputVars.parameterNames.RemoveAt(0);
             Util.InfoMsg("Following parameters will be initialized:\n"+ string.Join("\n",InputVars.parameterNames.ToArray()));
         }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+            InputVars.SysAbbr = textBox3.Text;
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton2.Checked == true)
+            {
+                textBox3.Visible = true;
+                textBox4.Visible = true;
+            }
+            else
+            {
+                textBox3.Visible = false;
+                textBox4.Visible = false;
+            }
+        }
     }
 }
