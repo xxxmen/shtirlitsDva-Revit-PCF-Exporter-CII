@@ -18,6 +18,7 @@ using Excel;
 
 using PCF_Functions;
 using BuildingCoder;
+using PCF_Exporter;
 
 namespace PCF_Parameters
 {
@@ -36,8 +37,8 @@ namespace PCF_Parameters
         {
             // UIApplication uiApp = commandData.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
-            Application app = doc.Application;
             string filename = path;
+            StringBuilder sbFeedback = new StringBuilder();
 
             //Two collectors are made because I couldn't figure out a way to obta
             FilteredElementCollector eCollector = new FilteredElementCollector(doc);
@@ -52,21 +53,24 @@ namespace PCF_Parameters
             
             //string filename = InputVars.ExcelFilePath + InputVars.ExcelFileName; //Legacy code
             
+            //Reading of excel moved to form class
             //Use ExcelDataReader to import data from the excel to a dataset
-            FileStream stream = File.Open(filename, FileMode.Open, FileAccess.Read);
-            IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
-            excelReader.IsFirstRowAsColumnNames = true;
-            DataSet PCF_DATA_SOURCE = excelReader.AsDataSet();
-            DataTable PCF_DATA = PCF_DATA_SOURCE.Tables[InputVars.ExcelSheet];
+            //FileStream stream = File.Open(filename, FileMode.Open, FileAccess.Read);
+            //IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
+            //excelReader.IsFirstRowAsColumnNames = true;
+            //DataSet PCF_DATA_SOURCE = excelReader.AsDataSet();
+            //DataTable PCF_DATA = PCF_DATA_SOURCE.Tables[InputVars.ExcelSheet];
+
 
             //prepare input variables which are initialized when looping the elements
             string eFamilyType = null; string columnName = null;
 
             //query is using the variables in the loop to query the dataset
-            var query = from value in PCF_DATA.AsEnumerable()
+            var query = from value in PCF_Exporter_form.DATA_TABLE.AsEnumerable()
                         where value.Field<string>(0) == eFamilyType
                         select value.Field<string>(columnName);
 
+            
             //Debugging
             //StringBuilder sbParameters = new StringBuilder();
 
@@ -76,8 +80,14 @@ namespace PCF_Parameters
                 Transaction trans = new Transaction(doc, "Initialize PCF parameters");
                 trans.Start();
 
+                //Reporting the number of different elements initialized
+                int pNumber = 0, fNumber = 0, aNumber = 0;
+
                 foreach (Element element in pCollector)
                 {
+                    //reporting
+                    pNumber++;
+
                     eFamilyType = "Pipe Types: " + element.Name;
                     foreach (string parameterName in InputVars.parameterNames)
                     {
@@ -86,12 +96,16 @@ namespace PCF_Parameters
                         element.LookupParameter(parameterName).Set(parameterValue);
                     }
 
-                    //sbParameters.Append(eFamilyType);
-                    //sbParameters.AppendLine();
-                }
+                        //sbParameters.Append(eFamilyType);
+                        //sbParameters.AppendLine();
+                    }
 
                 foreach (Element element in eCollector)
                 {
+                    //reporting
+                    if (string.Equals(element.Category.Name.ToString(),"Pipe Fittings")) fNumber++;
+                    if (string.Equals(element.Category.Name.ToString(), "Pipe Accessories")) aNumber++;
+
                     FamilyInstance fInstance = element as FamilyInstance;
                     eFamilyType = fInstance.Symbol.FamilyName + ": " + element.Name;
                     foreach (string parameterName in InputVars.parameterNames)
@@ -105,7 +119,9 @@ namespace PCF_Parameters
                     //sbParameters.AppendLine();
                 }
                 trans.Commit();
-                excelReader.Close();
+                sbFeedback.Append(pNumber + " Pipes initialized.\n"+fNumber + " Pipe fittings initialized.\n"+aNumber+" Pipe accessories initialized.");
+                Util.InfoMsg(sbFeedback.ToString());
+                //excelReader.Close();
 
                 //// Debugging
                 //// Clear the output file
@@ -150,7 +166,6 @@ namespace PCF_Parameters
             Document doc = uiApp.ActiveUIDocument.Document;
             Application app = doc.Application;
             Autodesk.Revit.Creation.Application ca = app.Create;
-            string filename = app.SharedParametersFilename;
 
             Category pipeCat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_PipeCurves);
             Category fittingCat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_PipeFitting);

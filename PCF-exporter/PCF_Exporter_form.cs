@@ -16,6 +16,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
+using BuildingCoder;
 using Excel;
 using PCF_Parameters;
 using PCF_Exporter;
@@ -33,6 +34,8 @@ namespace PCF_Exporter
         public string _message;
         public string _excelPath = null;
         private IList<string> PCF_DATA_TABLE_NAMES = new List<string>();
+        public DataSet DATA_SET = null;
+        public static DataTable DATA_TABLE = null;
 
 
         public PCF_Exporter_form(ExternalCommandData cData, string message)
@@ -53,8 +56,8 @@ namespace PCF_Exporter
                 FileStream stream = File.Open(_excelPath, FileMode.Open, FileAccess.Read);
                 IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
                 excelReader.IsFirstRowAsColumnNames = true;
-                DataSet PCF_DATA_SOURCE = excelReader.AsDataSet();
-                DataTableCollection PCF_DATA_TABLES = PCF_DATA_SOURCE.Tables;
+                DATA_SET = excelReader.AsDataSet();
+                DataTableCollection PCF_DATA_TABLES = DATA_SET.Tables;
                 foreach (DataTable VARIABLE in PCF_DATA_TABLES)
                 {
                     PCF_DATA_TABLE_NAMES.Add(VARIABLE.TableName);
@@ -76,11 +79,6 @@ namespace PCF_Exporter
             DP.ExecuteMyCommand(_uiapp, ref _message);
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            InputVars.ExcelSheet = textBox1.Text;
-        }
-
         private void button3_Click(object sender, EventArgs e)
         {
             PopulateParameters PP = new PopulateParameters();
@@ -89,7 +87,12 @@ namespace PCF_Exporter
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            InputVars.ExcelSheet = (string) comboBox1.SelectedItem;
+            DATA_TABLE = DATA_SET.Tables[InputVars.ExcelSheet];
+            InputVars.parameterNames = null;
+            InputVars.parameterNames = (from dc in DATA_TABLE.Columns.Cast<DataColumn>() select dc.ColumnName).ToList();
+            InputVars.parameterNames.RemoveAt(0);
+            Util.InfoMsg("Following parameters will be initialized:\n"+ string.Join("\n",InputVars.parameterNames.ToArray()));
         }
     }
 }
