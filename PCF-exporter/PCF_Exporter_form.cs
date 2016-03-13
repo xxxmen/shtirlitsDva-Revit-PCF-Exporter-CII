@@ -100,8 +100,14 @@ namespace PCF_Exporter
             InputVars.SysAbbr = textBox3.Text;
         }
 
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton1.Checked == true) InputVars.ExportAll = true;
+        }
+
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
+            if (radioButton2.Checked == true) InputVars.ExportAll = false;
             if (radioButton2.Checked == true)
             {
                 textBox3.Visible = true;
@@ -113,5 +119,24 @@ namespace PCF_Exporter
                 textBox4.Visible = false;
             }
         }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            DialogResult result = fbd.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+            InputVars.OutputDirectoryFilePath = fbd.SelectedPath;
+            textBox5.Text = InputVars.OutputDirectoryFilePath;
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            PCFExport pcfExporter = new PCFExport();
+            pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
+        }
+
+       
     }
 }

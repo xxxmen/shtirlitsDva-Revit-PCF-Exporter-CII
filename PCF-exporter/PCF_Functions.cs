@@ -19,13 +19,13 @@ namespace PCF_Functions
     public class InputVars
     {
         //File I/O
-        public static string DriveLetter = "E";
-        public static string OutputDirectoryFilePath = DriveLetter + ":\\Dropbox\\Revit\\Dev\\Test_01\\TestProject\\Output\\";
+        public static string OutputDirectoryFilePath;
 
-        public static string ExcelFilePath = DriveLetter + ":\\Dropbox\\Revit\\Dev\\Test_01\\TestProject\\";
-        public static string ExcelFileName = "PCF_DEVELOPEMENT_01.xlsx";
         public static string ExcelSheet = "COMP";
 
+        //Execution control
+        public static bool ExportAll = true;
+        
         //Filters
         public static string SysAbbr = "FVF";
         public static BuiltInParameter SysAbbrParam = BuiltInParameter.RBS_DUCT_PIPE_SYSTEM_ABBREVIATION_PARAM;
@@ -137,16 +137,16 @@ namespace PCF_Functions
             sbPreamble.AppendLine();
             sbPreamble.Append("UNITS-WEIGHT-LENGTH METRE");
             sbPreamble.AppendLine();
-            sbPreamble.Append("PIPELINE-REFERENCE " + InputVars.SysAbbr);
-            sbPreamble.AppendLine();
-            sbPreamble.Append("    PIPING-SPEC " + InputVars.PIPING_SPEC);
-            sbPreamble.AppendLine();
+            //sbPreamble.Append("PIPELINE-REFERENCE " + InputVars.SysAbbr);
+            //sbPreamble.AppendLine();
+            //sbPreamble.Append("    PIPING-SPEC " + InputVars.PIPING_SPEC);
+            //sbPreamble.AppendLine();
             return sbPreamble;
         }
 
         static StringBuilder sbMaterials = new StringBuilder();
         static IEnumerable<IGrouping<string, Element>> materialGroups = null;
-        static int groupNumber = 0;
+        static int groupNumber;
         public static StringBuilder MaterialsSection(IEnumerable<IGrouping<string, Element>> elementGroups)
         {
             materialGroups = elementGroups;

@@ -16,38 +16,54 @@ using PCF_Functions;
 
 namespace PCF_Exporter
 {
-    [TransactionAttribute(TransactionMode.Manual)]
-    [RegenerationAttribute(RegenerationOption.Manual)]
+    //[TransactionAttribute(TransactionMode.Manual)]
+    //[RegenerationAttribute(RegenerationOption.Manual)]
 
-    public class PCFExport : IExternalCommand
+    public class PCFExport //: IExternalCommand
     {
-        public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
-        {
-            return ExecuteMyCommand(data.Application, ref msg, elements);
-        }
+        //public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
+        //{
+        //    return ExecuteMyCommand(data.Application, ref msg, elements);
+        //}
 
-        internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg, ElementSet elements)
+        internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg)
         {
             // UIApplication uiApp = commandData.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
 
             try
             {
-                // Define a Filter instance to filter by System Abbreviation
-                ElementParameterFilter sysAbbr = new Filter(InputVars.SysAbbr, InputVars.SysAbbrParam).epf;
-
                 // Instance a collector
                 FilteredElementCollector collector = new FilteredElementCollector(doc);
 
-                //Define a collector with multiple filters to collect PipeFittings OR PipeAccessories OR Pipes + filter by System Abbreviation
-                collector.WherePasses(
-                    new LogicalOrFilter(
-                        new List<ElementFilter>
-                        {
-                            new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
-                            new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
-                            new ElementClassFilter(typeof(Pipe))
-                        })).WherePasses(sysAbbr);
+                if (InputVars.ExportAll == false)
+                {
+                    // Define a Filter instance to filter by System Abbreviation
+                    ElementParameterFilter sysAbbr = new Filter(InputVars.SysAbbr, InputVars.SysAbbrParam).epf;
+
+                    //Define a collector with multiple filters to collect PipeFittings OR PipeAccessories OR Pipes + filter by System Abbreviation
+                    collector.WherePasses(
+                        new LogicalOrFilter(
+                            new List<ElementFilter>
+                            {
+                                new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
+                                new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
+                                new ElementClassFilter(typeof (Pipe))
+                            })).WherePasses(sysAbbr);
+                }
+
+                if (InputVars.ExportAll == true)
+                {
+                    //Define a collector with multiple filters to collect PipeFittings OR PipeAccessories OR Pipes + filter by System Abbreviation
+                    collector.WherePasses(
+                        new LogicalOrFilter(
+                            new List<ElementFilter>
+                            {
+                                new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
+                                new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
+                                new ElementClassFilter(typeof (Pipe))
+                            }));
+                }
 
                 //Set the start number to count the COMPID instances and MAT groups.
                 int elementIdentificationNumber = 0;
