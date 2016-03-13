@@ -19,15 +19,15 @@ namespace PCF_Functions
     public class InputVars
     {
         //File I/O
-        public static String DriveLetter = "E";
-        public static String OutputDirectoryFilePath = DriveLetter + ":\\Dropbox\\Revit\\Dev\\Test_01\\TestProject\\Output\\";
+        public static string DriveLetter = "E";
+        public static string OutputDirectoryFilePath = DriveLetter + ":\\Dropbox\\Revit\\Dev\\Test_01\\TestProject\\Output\\";
 
-        public static String ExcelFilePath = DriveLetter + ":\\Dropbox\\Revit\\Dev\\Test_01\\TestProject\\";
-        public static String ExcelFileName = "PCF_DEVELOPEMENT_01.xlsx";
-        public static String ExcelSheet = "COMP";
+        public static string ExcelFilePath = DriveLetter + ":\\Dropbox\\Revit\\Dev\\Test_01\\TestProject\\";
+        public static string ExcelFileName = "PCF_DEVELOPEMENT_01.xlsx";
+        public static string ExcelSheet = "COMP";
 
         //Filters
-        public static String SysAbbr = "FVF";
+        public static string SysAbbr = "FVF";
         public static BuiltInParameter SysAbbrParam = BuiltInParameter.RBS_DUCT_PIPE_SYSTEM_ABBREVIATION_PARAM;
 
         //Shared parameter group
