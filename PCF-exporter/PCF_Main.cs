@@ -36,11 +36,16 @@ namespace PCF_Exporter
                 // Instance a collector
                 FilteredElementCollector collector = new FilteredElementCollector(doc);
 
+                // Define a Filter instance to filter by System Abbreviation
+                ElementParameterFilter sysAbbr = new Filter(InputVars.SysAbbr, InputVars.SysAbbrParam).epf;
+
+                // Declare pipeline grouping object
+                IEnumerable<IGrouping<string, Element>> pipelineGroups;
+
+                //If user chooses to export a single pipeline get only elements in that pipeline and create grouping.
+                //Grouping is necessary even tho theres only one group to be able to process by the same code as the all pipelines case
                 if (InputVars.ExportAll == false)
                 {
-                    // Define a Filter instance to filter by System Abbreviation
-                    ElementParameterFilter sysAbbr = new Filter(InputVars.SysAbbr, InputVars.SysAbbrParam).epf;
-
                     //Define a collector with multiple filters to collect PipeFittings OR PipeAccessories OR Pipes + filter by System Abbreviation
                     collector.WherePasses(
                         new LogicalOrFilter(
@@ -50,8 +55,13 @@ namespace PCF_Exporter
                                 new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
                                 new ElementClassFilter(typeof (Pipe))
                             })).WherePasses(sysAbbr);
+
+                    //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
+                    pipelineGroups = from e in collector
+                                     group e by e.LookupParameter(InputVars.PipelineGroupParameterName).AsString();
                 }
 
+                //If user chooses to export all pipelines get all elements and create grouping
                 if (InputVars.ExportAll == true)
                 {
                     //Define a collector with multiple filters to collect PipeFittings OR PipeAccessories OR Pipes + filter by System Abbreviation
@@ -63,8 +73,14 @@ namespace PCF_Exporter
                                 new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
                                 new ElementClassFilter(typeof (Pipe))
                             }));
-                }
 
+                    //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
+                    pipelineGroups = from e in collector
+                                     group e by e.LookupParameter(InputVars.PipelineGroupParameterName).AsString();
+                }
+                else pipelineGroups = null;
+
+                #region Initialize Material Data
                 //Set the start number to count the COMPID instances and MAT groups.
                 int elementIdentificationNumber = 0;
                 int materialGroupIdentifier = 0;
@@ -89,15 +105,28 @@ namespace PCF_Exporter
                 }
                 trans.Commit();
 
+                #endregion
+
+                //IEnumerable<Element> pipeList = from IGrouping<string, Element> gp in pipelineGroups
+                //    from Element e in gp
+                //    where e.Category.Equals(BuiltInCategory.OST_PipeCurves)
+                //    select e;
+
+                foreach (IGrouping<string, Element> gp in pipelineGroups)
+                {
+                    var pipeLine = from element in gp group element by element.Category.Name;
+
+                }
+
                 StringBuilder preamble = Composer.PreambleComposer();
 
                 #region Pipes
                 // Continue on to processing individual elements for export
                 // Instance a collector
-                FilteredElementCollector collectorPipes = new FilteredElementCollector(doc);
+                // FilteredElementCollector collectorPipes = new FilteredElementCollector(doc);
 
                 //Define a collector with multiple filters to collect Pipes + filter by System Abbreviation
-                IList<Element> pipeList = collectorPipes.OfClass(typeof(Pipe)).WherePasses(sysAbbr).ToElements();
+                // IList<Element> pipeList = collectorPipes.OfClass(typeof(Pipe)).WherePasses(sysAbbr).ToElements();
 
                 StringBuilder sbPipes = PCF_Pipes.PCF_Pipes_Export.Export(pipeList);
                 #endregion

@@ -20,15 +20,16 @@ namespace PCF_Functions
     {
         //File I/O
         public static string OutputDirectoryFilePath;
-
         public static string ExcelSheet = "COMP";
 
         //Execution control
         public static bool ExportAll = true;
+
         
         //Filters
         public static string SysAbbr = "FVF";
         public static BuiltInParameter SysAbbrParam = BuiltInParameter.RBS_DUCT_PIPE_SYSTEM_ABBREVIATION_PARAM;
+        public static string PipelineGroupParameterName = "System Abbreviation";
 
         //Shared parameter group
         public const string PCF_GROUP_NAME = "PCF";

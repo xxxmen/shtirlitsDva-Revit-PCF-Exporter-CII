@@ -136,7 +136,5 @@ namespace PCF_Exporter
             PCFExport pcfExporter = new PCFExport();
             pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
         }
-
-       
     }
 }
