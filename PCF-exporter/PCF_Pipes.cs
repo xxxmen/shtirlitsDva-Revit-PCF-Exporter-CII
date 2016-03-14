@@ -25,6 +25,7 @@ namespace PCF_Pipes
         {
             pipeList = elements;
             sbPipes = new StringBuilder();
+
             foreach (Element element in pipeList)
             {
                 sbPipes.Append(element.LookupParameter(InputVars.PCF_ELEM_TYPE).AsString());

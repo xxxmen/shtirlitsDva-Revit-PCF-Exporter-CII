@@ -107,14 +107,22 @@ namespace PCF_Exporter
 
                 #endregion
 
-                //IEnumerable<Element> pipeList = from IGrouping<string, Element> gp in pipelineGroups
-                //    from Element e in gp
-                //    where e.Category.Equals(BuiltInCategory.OST_PipeCurves)
-                //    select e;
-
                 foreach (IGrouping<string, Element> gp in pipelineGroups)
                 {
-                    var pipeLine = from element in gp group element by element.Category.Name;
+                    IList<Element> pipeList = (from element in gp
+                                   where element.Category.Equals(BuiltInCategory.OST_PipeCurves)
+                                   select element).ToList();
+                    IList<Element> fittingList = (from element in gp
+                                      where element.Category.Equals(BuiltInCategory.OST_PipeFitting)
+                                      select element).ToList();
+                    IList<Element> accessoryList = (from element in gp
+                                      where element.Category.Equals(BuiltInCategory.OST_PipeAccessory)
+                                      select element).ToList();
+
+                    StringBuilder sbPipeline = PCF_Pipeline.PCF_Pipeline_Export.Export(gp.Key);
+                    StringBuilder sbPipes = PCF_Pipes.PCF_Pipes_Export.Export(pipeList);
+                    StringBuilder sbFittings = PCF_Fittings.PCF_Fittings_Export.Export(fittingList, doc);
+                    StringBuilder sbAccessories = PCF_Accessories.PCF_Accessories_Export.Export(accessoryList, doc);
 
                 }
 
@@ -128,29 +136,29 @@ namespace PCF_Exporter
                 //Define a collector with multiple filters to collect Pipes + filter by System Abbreviation
                 // IList<Element> pipeList = collectorPipes.OfClass(typeof(Pipe)).WherePasses(sysAbbr).ToElements();
 
-                StringBuilder sbPipes = PCF_Pipes.PCF_Pipes_Export.Export(pipeList);
+                
                 #endregion
 
                 #region Fittings
                 // Continue on to processing individual elements for export
                 // Instance a collector
-                FilteredElementCollector collectorFittings = new FilteredElementCollector(doc);
+                //FilteredElementCollector collectorFittings = new FilteredElementCollector(doc);
 
-                //Define a collector with multiple filters to collect Pipes + filter by System Abbreviation
-                IEnumerable<Element> fittingsList = collectorFittings.OfCategory(BuiltInCategory.OST_PipeFitting).WherePasses(sysAbbr).ToElements();
+                ////Define a collector with multiple filters to collect Pipes + filter by System Abbreviation
+                //IEnumerable<Element> fittingsList = collectorFittings.OfCategory(BuiltInCategory.OST_PipeFitting).WherePasses(sysAbbr).ToElements();
 
-                StringBuilder sbFittings = PCF_Fittings.PCF_Fittings_Export.Export(fittingsList, doc);
+                //StringBuilder sbFittings = PCF_Fittings.PCF_Fittings_Export.Export(fittingsList, doc);
                 #endregion
 
                 #region Accessories
-                // Continue on to processing individual pipe accessories for export
-                // Instance a collector
-                FilteredElementCollector collectorAccessories = new FilteredElementCollector(doc);
+                //// Continue on to processing individual pipe accessories for export
+                //// Instance a collector
+                //FilteredElementCollector collectorAccessories = new FilteredElementCollector(doc);
 
-                //Define a collector with multiple filters to collect Pipes + filter by System Abbreviation
-                IEnumerable<Element> accessoriesList = collectorAccessories.OfCategory(BuiltInCategory.OST_PipeAccessory).WherePasses(sysAbbr).ToElements();
+                ////Define a collector with multiple filters to collect Pipes + filter by System Abbreviation
+                //IEnumerable<Element> accessoriesList = collectorAccessories.OfCategory(BuiltInCategory.OST_PipeAccessory).WherePasses(sysAbbr).ToElements();
 
-                StringBuilder sbAccessories = PCF_Accessories.PCF_Accessories_Export.Export(accessoriesList, doc);
+                //StringBuilder sbAccessories = PCF_Accessories.PCF_Accessories_Export.Export(accessoriesList, doc);
                 #endregion
 
                 #region Materials
