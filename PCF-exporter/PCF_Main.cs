@@ -70,16 +70,22 @@ namespace PCF_Exporter
                 //If user chooses to export all pipelines get all elements and create grouping
                 if (InputVars.ExportAll == true)
                 {
-                    //Define a collector with multiple filters to collect PipeFittings OR PipeAccessories OR Pipes + filter by System Abbreviation
-                    collector.WherePasses(
-                        new LogicalOrFilter(
-                            new List<ElementFilter>
-                            {
-                                new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
-                                new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
-                                new ElementClassFilter(typeof (Pipe))
-                            }));
-
+                    //Define a collector (Pipe OR FamInst) AND (Fitting OR Accessory OR Pipe).
+                    //This is to eliminate FamilySymbols from collector which would throw an exception later on.
+                    collector.WherePasses(new LogicalAndFilter(new List<ElementFilter>
+                    {new LogicalOrFilter(new List<ElementFilter>
+                        {
+                            new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
+                            new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
+                            new ElementClassFilter(typeof (Pipe))
+                        }),
+                    new LogicalOrFilter(new List<ElementFilter>
+                                {
+                                    new ElementClassFilter(typeof(Pipe)),
+                                    new ElementClassFilter(typeof(FamilyInstance))
+                                })
+                        }));
+                    
                     //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
                     pipelineGroups = from e in collector
                                      group e by e.LookupParameter(InputVars.PipelineGroupParameterName).AsString();
@@ -118,14 +124,14 @@ namespace PCF_Exporter
                 foreach (IGrouping<string, Element> gp in pipelineGroups)
                 {
                     IList<Element> pipeList = (from element in gp
-                                   where element.Category.Equals(BuiltInCategory.OST_PipeCurves)
+                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeCurves
                                    select element).ToList();
                     IList<Element> fittingList = (from element in gp
-                                      where element.Category.Equals(BuiltInCategory.OST_PipeFitting)
-                                      select element).ToList();
+                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeFitting
+                                   select element).ToList();
                     IList<Element> accessoryList = (from element in gp
-                                      where element.Category.Equals(BuiltInCategory.OST_PipeAccessory)
-                                      select element).ToList();
+                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeAccessory
+                                   select element).ToList();
 
                     StringBuilder sbPipeline = PCF_Pipeline.PCF_Pipeline_Export.Export(gp.Key);
                     StringBuilder sbPipes = PCF_Pipes.PCF_Pipes_Export.Export(pipeList);

@@ -48,6 +48,9 @@ namespace PCF_Functions
         public static BuiltInParameter SysAbbrParam = BuiltInParameter.RBS_DUCT_PIPE_SYSTEM_ABBREVIATION_PARAM;
         public static string PipelineGroupParameterName = "System Abbreviation";
 
+        public static BuiltInCategory PipeFittingsCategory = BuiltInCategory.OST_PipeFitting;
+        public static BuiltInCategory PipeAccessoriesCategory = BuiltInCategory.OST_PipeAccessory;
+
         #region Parameter definition
         //Shared parameter group
         public const string PCF_GROUP_NAME = "PCF";

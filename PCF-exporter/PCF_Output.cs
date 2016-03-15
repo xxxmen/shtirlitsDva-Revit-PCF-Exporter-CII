@@ -30,12 +30,15 @@ namespace PCF_Output
 
             string docName = _document.ProjectInformation.Name;
             string dateAndTime = DateTime.Now.ToString();
+            dateAndTime = dateAndTime.Replace(" ", "_");
+            dateAndTime = dateAndTime.Replace(":", "-");
+            string filename = _outputDir+"\\" + docName + "_" + dateAndTime + ".pcf";
 
             //Clear the output file
-            //System.IO.File.WriteAllBytes(outputDir + "PCF_Export.pcf", new byte[0]);
+            System.IO.File.WriteAllBytes(filename, new byte[0]);
 
             // Write to output file
-            using (StreamWriter w = File.AppendText(_outputDir + docName+"_"+dateAndTime+".pcf"))
+            using (StreamWriter w = File.AppendText(filename))
             {
                 w.Write(_collect);
                 w.Close();
