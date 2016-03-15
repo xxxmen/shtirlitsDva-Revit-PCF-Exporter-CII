@@ -152,17 +152,17 @@ namespace PCF_Accessories
                 string PCF_ELEM_TAP2_value = element.LookupParameter(InputVars.PCF_ELEM_TAP2).AsString();
                 string PCF_ELEM_TAP3_value = element.LookupParameter(InputVars.PCF_ELEM_TAP3).AsString();
 
-                if (String.IsNullOrEmpty(PCF_ELEM_TAP1_value) == false)
+                if (string.IsNullOrEmpty(PCF_ELEM_TAP1_value) == false)
                 {
                     TapsWriter tapsWriter = new TapsWriter(element, InputVars.PCF_ELEM_TAP1, doc);
                     sbAccessories.Append(tapsWriter.tapsWriter);
                 }
-                if (String.IsNullOrEmpty(PCF_ELEM_TAP2_value) == false)
+                if (string.IsNullOrEmpty(PCF_ELEM_TAP2_value) == false)
                 {
                     TapsWriter tapsWriter = new TapsWriter(element, InputVars.PCF_ELEM_TAP2, doc);
                     sbAccessories.Append(tapsWriter.tapsWriter);
                 }
-                if (String.IsNullOrEmpty(PCF_ELEM_TAP3_value) == false)
+                if (string.IsNullOrEmpty(PCF_ELEM_TAP3_value) == false)
                 {
                     TapsWriter tapsWriter = new TapsWriter(element, InputVars.PCF_ELEM_TAP3, doc);
                     sbAccessories.Append(tapsWriter.tapsWriter);

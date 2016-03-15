@@ -16,16 +16,8 @@ using PCF_Functions;
 
 namespace PCF_Exporter
 {
-    //[TransactionAttribute(TransactionMode.Manual)]
-    //[RegenerationAttribute(RegenerationOption.Manual)]
-
-    public class PCFExport //: IExternalCommand
+    public class PCFExport
     {
-        //public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
-        //{
-        //    return ExecuteMyCommand(data.Application, ref msg, elements);
-        //}
-
         internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg)
         {
             // UIApplication uiApp = commandData.Application;
@@ -33,6 +25,7 @@ namespace PCF_Exporter
 
             try
             {
+                #region Declaration of variables
                 // Instance a collector
                 FilteredElementCollector collector = new FilteredElementCollector(doc);
 
@@ -42,6 +35,19 @@ namespace PCF_Exporter
                 // Declare pipeline grouping object
                 IEnumerable<IGrouping<string, Element>> pipelineGroups;
 
+                // Instance a collecting stringbuilder
+                StringBuilder sbCollect = new StringBuilder();
+                #endregion
+
+                #region Compose preamble 
+                //Compose preamble
+                StringBuilder sbPreamble = Composer.PreambleComposer();
+                
+                //Append preamble
+                sbCollect.Append(sbPreamble);
+                #endregion
+
+                #region Element collectors
                 //If user chooses to export a single pipeline get only elements in that pipeline and create grouping.
                 //Grouping is necessary even tho theres only one group to be able to process by the same code as the all pipelines case
                 if (InputVars.ExportAll == false)
@@ -79,6 +85,7 @@ namespace PCF_Exporter
                                      group e by e.LookupParameter(InputVars.PipelineGroupParameterName).AsString();
                 }
                 else pipelineGroups = null;
+                #endregion
 
                 #region Initialize Material Data
                 //Set the start number to count the COMPID instances and MAT groups.
@@ -107,6 +114,7 @@ namespace PCF_Exporter
 
                 #endregion
 
+                #region Pipeline management
                 foreach (IGrouping<string, Element> gp in pipelineGroups)
                 {
                     IList<Element> pipeList = (from element in gp
@@ -124,51 +132,20 @@ namespace PCF_Exporter
                     StringBuilder sbFittings = PCF_Fittings.PCF_Fittings_Export.Export(fittingList, doc);
                     StringBuilder sbAccessories = PCF_Accessories.PCF_Accessories_Export.Export(accessoryList, doc);
 
+                    sbCollect.Append(sbPipeline); sbCollect.Append(sbPipes); sbCollect.Append(sbFittings); sbCollect.Append(sbAccessories);
+
                 }
-
-                StringBuilder preamble = Composer.PreambleComposer();
-
-                #region Pipes
-                // Continue on to processing individual elements for export
-                // Instance a collector
-                // FilteredElementCollector collectorPipes = new FilteredElementCollector(doc);
-
-                //Define a collector with multiple filters to collect Pipes + filter by System Abbreviation
-                // IList<Element> pipeList = collectorPipes.OfClass(typeof(Pipe)).WherePasses(sysAbbr).ToElements();
-
-                
-                #endregion
-
-                #region Fittings
-                // Continue on to processing individual elements for export
-                // Instance a collector
-                //FilteredElementCollector collectorFittings = new FilteredElementCollector(doc);
-
-                ////Define a collector with multiple filters to collect Pipes + filter by System Abbreviation
-                //IEnumerable<Element> fittingsList = collectorFittings.OfCategory(BuiltInCategory.OST_PipeFitting).WherePasses(sysAbbr).ToElements();
-
-                //StringBuilder sbFittings = PCF_Fittings.PCF_Fittings_Export.Export(fittingsList, doc);
-                #endregion
-
-                #region Accessories
-                //// Continue on to processing individual pipe accessories for export
-                //// Instance a collector
-                //FilteredElementCollector collectorAccessories = new FilteredElementCollector(doc);
-
-                ////Define a collector with multiple filters to collect Pipes + filter by System Abbreviation
-                //IEnumerable<Element> accessoriesList = collectorAccessories.OfCategory(BuiltInCategory.OST_PipeAccessory).WherePasses(sysAbbr).ToElements();
-
-                //StringBuilder sbAccessories = PCF_Accessories.PCF_Accessories_Export.Export(accessoriesList, doc);
                 #endregion
 
                 #region Materials
-                StringBuilder materials = Composer.MaterialsSection(materialGroups);
+                StringBuilder sbMaterials = Composer.MaterialsSection(materialGroups);
+                sbCollect.Append(sbMaterials);
                 #endregion
 
                 #region Output
                 // Output the processed data
 
-                PCF_Output.Output.OutputWriter(preamble, sbPipes, sbFittings, sbAccessories, materials, InputVars.OutputDirectoryFilePath);
+                PCF_Output.Output.OutputWriter(doc, sbCollect, InputVars.OutputDirectoryFilePath);
                 #endregion
 
             }

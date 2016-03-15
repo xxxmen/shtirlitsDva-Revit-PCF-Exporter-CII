@@ -134,7 +134,7 @@ namespace PCF_Exporter
         private void button6_Click(object sender, EventArgs e)
         {
             PCFExport pcfExporter = new PCFExport();
-            pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
+            Result result = pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
         }
     }
 }

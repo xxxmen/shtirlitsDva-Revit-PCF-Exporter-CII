@@ -19,24 +19,25 @@ namespace PCF_Output
 {
     public class Output
     {
-        static StringBuilder preamble, pipes, fittings, accessories, materials;
+        static StringBuilder collect;
         static string outputDir;
+        private static Document _document;
 
-        public static void OutputWriter(StringBuilder Preamble, StringBuilder Pipes, StringBuilder Fittings, StringBuilder Accessories, StringBuilder Materials, string OutputDirectory)
+        public static void OutputWriter(Document doc, StringBuilder Collect, string OutputDirectory)
         {
-            preamble = Preamble; pipes = Pipes; fittings = Fittings; accessories = Accessories; materials = Materials; outputDir = OutputDirectory;
+            collect = Collect; outputDir = OutputDirectory;
+            _document = doc;
 
-            //// Clear the output file
-            System.IO.File.WriteAllBytes(outputDir + "PCF_Export.pcf", new byte[0]);
+            string docName = _document.ProjectInformation.Name;
+            string dateAndTime = DateTime.Now.ToString();
 
-            //// Write to output file
-            using (StreamWriter w = File.AppendText(outputDir + "PCF_Export.pcf"))
+            //Clear the output file
+            //System.IO.File.WriteAllBytes(outputDir + "PCF_Export.pcf", new byte[0]);
+
+            // Write to output file
+            using (StreamWriter w = File.AppendText(outputDir + docName+"_"+dateAndTime+".pcf"))
             {
-                w.Write(preamble);
-                w.Write(pipes);
-                w.Write(fittings);
-                w.Write(accessories);
-                w.Write(materials);
+                w.Write(collect);
                 w.Close();
             }
         }
