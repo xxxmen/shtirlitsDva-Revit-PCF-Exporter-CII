@@ -53,6 +53,20 @@ namespace PCF_Exporter
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.radioButton9 = new System.Windows.Forms.RadioButton();
+            this.radioButton11 = new System.Windows.Forms.RadioButton();
+            this.radioButton10 = new System.Windows.Forms.RadioButton();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.radioButton7 = new System.Windows.Forms.RadioButton();
+            this.radioButton8 = new System.Windows.Forms.RadioButton();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.radioButton5 = new System.Windows.Forms.RadioButton();
+            this.radioButton6 = new System.Windows.Forms.RadioButton();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.radioButton4 = new System.Windows.Forms.RadioButton();
+            this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
@@ -61,6 +75,8 @@ namespace PCF_Exporter
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.button6 = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.textBox5 = new System.Windows.Forms.TextBox();
@@ -68,17 +84,20 @@ namespace PCF_Exporter
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.button6 = new System.Windows.Forms.Button();
             this.Tabs.SuspendLayout();
             this.TabSetup.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.groupBox6.SuspendLayout();
+            this.groupBox10.SuspendLayout();
+            this.groupBox9.SuspendLayout();
+            this.groupBox8.SuspendLayout();
+            this.groupBox7.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tabPage3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // Tabs
@@ -91,7 +110,7 @@ namespace PCF_Exporter
             this.Tabs.Location = new System.Drawing.Point(0, 0);
             this.Tabs.Name = "Tabs";
             this.Tabs.SelectedIndex = 0;
-            this.Tabs.Size = new System.Drawing.Size(383, 327);
+            this.Tabs.Size = new System.Drawing.Size(383, 422);
             this.Tabs.TabIndex = 0;
             // 
             // TabSetup
@@ -101,7 +120,7 @@ namespace PCF_Exporter
             this.TabSetup.Location = new System.Drawing.Point(4, 22);
             this.TabSetup.Name = "TabSetup";
             this.TabSetup.Padding = new System.Windows.Forms.Padding(3);
-            this.TabSetup.Size = new System.Drawing.Size(375, 301);
+            this.TabSetup.Size = new System.Drawing.Size(375, 396);
             this.TabSetup.TabIndex = 0;
             this.TabSetup.Text = "Setup";
             this.TabSetup.UseVisualStyleBackColor = true;
@@ -193,14 +212,185 @@ namespace PCF_Exporter
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.groupBox6);
             this.tabPage2.Controls.Add(this.groupBox3);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(375, 301);
+            this.tabPage2.Size = new System.Drawing.Size(375, 396);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Config";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.groupBox10);
+            this.groupBox6.Controls.Add(this.groupBox9);
+            this.groupBox6.Controls.Add(this.groupBox8);
+            this.groupBox6.Controls.Add(this.groupBox7);
+            this.groupBox6.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox6.Location = new System.Drawing.Point(3, 110);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(369, 189);
+            this.groupBox6.TabIndex = 1;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "PCF File Header";
+            // 
+            // groupBox10
+            // 
+            this.groupBox10.Controls.Add(this.radioButton9);
+            this.groupBox10.Controls.Add(this.radioButton11);
+            this.groupBox10.Controls.Add(this.radioButton10);
+            this.groupBox10.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox10.Location = new System.Drawing.Point(3, 136);
+            this.groupBox10.Name = "groupBox10";
+            this.groupBox10.Size = new System.Drawing.Size(363, 40);
+            this.groupBox10.TabIndex = 3;
+            this.groupBox10.TabStop = false;
+            this.groupBox10.Text = "UNITS-WEIGHT-LENGTH";
+            // 
+            // radioButton9
+            // 
+            this.radioButton9.AutoSize = true;
+            this.radioButton9.Location = new System.Drawing.Point(248, 19);
+            this.radioButton9.Name = "radioButton9";
+            this.radioButton9.Size = new System.Drawing.Size(52, 17);
+            this.radioButton9.TabIndex = 0;
+            this.radioButton9.Text = "FEET";
+            this.radioButton9.UseVisualStyleBackColor = true;
+            this.radioButton9.CheckedChanged += new System.EventHandler(this.radioButton9_CheckedChanged);
+            // 
+            // radioButton11
+            // 
+            this.radioButton11.AutoSize = true;
+            this.radioButton11.Checked = true;
+            this.radioButton11.Location = new System.Drawing.Point(26, 19);
+            this.radioButton11.Name = "radioButton11";
+            this.radioButton11.Size = new System.Drawing.Size(63, 17);
+            this.radioButton11.TabIndex = 0;
+            this.radioButton11.TabStop = true;
+            this.radioButton11.Text = "METER";
+            this.radioButton11.UseVisualStyleBackColor = true;
+            this.radioButton11.CheckedChanged += new System.EventHandler(this.radioButton11_CheckedChanged);
+            // 
+            // radioButton10
+            // 
+            this.radioButton10.AutoSize = true;
+            this.radioButton10.Location = new System.Drawing.Point(140, 19);
+            this.radioButton10.Name = "radioButton10";
+            this.radioButton10.Size = new System.Drawing.Size(51, 17);
+            this.radioButton10.TabIndex = 0;
+            this.radioButton10.Text = "INCH";
+            this.radioButton10.UseVisualStyleBackColor = true;
+            this.radioButton10.CheckedChanged += new System.EventHandler(this.radioButton10_CheckedChanged);
+            // 
+            // groupBox9
+            // 
+            this.groupBox9.Controls.Add(this.radioButton7);
+            this.groupBox9.Controls.Add(this.radioButton8);
+            this.groupBox9.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox9.Location = new System.Drawing.Point(3, 96);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(363, 40);
+            this.groupBox9.TabIndex = 2;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "UNITS-WEIGHT";
+            // 
+            // radioButton7
+            // 
+            this.radioButton7.AutoSize = true;
+            this.radioButton7.Location = new System.Drawing.Point(248, 19);
+            this.radioButton7.Name = "radioButton7";
+            this.radioButton7.Size = new System.Drawing.Size(45, 17);
+            this.radioButton7.TabIndex = 0;
+            this.radioButton7.Text = "LBS";
+            this.radioButton7.UseVisualStyleBackColor = true;
+            this.radioButton7.CheckedChanged += new System.EventHandler(this.radioButton7_CheckedChanged);
+            // 
+            // radioButton8
+            // 
+            this.radioButton8.AutoSize = true;
+            this.radioButton8.Checked = true;
+            this.radioButton8.Location = new System.Drawing.Point(140, 19);
+            this.radioButton8.Name = "radioButton8";
+            this.radioButton8.Size = new System.Drawing.Size(47, 17);
+            this.radioButton8.TabIndex = 0;
+            this.radioButton8.TabStop = true;
+            this.radioButton8.Text = "KGS";
+            this.radioButton8.UseVisualStyleBackColor = true;
+            this.radioButton8.CheckedChanged += new System.EventHandler(this.radioButton8_CheckedChanged);
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.radioButton5);
+            this.groupBox8.Controls.Add(this.radioButton6);
+            this.groupBox8.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox8.Location = new System.Drawing.Point(3, 56);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(363, 40);
+            this.groupBox8.TabIndex = 1;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "UNITS-CO-ORDS";
+            // 
+            // radioButton5
+            // 
+            this.radioButton5.AutoSize = true;
+            this.radioButton5.Location = new System.Drawing.Point(248, 19);
+            this.radioButton5.Name = "radioButton5";
+            this.radioButton5.Size = new System.Drawing.Size(51, 17);
+            this.radioButton5.TabIndex = 0;
+            this.radioButton5.Text = "INCH";
+            this.radioButton5.UseVisualStyleBackColor = true;
+            this.radioButton5.CheckedChanged += new System.EventHandler(this.radioButton5_CheckedChanged);
+            // 
+            // radioButton6
+            // 
+            this.radioButton6.AutoSize = true;
+            this.radioButton6.Checked = true;
+            this.radioButton6.Location = new System.Drawing.Point(140, 19);
+            this.radioButton6.Name = "radioButton6";
+            this.radioButton6.Size = new System.Drawing.Size(43, 17);
+            this.radioButton6.TabIndex = 0;
+            this.radioButton6.TabStop = true;
+            this.radioButton6.Text = "MM";
+            this.radioButton6.UseVisualStyleBackColor = true;
+            this.radioButton6.CheckedChanged += new System.EventHandler(this.radioButton6_CheckedChanged);
+            // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.radioButton4);
+            this.groupBox7.Controls.Add(this.radioButton3);
+            this.groupBox7.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox7.Location = new System.Drawing.Point(3, 16);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(363, 40);
+            this.groupBox7.TabIndex = 0;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "UNITS-BORE";
+            // 
+            // radioButton4
+            // 
+            this.radioButton4.AutoSize = true;
+            this.radioButton4.Location = new System.Drawing.Point(248, 19);
+            this.radioButton4.Name = "radioButton4";
+            this.radioButton4.Size = new System.Drawing.Size(51, 17);
+            this.radioButton4.TabIndex = 0;
+            this.radioButton4.Text = "INCH";
+            this.radioButton4.UseVisualStyleBackColor = true;
+            this.radioButton4.CheckedChanged += new System.EventHandler(this.radioButton4_CheckedChanged);
+            // 
+            // radioButton3
+            // 
+            this.radioButton3.AutoSize = true;
+            this.radioButton3.Checked = true;
+            this.radioButton3.Location = new System.Drawing.Point(140, 19);
+            this.radioButton3.Name = "radioButton3";
+            this.radioButton3.Size = new System.Drawing.Size(43, 17);
+            this.radioButton3.TabIndex = 0;
+            this.radioButton3.TabStop = true;
+            this.radioButton3.Text = "MM";
+            this.radioButton3.UseVisualStyleBackColor = true;
+            this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
             // 
             // groupBox3
             // 
@@ -213,7 +403,7 @@ namespace PCF_Exporter
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(369, 132);
+            this.groupBox3.Size = new System.Drawing.Size(369, 107);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Scope";
@@ -292,10 +482,31 @@ namespace PCF_Exporter
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(375, 301);
+            this.tabPage3.Size = new System.Drawing.Size(375, 396);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Run";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.button6);
+            this.groupBox5.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox5.Location = new System.Drawing.Point(3, 110);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(369, 100);
+            this.groupBox5.TabIndex = 1;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Export PCF data";
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(103, 28);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(162, 47);
+            this.button6.TabIndex = 0;
+            this.button6.Text = "Export PCF";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // groupBox4
             // 
@@ -346,7 +557,7 @@ namespace PCF_Exporter
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(375, 301);
+            this.tabPage4.Size = new System.Drawing.Size(375, 396);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Help";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -359,32 +570,11 @@ namespace PCF_Exporter
             // 
             this.openFileDialog2.FileName = "openFileDialog1";
             // 
-            // groupBox5
-            // 
-            this.groupBox5.Controls.Add(this.button6);
-            this.groupBox5.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox5.Location = new System.Drawing.Point(3, 110);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(369, 100);
-            this.groupBox5.TabIndex = 1;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Export PCF data";
-            // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(103, 28);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(162, 47);
-            this.button6.TabIndex = 0;
-            this.button6.Text = "Export PCF";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
-            // 
             // PCF_Exporter_form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(383, 327);
+            this.ClientSize = new System.Drawing.Size(383, 422);
             this.Controls.Add(this.Tabs);
             this.Name = "PCF_Exporter_form";
             this.Text = "PCF_Exporter_form";
@@ -394,12 +584,21 @@ namespace PCF_Exporter
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox10.ResumeLayout(false);
+            this.groupBox10.PerformLayout();
+            this.groupBox9.ResumeLayout(false);
+            this.groupBox9.PerformLayout();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
+            this.groupBox7.ResumeLayout(false);
+            this.groupBox7.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.tabPage3.ResumeLayout(false);
+            this.groupBox5.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
-            this.groupBox5.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -434,5 +633,19 @@ namespace PCF_Exporter
         private System.Windows.Forms.TextBox textBox6;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.GroupBox groupBox10;
+        private System.Windows.Forms.RadioButton radioButton9;
+        private System.Windows.Forms.RadioButton radioButton11;
+        private System.Windows.Forms.RadioButton radioButton10;
+        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.RadioButton radioButton7;
+        private System.Windows.Forms.RadioButton radioButton8;
+        private System.Windows.Forms.GroupBox groupBox8;
+        private System.Windows.Forms.RadioButton radioButton5;
+        private System.Windows.Forms.RadioButton radioButton6;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.RadioButton radioButton4;
+        private System.Windows.Forms.RadioButton radioButton3;
     }
 }

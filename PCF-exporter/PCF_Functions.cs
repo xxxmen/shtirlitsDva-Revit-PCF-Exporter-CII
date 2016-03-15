@@ -25,12 +25,30 @@ namespace PCF_Functions
         //Execution control
         public static bool ExportAll = true;
 
-        
+        //PCF File Header (preamble) control
+        public static string UNITS_BORE = "MM";
+        public static bool UNITS_BORE_MM = true;
+        public static bool UNITS_BORE_INCH = false;
+
+        public static string UNITS_CO_ORDS = "MM";
+        public static bool UNITS_CO_ORDS_MM = true;
+        public static bool UNITS_CO_ORDS_INCH = false;
+
+        public static string UNITS_WEIGHT = "KGS";
+        public static bool UNITS_WEIGHT_KGS = true;
+        public static bool UNITS_WEIGHT_LBS = false;
+
+        public static string UNITS_WEIGHT_LENGTH = "METER";
+        public static bool UNITS_WEIGHT_LENGTH_METER = true;
+        public static bool UNITS_WEIGHT_LENGTH_INCH = false;
+        public static bool UNITS_WEIGHT_LENGTH_FEET = false;
+
         //Filters
         public static string SysAbbr = "FVF";
         public static BuiltInParameter SysAbbrParam = BuiltInParameter.RBS_DUCT_PIPE_SYSTEM_ABBREVIATION_PARAM;
         public static string PipelineGroupParameterName = "System Abbreviation";
 
+        #region Parameter definition
         //Shared parameter group
         public const string PCF_GROUP_NAME = "PCF";
         public const BuiltInParameterGroup PCF_BUILTIN_GROUP_NAME = BuiltInParameterGroup.PG_ANALYTICAL_MODEL;
@@ -83,6 +101,7 @@ namespace PCF_Functions
         public static string PCF_ELEM_TAP3 = "PCF_ELEM_TAP3";
         public static ParameterType PCF_ELEM_TAP3_parameterType = ParameterType.Text;
         public static Guid PCF_ELEM_TAP3_GUID = new Guid("12693653-8029-4743-be6a-310b1fbc0620");
+        #endregion
 
         #region ParameterList
         //parameterAllNames and parameterTypes must correspond to each other in element position
@@ -115,36 +134,35 @@ namespace PCF_Functions
         #endregion
 
         //PCF specification
-        public static String PIPING_SPEC = "STD";
+        public static string PIPING_SPEC = "STD";
     }
 
     public class Composer
     {
+        #region Preamble
         //PCF Preamble composition
         static StringBuilder sbPreamble = new StringBuilder();
         public static StringBuilder PreambleComposer()
         {
             sbPreamble.Append("ISOGEN-FILES ISOGEN.FLS");
             sbPreamble.AppendLine();
-            sbPreamble.Append("UNITS-BORE MM");
+            sbPreamble.Append("UNITS-BORE "+InputVars.UNITS_BORE);
             sbPreamble.AppendLine();
-            sbPreamble.Append("UNITS-CO-ORDS MM");
+            sbPreamble.Append("UNITS-CO-ORDS "+InputVars.UNITS_CO_ORDS);
             sbPreamble.AppendLine();
-            sbPreamble.Append("UNITS-WEIGHT KGS");
+            sbPreamble.Append("UNITS-WEIGHT "+InputVars.UNITS_WEIGHT);
             sbPreamble.AppendLine();
             sbPreamble.Append("UNITS-BOLT-DIA MM");
             sbPreamble.AppendLine();
             sbPreamble.Append("UNITS-BOLT-LENGTH MM");
             sbPreamble.AppendLine();
-            sbPreamble.Append("UNITS-WEIGHT-LENGTH METRE");
+            sbPreamble.Append("UNITS-WEIGHT-LENGTH "+InputVars.UNITS_WEIGHT_LENGTH);
             sbPreamble.AppendLine();
-            //sbPreamble.Append("PIPELINE-REFERENCE " + InputVars.SysAbbr);
-            //sbPreamble.AppendLine();
-            //sbPreamble.Append("    PIPING-SPEC " + InputVars.PIPING_SPEC);
-            //sbPreamble.AppendLine();
             return sbPreamble;
         }
+        #endregion
 
+        #region Materials section
         static StringBuilder sbMaterials = new StringBuilder();
         static IEnumerable<IGrouping<string, Element>> materialGroups = null;
         static int groupNumber;
@@ -158,16 +176,17 @@ namespace PCF_Functions
                 sbMaterials.AppendLine();
                 sbMaterials.Append("MATERIAL-IDENTIFIER " + groupNumber);
                 sbMaterials.AppendLine();
-                sbMaterials.Append("    DESCRIPTION ");
-                sbMaterials.Append(group.Key);
+                sbMaterials.Append("    DESCRIPTION "+group.Key);
             }
             return sbMaterials;
         }
+        #endregion
     }
 
     public class Filter
     {
-        BuiltInParameter testParam; ParameterValueProvider pvp; FilterStringRuleEvaluator str; FilterStringRule paramFr; public ElementParameterFilter epf;
+        BuiltInParameter testParam; ParameterValueProvider pvp; FilterStringRuleEvaluator str;
+        FilterStringRule paramFr; public ElementParameterFilter epf;
 
         public Filter(string valueQualifier, BuiltInParameter parameterName)
         {
@@ -183,6 +202,7 @@ namespace PCF_Functions
     {
         const double _inch_to_mm = 25.4;
         const double _foot_to_mm = 12 * _inch_to_mm;
+        const double _foot_to_inch = 12;
 
         /// <summary>
         /// Return a string for a real number formatted to two decimal places.
@@ -204,9 +224,22 @@ namespace PCF_Functions
               RealString(p.Z * _foot_to_mm));
         }
 
+        public static string PointStringInch(XYZ p)
+        {
+            return string.Format("{0:0.00} {1:0.00} {2:0.00}",
+              RealString(p.X * _foot_to_inch),
+              RealString(p.Y * _foot_to_inch),
+              RealString(p.Z * _foot_to_inch));
+        }
+
         public static string PipeSizeToMm(double l)
         {
             return string.Format("{0}", Math.Round(l * 2 * _foot_to_mm));
+        }
+
+        public static string PipeSizeToInch(double l)
+        {
+            return string.Format("{0}", Math.Round(l*2*_foot_to_inch));
         }
 
         public static string AngleToPCF(double l)
@@ -228,10 +261,12 @@ namespace PCF_Functions
             XYZ connectorOrigin = connector.Origin;
             double connectorSize = connector.Radius;
             sbEndWriter.Append("    END-POINT ");
-            sbEndWriter.Append(Conversion.PointStringMm(connectorOrigin));
+            if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(connectorOrigin));
+            if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(connectorOrigin));
             sbEndWriter.Append(" ");
-            sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
-            if (element.LookupParameter(InputVars.PCF_ELEM_END1).HasValue == true)
+            if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
+            if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
+            if (string.IsNullOrEmpty(element.LookupParameter(InputVars.PCF_ELEM_END1).AsString()) == false)
             {
                 sbEndWriter.Append(" ");
                 sbEndWriter.Append(element.LookupParameter(InputVars.PCF_ELEM_END1).AsString());
@@ -246,10 +281,12 @@ namespace PCF_Functions
             XYZ connectorOrigin = connector.Origin;
             double connectorSize = connector.Radius;
             sbEndWriter.Append("    END-POINT ");
-            sbEndWriter.Append(Conversion.PointStringMm(connectorOrigin));
+            if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(connectorOrigin));
+            if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(connectorOrigin));
             sbEndWriter.Append(" ");
-            sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
-            if (element.LookupParameter(InputVars.PCF_ELEM_END2).HasValue == true)
+            if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
+            if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
+            if (string.IsNullOrEmpty(element.LookupParameter(InputVars.PCF_ELEM_END2).AsString()) == false)
             {
                 sbEndWriter.Append(" ");
                 sbEndWriter.Append(element.LookupParameter(InputVars.PCF_ELEM_END2).AsString());
@@ -264,10 +301,12 @@ namespace PCF_Functions
             XYZ connectorOrigin = connector.Origin;
             double connectorSize = connector.Radius;
             sbEndWriter.Append("    BRANCH1-POINT ");
-            sbEndWriter.Append(Conversion.PointStringMm(connectorOrigin));
+            if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(connectorOrigin));
+            if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(connectorOrigin));
             sbEndWriter.Append(" ");
-            sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
-            if (element.LookupParameter(InputVars.PCF_ELEM_BP1).HasValue == true)
+            if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
+            if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
+            if (string.IsNullOrEmpty(element.LookupParameter(InputVars.PCF_ELEM_BP1).AsString()) == false)
             {
                 sbEndWriter.Append(" ");
                 sbEndWriter.Append(element.LookupParameter(InputVars.PCF_ELEM_BP1).AsString());
@@ -281,7 +320,8 @@ namespace PCF_Functions
             StringBuilder sbEndWriter = new StringBuilder();
             XYZ elementLocation = ((LocationPoint)familyInstance.Location).Point;
             sbEndWriter.Append("    CENTRE-POINT ");
-            sbEndWriter.Append(Conversion.PointStringMm(elementLocation));
+            if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(elementLocation));
+            if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(elementLocation));
             sbEndWriter.AppendLine();
             return sbEndWriter;
         }
@@ -290,7 +330,8 @@ namespace PCF_Functions
         {
             StringBuilder sbEndWriter = new StringBuilder();
             sbEndWriter.Append("    CENTRE-POINT ");
-            sbEndWriter.Append(Conversion.PointStringMm(point));
+            if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(point));
+            if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(point));
             sbEndWriter.AppendLine();
             return sbEndWriter;
         }
@@ -299,7 +340,8 @@ namespace PCF_Functions
         {
             StringBuilder sbEndWriter = new StringBuilder();
             sbEndWriter.Append("    CO-ORDS ");
-            sbEndWriter.Append(Conversion.PointStringMm(point));
+            if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(point));
+            if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(point));
             sbEndWriter.AppendLine();
             return sbEndWriter;
         }

@@ -46,23 +46,23 @@ namespace PCF_Taps
             //Select tap element
             Element tappingElement = Util.SelectSingleElementOfType(uidoc, t, "Select tapping element (must be a pipe).", false);
 
-            //Debugging
-            StringBuilder sbTaps = new StringBuilder();
+            ////Debugging
+            //StringBuilder sbTaps = new StringBuilder();
 
             try
             {
                 Transaction trans = new Transaction(doc, "Define tap");
                 trans.Start();
 
-                if (String.IsNullOrEmpty(tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP1).AsString()))
+                if (string.IsNullOrEmpty(tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP1).AsString()))
                 {
                     tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP1).Set(tappingElement.UniqueId.ToString());
                 }
-                else if (String.IsNullOrEmpty(tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP2).AsString()))
+                else if (string.IsNullOrEmpty(tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP2).AsString()))
                 {
                     tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP2).Set(tappingElement.UniqueId.ToString());
                 }
-                else if (String.IsNullOrEmpty(tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP3).AsString()))
+                else if (string.IsNullOrEmpty(tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP3).AsString()))
                 {
                     tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP3).Set(tappingElement.UniqueId.ToString());
                 }
@@ -146,9 +146,11 @@ namespace PCF_Taps
                 tapsWriter.Append("    TAP-CONNECTION");
                 tapsWriter.AppendLine();
                 tapsWriter.Append("    CO-ORDS ");
-                tapsWriter.Append(Conversion.PointStringMm(connectorOrigin));
+                if (InputVars.UNITS_CO_ORDS_MM) tapsWriter.Append(Conversion.PointStringMm(connectorOrigin));
+                if (InputVars.UNITS_CO_ORDS_INCH) tapsWriter.Append(Conversion.PointStringInch(connectorOrigin));
                 tapsWriter.Append(" ");
-                tapsWriter.Append(Conversion.PipeSizeToMm(connectorSize));
+                if (InputVars.UNITS_BORE_MM) tapsWriter.Append(Conversion.PipeSizeToMm(connectorSize));
+                if (InputVars.UNITS_BORE_INCH) tapsWriter.Append(Conversion.PipeSizeToInch(connectorSize));
                 tapsWriter.AppendLine();
             }
 

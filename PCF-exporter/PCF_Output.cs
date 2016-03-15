@@ -19,13 +19,13 @@ namespace PCF_Output
 {
     public class Output
     {
-        static StringBuilder collect;
-        static string outputDir;
+        private static StringBuilder _collect;
+        private static string _outputDir;
         private static Document _document;
 
-        public static void OutputWriter(Document doc, StringBuilder Collect, string OutputDirectory)
+        public static void OutputWriter(Document doc, StringBuilder collect, string outputDirectory)
         {
-            collect = Collect; outputDir = OutputDirectory;
+            _collect = collect; _outputDir = outputDirectory;
             _document = doc;
 
             string docName = _document.ProjectInformation.Name;
@@ -35,9 +35,9 @@ namespace PCF_Output
             //System.IO.File.WriteAllBytes(outputDir + "PCF_Export.pcf", new byte[0]);
 
             // Write to output file
-            using (StreamWriter w = File.AppendText(outputDir + docName+"_"+dateAndTime+".pcf"))
+            using (StreamWriter w = File.AppendText(_outputDir + docName+"_"+dateAndTime+".pcf"))
             {
-                w.Write(collect);
+                w.Write(_collect);
                 w.Close();
             }
         }

@@ -147,22 +147,17 @@ namespace PCF_Accessories
                 sbAccessories.AppendLine();
 
                 //Process tap entries of the element if any
-
-                string PCF_ELEM_TAP1_value = element.LookupParameter(InputVars.PCF_ELEM_TAP1).AsString();
-                string PCF_ELEM_TAP2_value = element.LookupParameter(InputVars.PCF_ELEM_TAP2).AsString();
-                string PCF_ELEM_TAP3_value = element.LookupParameter(InputVars.PCF_ELEM_TAP3).AsString();
-
-                if (string.IsNullOrEmpty(PCF_ELEM_TAP1_value) == false)
+                if (string.IsNullOrEmpty(element.LookupParameter(InputVars.PCF_ELEM_TAP1).AsString()) == false)
                 {
                     TapsWriter tapsWriter = new TapsWriter(element, InputVars.PCF_ELEM_TAP1, doc);
                     sbAccessories.Append(tapsWriter.tapsWriter);
                 }
-                if (string.IsNullOrEmpty(PCF_ELEM_TAP2_value) == false)
+                if (string.IsNullOrEmpty(element.LookupParameter(InputVars.PCF_ELEM_TAP2).AsString()) == false)
                 {
                     TapsWriter tapsWriter = new TapsWriter(element, InputVars.PCF_ELEM_TAP2, doc);
                     sbAccessories.Append(tapsWriter.tapsWriter);
                 }
-                if (string.IsNullOrEmpty(PCF_ELEM_TAP3_value) == false)
+                if (string.IsNullOrEmpty(element.LookupParameter(InputVars.PCF_ELEM_TAP3).AsString()) == false)
                 {
                     TapsWriter tapsWriter = new TapsWriter(element, InputVars.PCF_ELEM_TAP3, doc);
                     sbAccessories.Append(tapsWriter.tapsWriter);

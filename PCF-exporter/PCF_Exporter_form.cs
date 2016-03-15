@@ -136,5 +136,71 @@ namespace PCF_Exporter
             PCFExport pcfExporter = new PCFExport();
             Result result = pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
         }
+
+        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton3.Checked == true) InputVars.UNITS_BORE_MM = true;
+            if (radioButton3.Checked == true) InputVars.UNITS_BORE_INCH = false;
+            if (radioButton3.Checked == true) InputVars.UNITS_BORE = "MM";
+        }
+
+        private void radioButton4_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton4.Checked == true) InputVars.UNITS_BORE_MM = false;
+            if (radioButton4.Checked == true) InputVars.UNITS_BORE_INCH = true;
+            if (radioButton4.Checked == true) InputVars.UNITS_BORE = "INCH";
+        }
+
+        private void radioButton6_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton6.Checked == true) InputVars.UNITS_CO_ORDS_MM = true;
+            if (radioButton6.Checked == true) InputVars.UNITS_CO_ORDS_INCH = false;
+            if (radioButton6.Checked == true) InputVars.UNITS_CO_ORDS = "MM";
+        }
+
+        private void radioButton5_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton5.Checked == true) InputVars.UNITS_CO_ORDS_MM = false;
+            if (radioButton5.Checked == true) InputVars.UNITS_CO_ORDS_INCH = true;
+            if (radioButton5.Checked == true) InputVars.UNITS_CO_ORDS = "INCH";
+        }
+
+        private void radioButton8_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton8.Checked == true) InputVars.UNITS_WEIGHT_KGS= true;
+            if (radioButton8.Checked == true) InputVars.UNITS_WEIGHT_LBS = false;
+            if (radioButton8.Checked == true) InputVars.UNITS_WEIGHT = "KGS";
+        }
+
+        private void radioButton7_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton7.Checked == true) InputVars.UNITS_WEIGHT_KGS = false;
+            if (radioButton7.Checked == true) InputVars.UNITS_WEIGHT_LBS = true;
+            if (radioButton7.Checked == true) InputVars.UNITS_WEIGHT = "LBS";
+        }
+
+        private void radioButton11_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton11.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_METER = true;
+            if (radioButton11.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_INCH = false;
+            if (radioButton11.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_FEET = false;
+            if (radioButton11.Checked == true) InputVars.UNITS_WEIGHT_LENGTH = "METER";
+        }
+
+        private void radioButton10_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton10.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_METER = false;
+            if (radioButton10.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_INCH = true;
+            if (radioButton10.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_FEET = false;
+            if (radioButton10.Checked == true) InputVars.UNITS_WEIGHT_LENGTH = "INCH";
+        }
+
+        private void radioButton9_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton9.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_METER = false;
+            if (radioButton9.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_INCH = false;
+            if (radioButton9.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_FEET = true;
+            if (radioButton9.Checked == true) InputVars.UNITS_WEIGHT_LENGTH = "FEET";
+        }
     }
 }
