@@ -70,7 +70,8 @@ namespace PCF_Exporter
         private void button1_Click(object sender, EventArgs e)
         {
             CreateParameterBindings CPB = new CreateParameterBindings();
-            CPB.ExecuteMyCommand(_uiapp, ref _message);
+            CPB.CreateElementBindings(_uiapp, ref _message);
+            CPB.CreatePipelineBindings(_uiapp, ref _message);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -83,6 +84,11 @@ namespace PCF_Exporter
         {
             PopulateParameters PP = new PopulateParameters();
             PP.ExecuteMyCommand(_uiapp, ref _message, _excelPath);
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -202,5 +208,7 @@ namespace PCF_Exporter
             if (radioButton9.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_FEET = true;
             if (radioButton9.Checked == true) InputVars.UNITS_WEIGHT_LENGTH = "FEET";
         }
+
+        
     }
 }

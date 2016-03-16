@@ -18,6 +18,7 @@ namespace PCF_Functions
 {
     public class InputVars
     {
+        #region Execution
         //File I/O
         public static string OutputDirectoryFilePath;
         public static string ExcelSheet = "COMP";
@@ -42,21 +43,21 @@ namespace PCF_Functions
         public static bool UNITS_WEIGHT_LENGTH_METER = true;
         public static bool UNITS_WEIGHT_LENGTH_INCH = false;
         public static bool UNITS_WEIGHT_LENGTH_FEET = false;
+        #endregion Execution
 
+        #region Filters
         //Filters
         public static string SysAbbr = "FVF";
         public static BuiltInParameter SysAbbrParam = BuiltInParameter.RBS_DUCT_PIPE_SYSTEM_ABBREVIATION_PARAM;
         public static string PipelineGroupParameterName = "System Abbreviation";
+        #endregion Filters
 
-        public static BuiltInCategory PipeFittingsCategory = BuiltInCategory.OST_PipeFitting;
-        public static BuiltInCategory PipeAccessoriesCategory = BuiltInCategory.OST_PipeAccessory;
-
-        #region Parameter definition
+        #region Element parameter definition
         //Shared parameter group
         public const string PCF_GROUP_NAME = "PCF";
         public const BuiltInParameterGroup PCF_BUILTIN_GROUP_NAME = BuiltInParameterGroup.PG_ANALYTICAL_MODEL;
 
-        //Parameter definition, remember to add new parameters to the ParameterList in the next region
+        //Element parameter definition, remember to add new parameters to the ParameterList in the next region
         public static string PCF_ELEM_BP1 = "PCF_ELEM_BP1";
         public static ParameterType PCF_ELEM_BP1_parameterType = ParameterType.Text;
         public static Guid PCF_ELEM_BP1_GUID = new Guid("89b1e62e-f9b8-48c3-ab3a-1861a772bda8");
@@ -106,8 +107,88 @@ namespace PCF_Functions
         public static Guid PCF_ELEM_TAP3_GUID = new Guid("12693653-8029-4743-be6a-310b1fbc0620");
         #endregion
 
+        #region Pipeline parameters
+        //Pipeline parameter definition, remember to add new parameters to the ParameterList in the next region
+        public static string PCF_PIPL_SPEC = "PCF_PIPL_SPEC";
+        public static ParameterType PCF_PIPL_SPEC_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_SPEC_GUID = new Guid("7b0c932b-2ebe-495f-9d2e-effc350e8a59");
+
+        public static string PCF_PIPL_TRACING = "PCF_PIPL_TRACING";
+        public static ParameterType PCF_PIPL_TRACING_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_TRACING_GUID = new Guid("9d463d11-c9e8-4160-ac55-578795d11b1d");
+
+        public static string PCF_PIPL_INSUL = "PCF_PIPL_INSUL";
+        public static ParameterType PCF_PIPL_INSUL_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_INSUL_GUID = new Guid("d0c429fe-71db-4adc-b54a-58ae2fb4e127");
+
+        public static string PCF_PIPL_PAINT = "PCF_PIPL_PAINT";
+        public static ParameterType PCF_PIPL_PAINT_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_PAINT_GUID = new Guid("e440ed45-ce29-4b42-9a48-238b62b7522e");
+
+        public static string PCF_PIPL_MISC1 = "PCF_PIPL_MISC1";
+        public static ParameterType PCF_PIPL_MISC1_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_MISC1_GUID = new Guid("22f1dbed-2978-4474-9a8a-26fd14bc6aac");
+
+        public static string PCF_PIPL_MISC2 = "PCF_PIPL_MISC2";
+        public static ParameterType PCF_PIPL_MISC2_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_MISC2_GUID = new Guid("6492e7d8-cbc3-42f8-86c0-0ba9000d65ca");
+
+        public static string PCF_PIPL_MISC3 = "PCF_PIPL_MISC3";
+        public static ParameterType PCF_PIPL_MISC3_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_MISC3_GUID = new Guid("680bac72-0a1c-44a9-806d-991401f71912");
+
+        public static string PCF_PIPL_MISC4 = "PCF_PIPL_MISC4";
+        public static ParameterType PCF_PIPL_MISC4_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_MISC4_GUID = new Guid("6f904559-568b-4eff-a016-9c81e3a6c3ab");
+
+        public static string PCF_PIPL_MISC5 = "PCF_PIPL_MISC5";
+        public static ParameterType PCF_PIPL_MISC5_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_MISC5_GUID = new Guid("c375351b-b585-4fb1-92f7-abcdc10fd53a");
+
+        public static string PCF_PIPL_JACKET = "PCF_PIPL_JACKET";
+        public static ParameterType PCF_PIPL_JACKET_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_JACKET_GUID = new Guid("a810b6b8-17da-4191-b408-e046c758b289");
+
+        public static string PCF_PIPL_REV = "PCF_PIPL_REV";
+        public static ParameterType PCF_PIPL_REV_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_REV_GUID = new Guid("fb1a5913-4c64-4bfe-b50a-a8243a5db89f");
+
+        public static string PCF_PIPL_PROJID = "PCF_PIPL_PROJID";
+        public static ParameterType PCF_PIPL_PROJID_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_PROJID_GUID = new Guid("50509d7f-1b99-45f9-9b24-0c423dff5078");
+
+        public static string PCF_PIPL_AREA = "PCF_PIPL_AREA";
+        public static ParameterType PCF_PIPL_AREA_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_AREA_GUID = new Guid("642e8ab1-f87d-4da6-894e-a007a4a186a6");
+
+        public static string PCF_PIPL_DATE = "PCF_PIPL_DATE";
+        public static ParameterType PCF_PIPL_DATE_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_DATE_GUID = new Guid("86dc9abf-80fa-4c87-8079-4a28824ff529");
+
+        public static string PCF_PIPL_NOMCLASS = "PCF_PIPL_NOMCLASS";
+        public static ParameterType PCF_PIPL_NOMCLASS_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_NOMCLASS_GUID = new Guid("998fa331-7f38-4129-9939-8495fcd6c3ae");
+
+        public static string PCF_PIPL_TEMP = "PCF_PIPL_TEMP";
+        public static ParameterType PCF_PIPL_TEMP_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_TEMP_GUID = new Guid("7efb37ee-b1a1-4766-bb5b-015f823f36e2");
+
+        public static string PCF_PIPL_TYPE = "PCF_PIPL_TYPE";
+        public static ParameterType PCF_PIPL_TYPE_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_TYPE_GUID = new Guid("af00ee7d-cfc0-4e1c-a2cf-1626e4bb7eb0");
+
+        public static string PCF_PIPL_GRAV = "PCF_PIPL_GRAV";
+        public static ParameterType PCF_PIPL_GRAV_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_GRAV_GUID = new Guid("a32c0713-a6a5-4e6c-9a6b-d96e82159611");
+
+        public static string PCF_PIPL_PREFIX = "PCF_PIPL_PREFIX";
+        public static ParameterType PCF_PIPL_PREFIX_parameterType = ParameterType.Text;
+        public static Guid PCF_PIPL_PREFIX_GUID = new Guid("c7136bbc-4b0d-47c6-95d1-8623ad015e8f");
+
+        #endregion
+
         #region ParameterList
-        //parameterAllNames and parameterTypes must correspond to each other in element position
+        //Element: parameterAllNames and parameterTypes must correspond to each other in element position
         public static IList<string> parameterAllNames = new List<string>()
         {
             PCF_ELEM_CATEGORY, PCF_ELEM_BP1, PCF_ELEM_COMPID, PCF_MAT_DESCR, PCF_MAT_ID, PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_END1,
@@ -132,6 +213,31 @@ namespace PCF_Functions
         {
             PCF_ELEM_CATEGORY, PCF_ELEM_BP1, PCF_MAT_DESCR, PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_END1,
             PCF_ELEM_END2
+        };
+
+        //Pipeline: the same rules as above
+        public static IList<string> parameterPipelineAllNames = new List<string>()
+        {
+            PCF_PIPL_AREA, PCF_PIPL_DATE, PCF_PIPL_GRAV, PCF_PIPL_INSUL, PCF_PIPL_JACKET, PCF_PIPL_MISC1, PCF_PIPL_MISC2, PCF_PIPL_MISC3,
+            PCF_PIPL_MISC4, PCF_PIPL_MISC5, PCF_PIPL_NOMCLASS, PCF_PIPL_PAINT, PCF_PIPL_PREFIX, PCF_PIPL_PROJID, PCF_PIPL_REV, PCF_PIPL_SPEC,
+            PCF_PIPL_TEMP, PCF_PIPL_TRACING, PCF_PIPL_TYPE
+        };
+
+        public static IList<Guid> parameterGuidPipeline = new List<Guid>()
+        {
+            PCF_PIPL_AREA_GUID, PCF_PIPL_DATE_GUID, PCF_PIPL_GRAV_GUID, PCF_PIPL_INSUL_GUID, PCF_PIPL_JACKET_GUID, PCF_PIPL_MISC1_GUID,
+            PCF_PIPL_MISC2_GUID, PCF_PIPL_MISC3_GUID, PCF_PIPL_MISC4_GUID, PCF_PIPL_MISC5_GUID, PCF_PIPL_NOMCLASS_GUID, PCF_PIPL_PAINT_GUID,
+            PCF_PIPL_PREFIX_GUID, PCF_PIPL_PROJID_GUID, PCF_PIPL_REV_GUID, PCF_PIPL_SPEC_GUID, PCF_PIPL_TEMP_GUID, PCF_PIPL_TRACING_GUID,
+            PCF_PIPL_TYPE_GUID
+        };
+
+        public static IList<ParameterType> parameterTypesPipeline = new List<ParameterType>()
+        {
+            PCF_PIPL_AREA_parameterType, PCF_PIPL_DATE_parameterType, PCF_PIPL_GRAV_parameterType, PCF_PIPL_INSUL_parameterType,
+            PCF_PIPL_JACKET_parameterType, PCF_PIPL_MISC1_parameterType, PCF_PIPL_MISC2_parameterType, PCF_PIPL_MISC3_parameterType,
+            PCF_PIPL_MISC4_parameterType, PCF_PIPL_MISC5_parameterType, PCF_PIPL_NOMCLASS_parameterType, PCF_PIPL_PAINT_parameterType,
+            PCF_PIPL_PREFIX_parameterType, PCF_PIPL_PROJID_parameterType, PCF_PIPL_REV_parameterType, PCF_PIPL_SPEC_parameterType,
+            PCF_PIPL_TEMP_parameterType, PCF_PIPL_TRACING_parameterType, PCF_PIPL_TYPE_parameterType
         };
 
         #endregion

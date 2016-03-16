@@ -716,7 +716,7 @@ namespace BuildingCoder
         #endregion // Formatting
 
         #region Display a message
-        const string _caption = "Error";
+        const string _caption = "Message";
 
         public static void InfoMsg(string msg)
         {

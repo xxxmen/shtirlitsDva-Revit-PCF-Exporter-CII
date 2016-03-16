@@ -50,9 +50,9 @@ namespace PCF_Parameters
 
             FilteredElementCollector pCollector = new FilteredElementCollector(doc);
             pCollector.OfCategory(BuiltInCategory.OST_PipeCurves).OfClass(typeof(Pipe));
-            
+
             //string filename = InputVars.ExcelFilePath + InputVars.ExcelFileName; //Legacy code
-            
+
             //Reading of excel moved to form class
             //Use ExcelDataReader to import data from the excel to a dataset
             //FileStream stream = File.Open(filename, FileMode.Open, FileAccess.Read);
@@ -160,7 +160,7 @@ namespace PCF_Parameters
         //    return ExecuteMyCommand(data.Application, ref msg);
         //}
 
-        internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg)
+        internal Result CreateElementBindings(UIApplication uiApp, ref string msg)
         {
             // UIApplication uiApp = commandData.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
@@ -227,6 +227,71 @@ namespace PCF_Parameters
             return Result.Succeeded;
            
         }
+
+        internal Result CreatePipelineBindings(UIApplication uiApp, ref string msg)
+        {
+            // UIApplication uiApp = commandData.Application;
+            Document doc = uiApp.ActiveUIDocument.Document;
+            Application app = doc.Application;
+            Autodesk.Revit.Creation.Application ca = app.Create;
+
+            Category pipelineCat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_PipingSystem);
+
+            CategorySet catSet = ca.NewCategorySet();
+            catSet.Insert(pipelineCat);
+
+            string ExecutingAssemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string oriFile = app.SharedParametersFilename;
+            string tempFile = ExecutingAssemblyPath + "Temp.txt";
+
+            int i = 0;
+            StringBuilder sbFeedback = new StringBuilder();
+
+            //Create parameter bindings
+            try
+            {
+                Transaction trans = new Transaction(doc, "Bind PCF parameters");
+                trans.Start();
+                foreach (string name in InputVars.parameterPipelineAllNames)
+                {
+                    using (File.Create(tempFile)) { }
+                    app.SharedParametersFilename = tempFile;
+                    ExternalDefinitionCreationOptions options = new ExternalDefinitionCreationOptions(name, InputVars.parameterTypesPipeline[i]);
+                    options.GUID = InputVars.parameterGuidPipeline[i];
+                    ExternalDefinition def = app.OpenSharedParameterFile().Groups.Create("TemporaryDefinitionGroup").Definitions.
+                        Create(options) as ExternalDefinition;
+                    i++;
+
+                    BindingMap map = doc.ParameterBindings;
+                    Binding binding = app.Create.NewTypeBinding(catSet);
+
+                    if (map.Contains(def)) sbFeedback.Append("Parameter " + name + " already exists.\n");
+                    else
+                    {
+                        map.Insert(def, binding, InputVars.PCF_BUILTIN_GROUP_NAME);
+                        if (map.Contains(def)) sbFeedback.Append("Parameter " + name + " added to project.\n");
+                        else sbFeedback.Append("Creation of parameter " + name + " failed for some reason.\n");
+                    }
+                    File.Delete(tempFile);
+                }
+                trans.Commit();
+                Util.InfoMsg(sbFeedback.ToString());
+            }
+
+            catch (Autodesk.Revit.Exceptions.OperationCanceledException) { return Result.Cancelled; }
+
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                return Result.Failed;
+            }
+
+            app.SharedParametersFilename = oriFile;
+
+            return Result.Succeeded;
+
+        }
+
     }
 
     //[TransactionAttribute(TransactionMode.Manual)]

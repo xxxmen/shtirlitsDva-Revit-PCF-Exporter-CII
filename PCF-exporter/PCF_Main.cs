@@ -11,7 +11,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
-
+using BuildingCoder;
 using PCF_Functions;
 
 namespace PCF_Exporter
@@ -28,6 +28,7 @@ namespace PCF_Exporter
                 #region Declaration of variables
                 // Instance a collector
                 FilteredElementCollector collector = new FilteredElementCollector(doc);
+                FilteredElementCollector pipeTypeCollector = new FilteredElementCollector(doc);
 
                 // Define a Filter instance to filter by System Abbreviation
                 ElementParameterFilter sysAbbr = new Filter(InputVars.SysAbbr, InputVars.SysAbbrParam).epf;
