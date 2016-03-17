@@ -41,14 +41,5 @@
     <Setting Name="DELETE" Type="System.String" Scope="User">
       <Value Profile="(Default)">comboBox1</Value>
     </Setting>
-    <Setting Name="textBox3_VISIBLE" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="TExtBox5_Selected_output_path" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="openFileDialog1filenameEXCEL" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Select file</Value>
-    </Setting>
   </Settings>
 </SettingsFile>

@@ -178,41 +178,5 @@ namespace PCF_Functions.Properties {
                 this["DELETE"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool textBox3_VISIBLE {
-            get {
-                return ((bool)(this["textBox3_VISIBLE"]));
-            }
-            set {
-                this["textBox3_VISIBLE"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string TExtBox5_Selected_output_path {
-            get {
-                return ((string)(this["TExtBox5_Selected_output_path"]));
-            }
-            set {
-                this["TExtBox5_Selected_output_path"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Select file")]
-        public string openFileDialog1filenameEXCEL {
-            get {
-                return ((string)(this["openFileDialog1filenameEXCEL"]));
-            }
-            set {
-                this["openFileDialog1filenameEXCEL"] = value;
-            }
-        }
     }
 }
