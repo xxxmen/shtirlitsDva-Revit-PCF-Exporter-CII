@@ -21,6 +21,8 @@ using Excel;
 using PCF_Parameters;
 using PCF_Exporter;
 using PCF_Functions;
+using mySettings = PCF_Functions.Properties.Settings;
+using iv = PCF_Functions.InputVars;
 
 namespace PCF_Exporter
 {
@@ -46,6 +48,9 @@ namespace PCF_Exporter
             _uidoc = _uiapp.ActiveUIDocument;
             _doc = _uidoc.Document;
             _message = message;
+            InputVars.SysAbbr = mySettings.Default.textBox3SpecificPipeline;
+            InputVars.ExportAll = mySettings.Default.radioButton1AllPipelines;
+            Util.InfoMsg("SysAbbr: "+InputVars.SysAbbr+"\n"+"ExportAll: "+InputVars.ExportAll);
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -88,7 +93,7 @@ namespace PCF_Exporter
 
         private void button7_Click(object sender, EventArgs e)
         {
-
+            //This is the button for Populate Pipeline Parameters
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -103,27 +108,30 @@ namespace PCF_Exporter
 
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
-            InputVars.SysAbbr = textBox3.Text;
+            //InputVars.SysAbbr = textBox3.Text;
+            Util.InfoMsg("SysAbbr: " + InputVars.SysAbbr + "\n" + "ExportAll: " + InputVars.ExportAll);
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton1.Checked == true) InputVars.ExportAll = true;
+            //if (radioButton1.Checked == true) InputVars.ExportAll = true;
+            Util.InfoMsg("SysAbbr: " + InputVars.SysAbbr + "\n" + "ExportAll: " + InputVars.ExportAll);
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton2.Checked == true) InputVars.ExportAll = false;
-            if (radioButton2.Checked == true)
-            {
-                textBox3.Visible = true;
-                textBox4.Visible = true;
-            }
-            else
-            {
-                textBox3.Visible = false;
-                textBox4.Visible = false;
-            }
+            //if (radioButton2.Checked == true) InputVars.ExportAll = false;
+            Util.InfoMsg("SysAbbr: " + InputVars.SysAbbr + "\n" + "ExportAll: " + InputVars.ExportAll);
+            //if (radioButton2.Checked == true)
+            //{
+            //    textBox3.Visible = true;
+            //    textBox4.Visible = true;
+            //}
+            //else
+            //{
+            //    textBox3.Visible = false;
+            //    textBox4.Visible = false;
+            //}
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -148,6 +156,7 @@ namespace PCF_Exporter
             if (radioButton3.Checked == true) InputVars.UNITS_BORE_MM = true;
             if (radioButton3.Checked == true) InputVars.UNITS_BORE_INCH = false;
             if (radioButton3.Checked == true) InputVars.UNITS_BORE = "MM";
+            Util.InfoMsg("MM: " + iv.UNITS_BORE_MM + "\nINCH: " + iv.UNITS_BORE_INCH + "\nTEXT: "+iv.UNITS_BORE);
         }
 
         private void radioButton4_CheckedChanged(object sender, EventArgs e)
@@ -155,6 +164,7 @@ namespace PCF_Exporter
             if (radioButton4.Checked == true) InputVars.UNITS_BORE_MM = false;
             if (radioButton4.Checked == true) InputVars.UNITS_BORE_INCH = true;
             if (radioButton4.Checked == true) InputVars.UNITS_BORE = "INCH";
+            Util.InfoMsg("MM: " + iv.UNITS_BORE_MM + "\nINCH: " + iv.UNITS_BORE_INCH + "\nTEXT: " + iv.UNITS_BORE);
         }
 
         private void radioButton6_CheckedChanged(object sender, EventArgs e)

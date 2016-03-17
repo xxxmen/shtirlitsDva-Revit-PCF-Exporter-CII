@@ -45,8 +45,10 @@ namespace PCF_Exporter
             this.Tabs = new System.Windows.Forms.TabControl();
             this.TabSetup = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.textBox7 = new System.Windows.Forms.TextBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.button4 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button2 = new System.Windows.Forms.Button();
@@ -67,9 +69,6 @@ namespace PCF_Exporter
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -83,8 +82,9 @@ namespace PCF_Exporter
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
-            this.button7 = new System.Windows.Forms.Button();
-            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.Tabs.SuspendLayout();
             this.TabSetup.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -141,6 +141,17 @@ namespace PCF_Exporter
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "PCF parameter INITIALIZATION";
             // 
+            // textBox7
+            // 
+            this.textBox7.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox7.Location = new System.Drawing.Point(71, 72);
+            this.textBox7.Multiline = true;
+            this.textBox7.Name = "textBox7";
+            this.textBox7.Size = new System.Drawing.Size(220, 34);
+            this.textBox7.TabIndex = 6;
+            this.textBox7.Text = "Choose excel worksheet name:\r\n(select anew for each button below)";
+            this.textBox7.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // comboBox1
             // 
             this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -160,6 +171,16 @@ namespace PCF_Exporter
             this.button4.Text = "Select parameter setup file (EXCEL)";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(202, 139);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(162, 46);
+            this.button7.TabIndex = 2;
+            this.button7.Text = "Populate PCF parameters PIPELINE";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // button3
             // 
@@ -401,50 +422,18 @@ namespace PCF_Exporter
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Scope";
             // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(158, 62);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(205, 20);
-            this.textBox3.TabIndex = 2;
-            this.textBox3.Visible = false;
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
-            // 
-            // radioButton2
-            // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(46, 62);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(105, 17);
-            this.radioButton2.TabIndex = 1;
-            this.radioButton2.Text = "Specific pipeline:";
-            this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
-            // 
-            // radioButton1
-            // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Checked = true;
-            this.radioButton1.Location = new System.Drawing.Point(46, 39);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(80, 17);
-            this.radioButton1.TabIndex = 1;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "All pipelines";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
-            // 
             // textBox4
             // 
             this.textBox4.BackColor = System.Drawing.SystemColors.Window;
             this.textBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox4.DataBindings.Add(new System.Windows.Forms.Binding("Visible", global::PCF_Functions.Properties.Settings.Default, "textBox4Visible", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox4.Location = new System.Drawing.Point(158, 88);
             this.textBox4.Name = "textBox4";
             this.textBox4.ReadOnly = true;
             this.textBox4.Size = new System.Drawing.Size(205, 13);
             this.textBox4.TabIndex = 0;
             this.textBox4.Text = "System Abbreviation";
-            this.textBox4.Visible = false;
+            this.textBox4.Visible = global::PCF_Functions.Properties.Settings.Default.textBox4Visible;
             // 
             // textBox2
             // 
@@ -563,26 +552,44 @@ namespace PCF_Exporter
             // 
             this.openFileDialog2.FileName = "openFileDialog1";
             // 
-            // button7
+            // textBox3
             // 
-            this.button7.Location = new System.Drawing.Point(202, 139);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(162, 46);
-            this.button7.TabIndex = 2;
-            this.button7.Text = "Populate PCF parameters PIPELINE";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::PCF_Functions.Properties.Settings.Default, "textBox3SpecificPipeline", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Visible", global::PCF_Functions.Properties.Settings.Default, "textBox3Visible", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBox3.Location = new System.Drawing.Point(158, 62);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(205, 20);
+            this.textBox3.TabIndex = 2;
+            this.textBox3.Text = global::PCF_Functions.Properties.Settings.Default.textBox3SpecificPipeline;
+            this.textBox3.Visible = global::PCF_Functions.Properties.Settings.Default.textBox3Visible;
+            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             // 
-            // textBox7
+            // radioButton2
             // 
-            this.textBox7.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox7.Location = new System.Drawing.Point(71, 72);
-            this.textBox7.Multiline = true;
-            this.textBox7.Name = "textBox7";
-            this.textBox7.Size = new System.Drawing.Size(220, 34);
-            this.textBox7.TabIndex = 6;
-            this.textBox7.Text = "Choose excel worksheet name:\r\n(select anew for each button below)";
-            this.textBox7.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.radioButton2.AutoSize = true;
+            this.radioButton2.Checked = global::PCF_Functions.Properties.Settings.Default.radioButton2SpecificPipeline;
+            this.radioButton2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::PCF_Functions.Properties.Settings.Default, "radioButton2SpecificPipeline", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.radioButton2.Location = new System.Drawing.Point(46, 62);
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size(105, 17);
+            this.radioButton2.TabIndex = 1;
+            this.radioButton2.Text = "Specific pipeline:";
+            this.radioButton2.UseVisualStyleBackColor = true;
+            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
+            // 
+            // radioButton1
+            // 
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Checked = global::PCF_Functions.Properties.Settings.Default.radioButton1AllPipelines;
+            this.radioButton1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::PCF_Functions.Properties.Settings.Default, "radioButton1AllPipelines", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.radioButton1.Location = new System.Drawing.Point(46, 39);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(80, 17);
+            this.radioButton1.TabIndex = 1;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.Text = "All pipelines";
+            this.radioButton1.UseVisualStyleBackColor = true;
+            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
             // 
             // PCF_Exporter_form
             // 
