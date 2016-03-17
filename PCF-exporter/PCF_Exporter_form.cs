@@ -18,7 +18,6 @@ using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 using BuildingCoder;
 using Excel;
-using Microsoft.Vbe.Interop;
 using PCF_Parameters;
 using PCF_Exporter;
 using PCF_Functions;
@@ -47,7 +46,6 @@ namespace PCF_Exporter
             _uidoc = _uiapp.ActiveUIDocument;
             _doc = _uidoc.Document;
             _message = message;
-            
         }
 
         private void button4_Click(object sender, EventArgs e)
