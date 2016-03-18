@@ -65,10 +65,10 @@ namespace PCF_Exporter
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.groupBox7 = new PCF_Functions.RadioButtonGroupBox();
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.groupBox3 = new PCF_Functions.RadioButtonGroupBox();
+            this.groupBox3 = new PCF_Functions.RadioGroupBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
@@ -372,6 +372,9 @@ namespace PCF_Exporter
             // 
             // groupBox7
             // 
+            this.groupBox7.CheckedRadioButtonByName = "radioButton4";
+            this.groupBox7.CheckedRadioButtonByText = "MM";
+            this.groupBox7.CheckedRadioButtonIndexPos = 0;
             this.groupBox7.Controls.Add(this.radioButton4);
             this.groupBox7.Controls.Add(this.radioButton3);
             this.groupBox7.Dock = System.Windows.Forms.DockStyle.Top;
@@ -385,24 +388,24 @@ namespace PCF_Exporter
             // radioButton4
             // 
             this.radioButton4.AutoSize = true;
-            this.radioButton4.Location = new System.Drawing.Point(248, 19);
+            this.radioButton4.Checked = true;
+            this.radioButton4.Location = new System.Drawing.Point(140, 19);
             this.radioButton4.Name = "radioButton4";
-            this.radioButton4.Size = new System.Drawing.Size(51, 17);
+            this.radioButton4.Size = new System.Drawing.Size(43, 17);
             this.radioButton4.TabIndex = 0;
-            this.radioButton4.Text = "INCH";
+            this.radioButton4.TabStop = true;
+            this.radioButton4.Text = "MM";
             this.radioButton4.UseVisualStyleBackColor = true;
             this.radioButton4.CheckedChanged += new System.EventHandler(this.radioButton4_CheckedChanged);
             // 
             // radioButton3
             // 
             this.radioButton3.AutoSize = true;
-            this.radioButton3.Checked = true;
-            this.radioButton3.Location = new System.Drawing.Point(140, 19);
+            this.radioButton3.Location = new System.Drawing.Point(248, 19);
             this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(43, 17);
+            this.radioButton3.Size = new System.Drawing.Size(51, 17);
             this.radioButton3.TabIndex = 0;
-            this.radioButton3.TabStop = true;
-            this.radioButton3.Text = "MM";
+            this.radioButton3.Text = "INCH";
             this.radioButton3.UseVisualStyleBackColor = true;
             this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
             // 
@@ -417,6 +420,7 @@ namespace PCF_Exporter
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
             this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Selected = 0;
             this.groupBox3.Size = new System.Drawing.Size(369, 107);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
@@ -441,6 +445,7 @@ namespace PCF_Exporter
             this.radioButton2.Name = "radioButton2";
             this.radioButton2.Size = new System.Drawing.Size(105, 17);
             this.radioButton2.TabIndex = 1;
+            this.radioButton2.Tag = "2";
             this.radioButton2.Text = "Specific pipeline:";
             this.radioButton2.UseVisualStyleBackColor = true;
             this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
@@ -454,6 +459,7 @@ namespace PCF_Exporter
             this.radioButton1.Size = new System.Drawing.Size(80, 17);
             this.radioButton1.TabIndex = 1;
             this.radioButton1.TabStop = true;
+            this.radioButton1.Tag = "1";
             this.radioButton1.Text = "All pipelines";
             this.radioButton1.UseVisualStyleBackColor = true;
             this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
@@ -636,7 +642,7 @@ namespace PCF_Exporter
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.ComboBox comboBox1;
-        private PCF_Functions.RadioButtonGroupBox groupBox3;
+        private PCF_Functions.RadioGroupBox groupBox3;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.TextBox textBox2;
@@ -661,7 +667,7 @@ namespace PCF_Exporter
         private System.Windows.Forms.GroupBox groupBox8;
         private System.Windows.Forms.RadioButton radioButton5;
         private System.Windows.Forms.RadioButton radioButton6;
-        private System.Windows.Forms.GroupBox groupBox7;
+        private PCF_Functions.RadioButtonGroupBox groupBox7;
         private System.Windows.Forms.RadioButton radioButton4;
         private System.Windows.Forms.RadioButton radioButton3;
         private System.Windows.Forms.Button button7;

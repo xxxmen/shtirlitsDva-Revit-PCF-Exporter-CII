@@ -115,6 +115,7 @@ namespace PCF_Exporter
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
             //if (radioButton1.Checked == true) InputVars.ExportAll = true;
+            
             Util.InfoMsg("SysAbbr: " + iv.SysAbbr + "\n" + "ExportAll: " + iv.ExportAll);
         }
 
