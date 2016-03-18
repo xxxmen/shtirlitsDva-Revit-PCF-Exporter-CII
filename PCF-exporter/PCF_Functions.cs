@@ -12,7 +12,6 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
-using Microsoft.Office.Interop.Excel;
 
 namespace PCF_Functions
 {

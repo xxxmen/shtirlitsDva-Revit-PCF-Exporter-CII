@@ -48,9 +48,9 @@ namespace PCF_Exporter
             _uidoc = _uiapp.ActiveUIDocument;
             _doc = _uidoc.Document;
             _message = message;
-            InputVars.SysAbbr = mySettings.Default.textBox3SpecificPipeline;
-            InputVars.ExportAll = mySettings.Default.radioButton1AllPipelines;
-            Util.InfoMsg("SysAbbr: "+InputVars.SysAbbr+"\n"+"ExportAll: "+InputVars.ExportAll);
+            iv.SysAbbr = mySettings.Default.textBox3SpecificPipeline;
+            iv.ExportAll = mySettings.Default.radioButton1AllPipelines;
+            Util.InfoMsg("SysAbbr: "+ iv.SysAbbr+"\n"+"ExportAll: "+ iv.ExportAll);
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -98,30 +98,30 @@ namespace PCF_Exporter
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            InputVars.ExcelSheet = (string) comboBox1.SelectedItem;
-            DATA_TABLE = DATA_SET.Tables[InputVars.ExcelSheet];
-            InputVars.parameterNames = null;
-            InputVars.parameterNames = (from dc in DATA_TABLE.Columns.Cast<DataColumn>() select dc.ColumnName).ToList();
-            InputVars.parameterNames.RemoveAt(0);
-            Util.InfoMsg("Following parameters will be initialized:\n"+ string.Join("\n",InputVars.parameterNames.ToArray()));
+            iv.ExcelSheet = (string) comboBox1.SelectedItem;
+            DATA_TABLE = DATA_SET.Tables[iv.ExcelSheet];
+            iv.parameterNames = null;
+            iv.parameterNames = (from dc in DATA_TABLE.Columns.Cast<DataColumn>() select dc.ColumnName).ToList();
+            iv.parameterNames.RemoveAt(0);
+            Util.InfoMsg("Following parameters will be initialized:\n"+ string.Join("\n", iv.parameterNames.ToArray()));
         }
 
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
             //InputVars.SysAbbr = textBox3.Text;
-            Util.InfoMsg("SysAbbr: " + InputVars.SysAbbr + "\n" + "ExportAll: " + InputVars.ExportAll);
+            Util.InfoMsg("SysAbbr: " + iv.SysAbbr + "\n" + "ExportAll: " + iv.ExportAll);
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
             //if (radioButton1.Checked == true) InputVars.ExportAll = true;
-            Util.InfoMsg("SysAbbr: " + InputVars.SysAbbr + "\n" + "ExportAll: " + InputVars.ExportAll);
+            Util.InfoMsg("SysAbbr: " + iv.SysAbbr + "\n" + "ExportAll: " + iv.ExportAll);
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
             //if (radioButton2.Checked == true) InputVars.ExportAll = false;
-            Util.InfoMsg("SysAbbr: " + InputVars.SysAbbr + "\n" + "ExportAll: " + InputVars.ExportAll);
+            Util.InfoMsg("SysAbbr: " + iv.SysAbbr + "\n" + "ExportAll: " + iv.ExportAll);
             //if (radioButton2.Checked == true)
             //{
             //    textBox3.Visible = true;
@@ -140,8 +140,8 @@ namespace PCF_Exporter
             DialogResult result = fbd.ShowDialog();
             if (result == DialogResult.OK)
             {
-            InputVars.OutputDirectoryFilePath = fbd.SelectedPath;
-            textBox5.Text = InputVars.OutputDirectoryFilePath;
+                iv.OutputDirectoryFilePath = fbd.SelectedPath;
+            textBox5.Text = iv.OutputDirectoryFilePath;
             }
         }
 
@@ -153,72 +153,70 @@ namespace PCF_Exporter
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton3.Checked == true) InputVars.UNITS_BORE_MM = true;
-            if (radioButton3.Checked == true) InputVars.UNITS_BORE_INCH = false;
-            if (radioButton3.Checked == true) InputVars.UNITS_BORE = "MM";
+            if (radioButton3.Checked == true) iv.UNITS_BORE_MM = true;
+            if (radioButton3.Checked == true) iv.UNITS_BORE_INCH = false;
+            if (radioButton3.Checked == true) iv.UNITS_BORE = "MM";
             Util.InfoMsg("MM: " + iv.UNITS_BORE_MM + "\nINCH: " + iv.UNITS_BORE_INCH + "\nTEXT: "+iv.UNITS_BORE);
         }
 
         private void radioButton4_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton4.Checked == true) InputVars.UNITS_BORE_MM = false;
-            if (radioButton4.Checked == true) InputVars.UNITS_BORE_INCH = true;
-            if (radioButton4.Checked == true) InputVars.UNITS_BORE = "INCH";
+            if (radioButton4.Checked == true) iv.UNITS_BORE_MM = false;
+            if (radioButton4.Checked == true) iv.UNITS_BORE_INCH = true;
+            if (radioButton4.Checked == true) iv.UNITS_BORE = "INCH";
             Util.InfoMsg("MM: " + iv.UNITS_BORE_MM + "\nINCH: " + iv.UNITS_BORE_INCH + "\nTEXT: " + iv.UNITS_BORE);
         }
 
         private void radioButton6_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton6.Checked == true) InputVars.UNITS_CO_ORDS_MM = true;
-            if (radioButton6.Checked == true) InputVars.UNITS_CO_ORDS_INCH = false;
-            if (radioButton6.Checked == true) InputVars.UNITS_CO_ORDS = "MM";
+            if (radioButton6.Checked == true) iv.UNITS_CO_ORDS_MM = true;
+            if (radioButton6.Checked == true) iv.UNITS_CO_ORDS_INCH = false;
+            if (radioButton6.Checked == true) iv.UNITS_CO_ORDS = "MM";
         }
 
         private void radioButton5_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton5.Checked == true) InputVars.UNITS_CO_ORDS_MM = false;
-            if (radioButton5.Checked == true) InputVars.UNITS_CO_ORDS_INCH = true;
-            if (radioButton5.Checked == true) InputVars.UNITS_CO_ORDS = "INCH";
+            if (radioButton5.Checked == true) iv.UNITS_CO_ORDS_MM = false;
+            if (radioButton5.Checked == true) iv.UNITS_CO_ORDS_INCH = true;
+            if (radioButton5.Checked == true) iv.UNITS_CO_ORDS = "INCH";
         }
 
         private void radioButton8_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton8.Checked == true) InputVars.UNITS_WEIGHT_KGS= true;
-            if (radioButton8.Checked == true) InputVars.UNITS_WEIGHT_LBS = false;
-            if (radioButton8.Checked == true) InputVars.UNITS_WEIGHT = "KGS";
+            if (radioButton8.Checked == true) iv.UNITS_WEIGHT_KGS= true;
+            if (radioButton8.Checked == true) iv.UNITS_WEIGHT_LBS = false;
+            if (radioButton8.Checked == true) iv.UNITS_WEIGHT = "KGS";
         }
 
         private void radioButton7_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton7.Checked == true) InputVars.UNITS_WEIGHT_KGS = false;
-            if (radioButton7.Checked == true) InputVars.UNITS_WEIGHT_LBS = true;
-            if (radioButton7.Checked == true) InputVars.UNITS_WEIGHT = "LBS";
+            if (radioButton7.Checked == true) iv.UNITS_WEIGHT_KGS = false;
+            if (radioButton7.Checked == true) iv.UNITS_WEIGHT_LBS = true;
+            if (radioButton7.Checked == true) iv.UNITS_WEIGHT = "LBS";
         }
 
         private void radioButton11_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton11.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_METER = true;
-            if (radioButton11.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_INCH = false;
-            if (radioButton11.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_FEET = false;
-            if (radioButton11.Checked == true) InputVars.UNITS_WEIGHT_LENGTH = "METER";
+            if (radioButton11.Checked == true) iv.UNITS_WEIGHT_LENGTH_METER = true;
+            if (radioButton11.Checked == true) iv.UNITS_WEIGHT_LENGTH_INCH = false;
+            if (radioButton11.Checked == true) iv.UNITS_WEIGHT_LENGTH_FEET = false;
+            if (radioButton11.Checked == true) iv.UNITS_WEIGHT_LENGTH = "METER";
         }
 
         private void radioButton10_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton10.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_METER = false;
-            if (radioButton10.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_INCH = true;
-            if (radioButton10.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_FEET = false;
-            if (radioButton10.Checked == true) InputVars.UNITS_WEIGHT_LENGTH = "INCH";
+            if (radioButton10.Checked == true) iv.UNITS_WEIGHT_LENGTH_METER = false;
+            if (radioButton10.Checked == true) iv.UNITS_WEIGHT_LENGTH_INCH = true;
+            if (radioButton10.Checked == true) iv.UNITS_WEIGHT_LENGTH_FEET = false;
+            if (radioButton10.Checked == true) iv.UNITS_WEIGHT_LENGTH = "INCH";
         }
 
         private void radioButton9_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton9.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_METER = false;
-            if (radioButton9.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_INCH = false;
-            if (radioButton9.Checked == true) InputVars.UNITS_WEIGHT_LENGTH_FEET = true;
-            if (radioButton9.Checked == true) InputVars.UNITS_WEIGHT_LENGTH = "FEET";
+            if (radioButton9.Checked == true) iv.UNITS_WEIGHT_LENGTH_METER = false;
+            if (radioButton9.Checked == true) iv.UNITS_WEIGHT_LENGTH_INCH = false;
+            if (radioButton9.Checked == true) iv.UNITS_WEIGHT_LENGTH_FEET = true;
+            if (radioButton9.Checked == true) iv.UNITS_WEIGHT_LENGTH = "FEET";
         }
-
-        
     }
 }
