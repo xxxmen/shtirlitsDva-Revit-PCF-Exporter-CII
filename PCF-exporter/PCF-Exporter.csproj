@@ -2,10 +2,10 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-  <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     None
   </ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-</PropertyGroup>
+  </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -109,6 +109,9 @@
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="RadioBox.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="RadioButtonGroupBox.cs">
       <SubType>Component</SubType>

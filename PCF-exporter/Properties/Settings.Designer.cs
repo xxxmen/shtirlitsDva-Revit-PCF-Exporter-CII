@@ -62,24 +62,24 @@ namespace PCF_Functions.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool textBox3Visible {
+        public bool radioButton4UnitsBoreMm {
             get {
-                return ((bool)(this["textBox3Visible"]));
+                return ((bool)(this["radioButton4UnitsBoreMm"]));
             }
             set {
-                this["textBox3Visible"] = value;
+                this["radioButton4UnitsBoreMm"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool textBox4Visible {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool radioButton3UnitsBoreInch {
             get {
-                return ((bool)(this["textBox4Visible"]));
+                return ((bool)(this["radioButton3UnitsBoreInch"]));
             }
             set {
-                this["textBox4Visible"] = value;
+                this["radioButton3UnitsBoreInch"] = value;
             }
         }
     }

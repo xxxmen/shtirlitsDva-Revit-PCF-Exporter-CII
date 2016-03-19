@@ -11,11 +11,11 @@
     <Setting Name="textBox3SpecificPipeline" Type="System.String" Scope="User">
       <Value Profile="(Default)">Input here</Value>
     </Setting>
-    <Setting Name="textBox3Visible" Type="System.Boolean" Scope="User">
+    <Setting Name="radioButton4UnitsBoreMm" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="textBox4Visible" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+    <Setting Name="radioButton3UnitsBoreInch" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>
