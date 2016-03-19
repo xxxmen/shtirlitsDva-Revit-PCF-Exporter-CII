@@ -61,7 +61,7 @@ namespace PCF_Functions.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool textBox3Visible {
             get {
                 return ((bool)(this["textBox3Visible"]));
@@ -73,7 +73,7 @@ namespace PCF_Functions.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool textBox4Visible {
             get {
                 return ((bool)(this["textBox4Visible"]));

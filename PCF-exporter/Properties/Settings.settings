@@ -12,10 +12,10 @@
       <Value Profile="(Default)">Input here</Value>
     </Setting>
     <Setting Name="textBox3Visible" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="textBox4Visible" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

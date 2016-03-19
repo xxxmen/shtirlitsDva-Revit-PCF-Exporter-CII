@@ -50,7 +50,14 @@ namespace PCF_Exporter
             _message = message;
             iv.SysAbbr = mySettings.Default.textBox3SpecificPipeline;
             iv.ExportAll = mySettings.Default.radioButton1AllPipelines;
-            Util.InfoMsg("SysAbbr: "+ iv.SysAbbr+"\n"+"ExportAll: "+ iv.ExportAll);
+            if (iv.ExportAll)
+            {
+                textBox3.Visible = false; textBox4.Visible = false;
+            }
+
+            //Debug
+            textBox8.Text = "SysAbbr: " + iv.SysAbbr;
+            textBox9.Text = "ExportAll: " + iv.ExportAll;
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -108,31 +115,29 @@ namespace PCF_Exporter
 
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
-            //InputVars.SysAbbr = textBox3.Text;
-            Util.InfoMsg("SysAbbr: " + iv.SysAbbr + "\n" + "ExportAll: " + iv.ExportAll);
+            iv.SysAbbr = textBox3.Text;
+            textBox8.Text = "SysAbbr: " + iv.SysAbbr;
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-            //if (radioButton1.Checked == true) InputVars.ExportAll = true;
-            
-            Util.InfoMsg("SysAbbr: " + iv.SysAbbr + "\n" + "ExportAll: " + iv.ExportAll);
+            if (radioButton1.Checked == true)
+            {
+                iv.ExportAll = true;
+                textBox3.Visible = false; textBox4.Visible = false;
+                textBox9.Text = "ExportAll: " + iv.ExportAll;
+            }
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
-            //if (radioButton2.Checked == true) InputVars.ExportAll = false;
-            Util.InfoMsg("SysAbbr: " + iv.SysAbbr + "\n" + "ExportAll: " + iv.ExportAll);
-            //if (radioButton2.Checked == true)
-            //{
-            //    textBox3.Visible = true;
-            //    textBox4.Visible = true;
-            //}
-            //else
-            //{
-            //    textBox3.Visible = false;
-            //    textBox4.Visible = false;
-            //}
+            if (radioButton2.Checked == true)
+            {
+                iv.ExportAll = false;
+                textBox3.Visible = true; textBox4.Visible = true;
+                textBox9.Text = "ExportAll: " + iv.ExportAll;
+            }
+           
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -141,7 +146,7 @@ namespace PCF_Exporter
             DialogResult result = fbd.ShowDialog();
             if (result == DialogResult.OK)
             {
-                iv.OutputDirectoryFilePath = fbd.SelectedPath;
+            iv.OutputDirectoryFilePath = fbd.SelectedPath;
             textBox5.Text = iv.OutputDirectoryFilePath;
             }
         }
@@ -199,23 +204,13 @@ namespace PCF_Exporter
         private void radioButton11_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton11.Checked == true) iv.UNITS_WEIGHT_LENGTH_METER = true;
-            if (radioButton11.Checked == true) iv.UNITS_WEIGHT_LENGTH_INCH = false;
             if (radioButton11.Checked == true) iv.UNITS_WEIGHT_LENGTH_FEET = false;
             if (radioButton11.Checked == true) iv.UNITS_WEIGHT_LENGTH = "METER";
-        }
-
-        private void radioButton10_CheckedChanged(object sender, EventArgs e)
-        {
-            if (radioButton10.Checked == true) iv.UNITS_WEIGHT_LENGTH_METER = false;
-            if (radioButton10.Checked == true) iv.UNITS_WEIGHT_LENGTH_INCH = true;
-            if (radioButton10.Checked == true) iv.UNITS_WEIGHT_LENGTH_FEET = false;
-            if (radioButton10.Checked == true) iv.UNITS_WEIGHT_LENGTH = "INCH";
         }
 
         private void radioButton9_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton9.Checked == true) iv.UNITS_WEIGHT_LENGTH_METER = false;
-            if (radioButton9.Checked == true) iv.UNITS_WEIGHT_LENGTH_INCH = false;
             if (radioButton9.Checked == true) iv.UNITS_WEIGHT_LENGTH_FEET = true;
             if (radioButton9.Checked == true) iv.UNITS_WEIGHT_LENGTH = "FEET";
         }

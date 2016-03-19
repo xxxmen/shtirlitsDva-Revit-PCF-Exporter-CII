@@ -13,15 +13,13 @@ namespace PCF_Functions
         {
             base.OnControlAdded(e);
             var radioButton = e.Control as RadioButton;
-            if (radioButton != null)
-                radioButton.Click += radioButton_Click;
+            if (radioButton != null) radioButton.Click += radioButton_Click;
         }
 
         void radioButton_Click(object sender, EventArgs e)
         {
             var radio = (RadioButton)sender;
-            if (!radio.Checked)
-                radio.Checked = true;
+            if (!radio.Checked) radio.Checked = true;
         }
 
     }
