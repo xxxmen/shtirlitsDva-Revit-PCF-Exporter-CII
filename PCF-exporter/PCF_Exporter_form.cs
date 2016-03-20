@@ -48,6 +48,8 @@ namespace PCF_Exporter
             _uidoc = _uiapp.ActiveUIDocument;
             _doc = _uidoc.Document;
             _message = message;
+
+            //Init Scope
             iv.SysAbbr = mySettings.Default.textBox3SpecificPipeline;
             iv.ExportAll = mySettings.Default.radioButton1AllPipelines;
             if (iv.ExportAll)
@@ -55,9 +57,17 @@ namespace PCF_Exporter
                 textBox3.Visible = false; textBox4.Visible = false;
             }
 
+            //Init Bore
+            //iv.UNITS_BORE_MM = mySettings.Default.radioButton4UnitsBoreMm;
+            //iv.UNITS_BORE_INCH = mySettings.Default.radioButton3UnitsBoreInch;
+            //if (iv.UNITS_BORE_MM) iv.UNITS_BORE = "MM";
+            //else iv.UNITS_BORE = "INCH";
+
             //Debug
             textBox8.Text = "SysAbbr: " + iv.SysAbbr;
             textBox9.Text = "ExportAll: " + iv.ExportAll;
+            //textBox10.Text = "BORE-MM: " + iv.UNITS_BORE_MM;
+            //textBox11.Text = "BORE-INCH: " + iv.UNITS_BORE_INCH;
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -159,18 +169,26 @@ namespace PCF_Exporter
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton3.Checked == true) iv.UNITS_BORE_MM = true;
-            if (radioButton3.Checked == true) iv.UNITS_BORE_INCH = false;
-            if (radioButton3.Checked == true) iv.UNITS_BORE = "MM";
-            Util.InfoMsg("MM: " + iv.UNITS_BORE_MM + "\nINCH: " + iv.UNITS_BORE_INCH + "\nTEXT: "+iv.UNITS_BORE);
+            //if (radioButton3.Checked == true)
+            //{
+            //    iv.UNITS_BORE_MM = false;
+            //    iv.UNITS_BORE_INCH = true;
+            //    iv.UNITS_BORE = "INCH";
+            //    textBox10.Text = "BORE-MM: " + iv.UNITS_BORE_MM;
+            //    textBox11.Text = "BORE-INCH: " + iv.UNITS_BORE_INCH;
+            //}
         }
 
         private void radioButton4_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton4.Checked == true) iv.UNITS_BORE_MM = false;
-            if (radioButton4.Checked == true) iv.UNITS_BORE_INCH = true;
-            if (radioButton4.Checked == true) iv.UNITS_BORE = "INCH";
-            Util.InfoMsg("MM: " + iv.UNITS_BORE_MM + "\nINCH: " + iv.UNITS_BORE_INCH + "\nTEXT: " + iv.UNITS_BORE);
+            //if (radioButton4.Checked == true)
+            //{
+            //    iv.UNITS_BORE_MM = true;
+            //    iv.UNITS_BORE_INCH = false;
+            //    iv.UNITS_BORE = "MM";
+            //    textBox10.Text = "BORE-MM: " + iv.UNITS_BORE_MM;
+            //    textBox11.Text = "BORE-INCH: " + iv.UNITS_BORE_INCH;
+            //}
         }
 
         private void radioButton6_CheckedChanged(object sender, EventArgs e)

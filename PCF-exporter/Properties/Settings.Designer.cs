@@ -58,29 +58,5 @@ namespace PCF_Functions.Properties {
                 this["textBox3SpecificPipeline"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool radioButton4UnitsBoreMm {
-            get {
-                return ((bool)(this["radioButton4UnitsBoreMm"]));
-            }
-            set {
-                this["radioButton4UnitsBoreMm"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool radioButton3UnitsBoreInch {
-            get {
-                return ((bool)(this["radioButton3UnitsBoreInch"]));
-            }
-            set {
-                this["radioButton3UnitsBoreInch"] = value;
-            }
-        }
     }
 }
