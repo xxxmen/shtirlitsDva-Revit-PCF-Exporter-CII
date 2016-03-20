@@ -11,5 +11,17 @@
     <Setting Name="textBox3SpecificPipeline" Type="System.String" Scope="User">
       <Value Profile="(Default)">Input here</Value>
     </Setting>
+    <Setting Name="radioButton3BoreMM" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="radioButton4BoreINCH" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="radioButton5CoordsMm" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="radioButton6CoordsInch" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

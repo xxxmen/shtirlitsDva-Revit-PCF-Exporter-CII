@@ -58,5 +58,53 @@ namespace PCF_Functions.Properties {
                 this["textBox3SpecificPipeline"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool radioButton3BoreMM {
+            get {
+                return ((bool)(this["radioButton3BoreMM"]));
+            }
+            set {
+                this["radioButton3BoreMM"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool radioButton4BoreINCH {
+            get {
+                return ((bool)(this["radioButton4BoreINCH"]));
+            }
+            set {
+                this["radioButton4BoreINCH"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool radioButton5CoordsMm {
+            get {
+                return ((bool)(this["radioButton5CoordsMm"]));
+            }
+            set {
+                this["radioButton5CoordsMm"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool radioButton6CoordsInch {
+            get {
+                return ((bool)(this["radioButton6CoordsInch"]));
+            }
+            set {
+                this["radioButton6CoordsInch"] = value;
+            }
+        }
     }
 }
