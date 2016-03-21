@@ -106,5 +106,53 @@ namespace PCF_Functions.Properties {
                 this["radioButton6CoordsInch"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool radioButton7WeightKgs {
+            get {
+                return ((bool)(this["radioButton7WeightKgs"]));
+            }
+            set {
+                this["radioButton7WeightKgs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool radioButton8WeightLbs {
+            get {
+                return ((bool)(this["radioButton8WeightLbs"]));
+            }
+            set {
+                this["radioButton8WeightLbs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool radioButton9WeightLengthM {
+            get {
+                return ((bool)(this["radioButton9WeightLengthM"]));
+            }
+            set {
+                this["radioButton9WeightLengthM"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool radioButton10WeightLengthF {
+            get {
+                return ((bool)(this["radioButton10WeightLengthF"]));
+            }
+            set {
+                this["radioButton10WeightLengthF"] = value;
+            }
+        }
     }
 }

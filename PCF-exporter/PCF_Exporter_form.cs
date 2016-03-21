@@ -57,19 +57,34 @@ namespace PCF_Exporter
             //Init Bore
             iv.UNITS_BORE_MM = mySettings.Default.radioButton3BoreMM;
             iv.UNITS_BORE_INCH = mySettings.Default.radioButton4BoreINCH;
-            if (iv.UNITS_BORE_MM) iv.UNITS_BORE = "MM";
-            else iv.UNITS_BORE = "INCH";
+            iv.UNITS_BORE = iv.UNITS_BORE_MM ? "MM" : "INCH";
 
             //Init cooords
             iv.UNITS_CO_ORDS_MM = mySettings.Default.radioButton5CoordsMm;
             iv.UNITS_CO_ORDS_INCH = mySettings.Default.radioButton6CoordsInch;
             iv.UNITS_CO_ORDS = iv.UNITS_CO_ORDS_MM ? "MM" : "INCH";
 
+            //Init weight
+            iv.UNITS_WEIGHT_KGS= mySettings.Default.radioButton7WeightKgs;
+            iv.UNITS_WEIGHT_LBS = mySettings.Default.radioButton8WeightLbs;
+            iv.UNITS_WEIGHT = iv.UNITS_WEIGHT_KGS? "KGS" : "LBS";
+
+            //Init weight-length
+            iv.UNITS_WEIGHT_LENGTH_METER = mySettings.Default.radioButton9WeightLengthM;
+            iv.UNITS_WEIGHT_LENGTH_FEET = mySettings.Default.radioButton10WeightLengthF;
+            iv.UNITS_WEIGHT = iv.UNITS_WEIGHT_KGS ? "METER" : "FEET";
+
             //Debug
             textBox8.Text = "SysAbbr: " + iv.SysAbbr;
-            textBox9.Text = "ExportAll: " + iv.ExportAll;
-            textBox10.Text = "BORE-MM: " + iv.UNITS_BORE_MM + iv.UNITS_BORE;
-            textBox11.Text = "BORE-INCH: " + iv.UNITS_BORE_INCH + iv.UNITS_BORE;
+            textBox11.Text = "ExportAll: " + iv.ExportAll;
+            textBox9.Text = "BORE-MM: " + iv.UNITS_BORE_MM + iv.UNITS_BORE;
+            textBox12.Text = "BORE-INCH: " + iv.UNITS_BORE_INCH + iv.UNITS_BORE;
+            textBox10.Text = "COORDS-MM: " + iv.UNITS_CO_ORDS_MM + iv.UNITS_CO_ORDS;
+            textBox13.Text = "COORDS-INCH: " + iv.UNITS_CO_ORDS_INCH + iv.UNITS_CO_ORDS;
+            textBox14.Text = "WEIGHT-KGS: " + iv.UNITS_WEIGHT_KGS + iv.UNITS_WEIGHT;
+            textBox15.Text = "WEIGHT-LBS: " + iv.UNITS_WEIGHT_LBS + iv.UNITS_WEIGHT;
+            textBox16.Text = "WEIGHT-L-M: " + iv.UNITS_WEIGHT_LENGTH_METER + iv.UNITS_WEIGHT_LENGTH;
+            textBox17.Text = "WEIGHT-L-F: " + iv.UNITS_WEIGHT_LENGTH_FEET + iv.UNITS_WEIGHT_LENGTH;
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -137,7 +152,7 @@ namespace PCF_Exporter
             {
                 iv.ExportAll = true;
                 textBox3.Visible = false; textBox4.Visible = false;
-                textBox9.Text = "ExportAll: " + iv.ExportAll;
+                textBox11.Text = "ExportAll: " + iv.ExportAll;
             }
         }
 
@@ -147,7 +162,7 @@ namespace PCF_Exporter
             {
                 iv.ExportAll = false;
                 textBox3.Visible = true; textBox4.Visible = true;
-                textBox9.Text = "ExportAll: " + iv.ExportAll;
+                textBox11.Text = "ExportAll: " + iv.ExportAll;
             }
            
         }
@@ -177,8 +192,8 @@ namespace PCF_Exporter
                 iv.UNITS_BORE_INCH = false;
                 iv.UNITS_BORE = "MM";
                 //debug
-                //textBox10.Text = "BORE-MM: " + iv.UNITS_BORE_MM + iv.UNITS_BORE;
-                //textBox11.Text = "BORE-INCH: " + iv.UNITS_BORE_INCH + iv.UNITS_BORE;
+                textBox9.Text = "BORE-MM: " + iv.UNITS_BORE_MM + iv.UNITS_BORE;
+                textBox12.Text = "BORE-INCH: " + iv.UNITS_BORE_INCH + iv.UNITS_BORE;
             }
         }
 
@@ -190,8 +205,8 @@ namespace PCF_Exporter
                 iv.UNITS_BORE_INCH = true;
                 iv.UNITS_BORE = "INCH";
                 //Debug
-                //textBox10.Text = "BORE-MM: " + iv.UNITS_BORE_MM+iv.UNITS_BORE;
-                //textBox11.Text = "BORE-INCH: " + iv.UNITS_BORE_INCH+iv.UNITS_BORE;
+                textBox9.Text = "BORE-MM: " + iv.UNITS_BORE_MM+iv.UNITS_BORE;
+                textBox12.Text = "BORE-INCH: " + iv.UNITS_BORE_INCH+iv.UNITS_BORE;
             }
         }
 
@@ -202,45 +217,69 @@ namespace PCF_Exporter
                 iv.UNITS_CO_ORDS_MM = true;
                 iv.UNITS_CO_ORDS_INCH = false;
                 iv.UNITS_CO_ORDS = "MM";
+                textBox10.Text = "COORDS-MM: " + iv.UNITS_CO_ORDS_MM + iv.UNITS_CO_ORDS;
+                textBox13.Text = "COORDS-INCH: " + iv.UNITS_CO_ORDS_INCH + iv.UNITS_CO_ORDS;
             }
         }
 
         private void radioButton6_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton5.Checked == true)
+            if (radioButton6.Checked == true)
             {
                 iv.UNITS_CO_ORDS_MM = false;
                 iv.UNITS_CO_ORDS_INCH = true;
                 iv.UNITS_CO_ORDS = "INCH";
+                textBox10.Text = "COORDS-MM: " + iv.UNITS_CO_ORDS_MM + iv.UNITS_CO_ORDS;
+                textBox13.Text = "COORDS-INCH: " + iv.UNITS_CO_ORDS_INCH + iv.UNITS_CO_ORDS;
+            }
+        }
+
+        private void radioButton7_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton7.Checked == true)
+            {
+                iv.UNITS_WEIGHT_KGS = true;
+                iv.UNITS_WEIGHT_LBS = false;
+                iv.UNITS_WEIGHT = "KGS";
+                textBox14.Text = "WEIGHT-KGS: " + iv.UNITS_WEIGHT_KGS + iv.UNITS_WEIGHT;
+                textBox15.Text = "WEIGHT-LBS: " + iv.UNITS_WEIGHT_LBS + iv.UNITS_WEIGHT;
             }
         }
 
         private void radioButton8_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton8.Checked == true) iv.UNITS_WEIGHT_KGS= true;
-            if (radioButton8.Checked == true) iv.UNITS_WEIGHT_LBS = false;
-            if (radioButton8.Checked == true) iv.UNITS_WEIGHT = "KGS";
+            if (radioButton8.Checked == true)
+            {
+                iv.UNITS_WEIGHT_KGS = false;
+                iv.UNITS_WEIGHT_LBS = true;
+                iv.UNITS_WEIGHT = "LBS";
+                textBox14.Text = "WEIGHT-KGS: " + iv.UNITS_WEIGHT_KGS + iv.UNITS_WEIGHT;
+                textBox15.Text = "WEIGHT-LBS: " + iv.UNITS_WEIGHT_LBS + iv.UNITS_WEIGHT;
+            }
         }
-
-        private void radioButton7_CheckedChanged(object sender, EventArgs e)
-        {
-            if (radioButton7.Checked == true) iv.UNITS_WEIGHT_KGS = false;
-            if (radioButton7.Checked == true) iv.UNITS_WEIGHT_LBS = true;
-            if (radioButton7.Checked == true) iv.UNITS_WEIGHT = "LBS";
-        }
-
-        private void radioButton11_CheckedChanged(object sender, EventArgs e)
-        {
-            if (radioButton11.Checked == true) iv.UNITS_WEIGHT_LENGTH_METER = true;
-            if (radioButton11.Checked == true) iv.UNITS_WEIGHT_LENGTH_FEET = false;
-            if (radioButton11.Checked == true) iv.UNITS_WEIGHT_LENGTH = "METER";
-        }
-
+        
         private void radioButton9_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton9.Checked == true) iv.UNITS_WEIGHT_LENGTH_METER = false;
-            if (radioButton9.Checked == true) iv.UNITS_WEIGHT_LENGTH_FEET = true;
-            if (radioButton9.Checked == true) iv.UNITS_WEIGHT_LENGTH = "FEET";
+            if (radioButton9.Checked == true)
+            {
+                iv.UNITS_WEIGHT_LENGTH_METER = true;
+                iv.UNITS_WEIGHT_LENGTH_FEET = false;
+                iv.UNITS_WEIGHT_LENGTH = "METER";
+                textBox16.Text = "WEIGHT-L-M: " + iv.UNITS_WEIGHT_LENGTH_METER + iv.UNITS_WEIGHT_LENGTH;
+                textBox17.Text = "WEIGHT-L-F: " + iv.UNITS_WEIGHT_LENGTH_FEET + iv.UNITS_WEIGHT_LENGTH;
+            }
+        }
+
+        private void radioButton10_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton10.Checked == true)
+            {
+                iv.UNITS_WEIGHT_LENGTH_METER = false;
+                iv.UNITS_WEIGHT_LENGTH_FEET = true;
+                iv.UNITS_WEIGHT_LENGTH = "FEET";
+                textBox16.Text = "WEIGHT-L-M: " + iv.UNITS_WEIGHT_LENGTH_METER + iv.UNITS_WEIGHT_LENGTH;
+                textBox17.Text = "WEIGHT-L-F: " + iv.UNITS_WEIGHT_LENGTH_FEET + iv.UNITS_WEIGHT_LENGTH;
+            }
         }
     }
 }
