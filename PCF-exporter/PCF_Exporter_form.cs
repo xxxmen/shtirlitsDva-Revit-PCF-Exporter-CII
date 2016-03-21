@@ -39,7 +39,6 @@ namespace PCF_Exporter
         public DataSet DATA_SET = null;
         public static DataTable DATA_TABLE = null;
 
-
         public PCF_Exporter_form(ExternalCommandData cData, string message)
         {
             InitializeComponent();
@@ -72,7 +71,7 @@ namespace PCF_Exporter
             //Init weight-length
             iv.UNITS_WEIGHT_LENGTH_METER = mySettings.Default.radioButton9WeightLengthM;
             iv.UNITS_WEIGHT_LENGTH_FEET = mySettings.Default.radioButton10WeightLengthF;
-            iv.UNITS_WEIGHT = iv.UNITS_WEIGHT_KGS ? "METER" : "FEET";
+            iv.UNITS_WEIGHT_LENGTH = iv.UNITS_WEIGHT_LENGTH_METER ? "METER" : "FEET";
 
             //Debug
             textBox8.Text = "SysAbbr: " + iv.SysAbbr;
@@ -217,6 +216,7 @@ namespace PCF_Exporter
                 iv.UNITS_CO_ORDS_MM = true;
                 iv.UNITS_CO_ORDS_INCH = false;
                 iv.UNITS_CO_ORDS = "MM";
+                //Debug
                 textBox10.Text = "COORDS-MM: " + iv.UNITS_CO_ORDS_MM + iv.UNITS_CO_ORDS;
                 textBox13.Text = "COORDS-INCH: " + iv.UNITS_CO_ORDS_INCH + iv.UNITS_CO_ORDS;
             }
@@ -229,6 +229,7 @@ namespace PCF_Exporter
                 iv.UNITS_CO_ORDS_MM = false;
                 iv.UNITS_CO_ORDS_INCH = true;
                 iv.UNITS_CO_ORDS = "INCH";
+                //Debug
                 textBox10.Text = "COORDS-MM: " + iv.UNITS_CO_ORDS_MM + iv.UNITS_CO_ORDS;
                 textBox13.Text = "COORDS-INCH: " + iv.UNITS_CO_ORDS_INCH + iv.UNITS_CO_ORDS;
             }
@@ -241,6 +242,7 @@ namespace PCF_Exporter
                 iv.UNITS_WEIGHT_KGS = true;
                 iv.UNITS_WEIGHT_LBS = false;
                 iv.UNITS_WEIGHT = "KGS";
+                //Debug
                 textBox14.Text = "WEIGHT-KGS: " + iv.UNITS_WEIGHT_KGS + iv.UNITS_WEIGHT;
                 textBox15.Text = "WEIGHT-LBS: " + iv.UNITS_WEIGHT_LBS + iv.UNITS_WEIGHT;
             }
@@ -253,6 +255,7 @@ namespace PCF_Exporter
                 iv.UNITS_WEIGHT_KGS = false;
                 iv.UNITS_WEIGHT_LBS = true;
                 iv.UNITS_WEIGHT = "LBS";
+                //Debug
                 textBox14.Text = "WEIGHT-KGS: " + iv.UNITS_WEIGHT_KGS + iv.UNITS_WEIGHT;
                 textBox15.Text = "WEIGHT-LBS: " + iv.UNITS_WEIGHT_LBS + iv.UNITS_WEIGHT;
             }
@@ -265,6 +268,7 @@ namespace PCF_Exporter
                 iv.UNITS_WEIGHT_LENGTH_METER = true;
                 iv.UNITS_WEIGHT_LENGTH_FEET = false;
                 iv.UNITS_WEIGHT_LENGTH = "METER";
+                //Debug
                 textBox16.Text = "WEIGHT-L-M: " + iv.UNITS_WEIGHT_LENGTH_METER + iv.UNITS_WEIGHT_LENGTH;
                 textBox17.Text = "WEIGHT-L-F: " + iv.UNITS_WEIGHT_LENGTH_FEET + iv.UNITS_WEIGHT_LENGTH;
             }
@@ -277,6 +281,7 @@ namespace PCF_Exporter
                 iv.UNITS_WEIGHT_LENGTH_METER = false;
                 iv.UNITS_WEIGHT_LENGTH_FEET = true;
                 iv.UNITS_WEIGHT_LENGTH = "FEET";
+                //Debug
                 textBox16.Text = "WEIGHT-L-M: " + iv.UNITS_WEIGHT_LENGTH_METER + iv.UNITS_WEIGHT_LENGTH;
                 textBox17.Text = "WEIGHT-L-F: " + iv.UNITS_WEIGHT_LENGTH_FEET + iv.UNITS_WEIGHT_LENGTH;
             }
