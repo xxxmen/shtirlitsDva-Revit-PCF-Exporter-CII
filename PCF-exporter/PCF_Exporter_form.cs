@@ -306,5 +306,11 @@ namespace PCF_Exporter
                 textBox17.Text = "WEIGHT-L-F: " + iv.UNITS_WEIGHT_LENGTH_FEET + iv.UNITS_WEIGHT_LENGTH;
             }
         }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            ScheduleCreator SC = new ScheduleCreator();
+            SC.CreateAllItemsSchedule(_uidoc);
+        }
     }
 }

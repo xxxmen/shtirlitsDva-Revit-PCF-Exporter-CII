@@ -347,7 +347,7 @@ namespace PCF_Functions
 
         public static string PipeSizeToInch(double l)
         {
-            return string.Format("{0}", Math.Round(l*2*_foot_to_inch));
+            return string.Format("{0}", RealString(l*2*_foot_to_inch));
         }
 
         public static string AngleToPCF(double l)
@@ -388,6 +388,26 @@ namespace PCF_Functions
             StringBuilder sbEndWriter = new StringBuilder();
             XYZ connectorOrigin = connector.Origin;
             double connectorSize = connector.Radius;
+            sbEndWriter.Append("    END-POINT ");
+            if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(connectorOrigin));
+            if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(connectorOrigin));
+            sbEndWriter.Append(" ");
+            if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
+            if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
+            if (string.IsNullOrEmpty(element.LookupParameter(InputVars.PCF_ELEM_END2).AsString()) == false)
+            {
+                sbEndWriter.Append(" ");
+                sbEndWriter.Append(element.LookupParameter(InputVars.PCF_ELEM_END2).AsString());
+            }
+            sbEndWriter.AppendLine();
+            return sbEndWriter;
+        }
+
+        public static StringBuilder WriteEP2(Element element, XYZ connector, double size)
+        {
+            StringBuilder sbEndWriter = new StringBuilder();
+            XYZ connectorOrigin = connector;
+            double connectorSize = size;
             sbEndWriter.Append("    END-POINT ");
             if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(connectorOrigin));
             if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(connectorOrigin));
@@ -454,5 +474,36 @@ namespace PCF_Functions
             return sbEndWriter;
         }
 
+    }
+
+    public class ScheduleCreator
+    {
+        private UIDocument _uiDoc;
+        public ICollection<ViewSchedule> CreateAllItemsSchedule(UIDocument uiDoc)
+        {
+            _uiDoc = uiDoc;
+            Document doc = uiDoc.Document;
+
+            Transaction t = new Transaction(doc, "Create all items schedules");
+            t.Start();
+
+            List<ViewSchedule> schedules = new List<ViewSchedule>();
+
+            ViewSchedule schedule = ViewSchedule.CreateSchedule(doc,ElementId.InvalidElementId,ElementId.InvalidElementId);
+            schedule.Name = "PCF ALL Elements";
+            schedules.Add(schedule);
+
+            foreach (SchedulableField schField in schedule.Definition.GetSchedulableFields())
+            {
+                
+            }
+
+           
+
+
+
+
+            return schedules;
+        }
     }
 }

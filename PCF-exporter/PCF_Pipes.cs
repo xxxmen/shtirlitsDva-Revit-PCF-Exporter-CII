@@ -38,20 +38,12 @@ namespace PCF_Pipes
                 //Get connector set for the pipes
                 ConnectorSet connectorSet = pipe.ConnectorManager.Connectors;
                 //Filter out non-end types of connectors
-                IEnumerable<Connector> connectorEnd = from Connector connector in connectorSet 
+                IList<Connector> connectorEnd = (from Connector connector in connectorSet 
                                    where connector.ConnectorType.ToString() == "End"
-                                   select connector;
-                foreach (Connector connector in connectorEnd)
-                {
-                    XYZ connectorOrigin = connector.Origin;
-                    double connectorSize = connector.Radius;
+                                   select connector).ToList();
 
-                    sbPipes.Append("    END-POINT ");
-                    sbPipes.Append(Conversion.PointStringMm(connectorOrigin));
-                    sbPipes.Append(" ");
-                    sbPipes.Append(Conversion.PipeSizeToMm(connectorSize));
-                    sbPipes.AppendLine();
-                }
+                sbPipes.Append(EndWriter.WriteEP1(element, connectorEnd.First()));
+                sbPipes.Append(EndWriter.WriteEP2(element, connectorEnd.Last()));
 
                 sbPipes.Append("    MATERIAL-IDENTIFIER ");
                 sbPipes.Append(element.LookupParameter(InputVars.PCF_MAT_ID).AsInteger());

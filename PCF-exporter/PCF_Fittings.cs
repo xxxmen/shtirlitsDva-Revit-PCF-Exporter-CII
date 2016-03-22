@@ -181,11 +181,7 @@ namespace PCF_Fittings
                             }
                         }
 
-                        sbFittings.Append("    END-POINT ");
-                        sbFittings.Append(Conversion.PointStringMm(endPointAnalyzed));
-                        sbFittings.Append(" ");
-                        sbFittings.Append(Conversion.PipeSizeToMm(connectorSizeFlangeBlind));
-                        sbFittings.AppendLine();
+                        sbFittings.Append(EndWriter.WriteEP2(element, endPointAnalyzed, connectorSizeFlangeBlind));
 
                         break;
 

@@ -138,7 +138,7 @@ namespace PCF_Taps
                 double dist1 = elementOrigin.DistanceTo(end1.Origin); double dist2 = elementOrigin.DistanceTo(end2.Origin);
                 Connector tapConnector = null;
 
-                if (dist1 > dist2) tapConnector = end2; else tapConnector = end1;
+                tapConnector = dist1 > dist2 ? end2 : end1;
 
                 XYZ connectorOrigin = tapConnector.Origin;
                 double connectorSize = tapConnector.Radius;
