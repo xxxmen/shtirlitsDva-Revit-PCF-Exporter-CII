@@ -48,6 +48,12 @@ namespace PCF_Exporter
             _doc = _uidoc.Document;
             _message = message;
 
+            //Init excel path
+            _excelPath = mySettings.Default.excelPath;
+            textBox20.Text = _excelPath;
+            PCF_DATA_TABLE_NAMES = mySettings.Default.excelWorksheetNames;
+            comboBox1.DataSource = PCF_DATA_TABLE_NAMES;
+
             //Init Scope
             iv.SysAbbr = mySettings.Default.textBox3SpecificPipeline;
             iv.ExportAll = mySettings.Default.radioButton1AllPipelines;
@@ -73,6 +79,10 @@ namespace PCF_Exporter
             iv.UNITS_WEIGHT_LENGTH_FEET = mySettings.Default.radioButton10WeightLengthF;
             iv.UNITS_WEIGHT_LENGTH = iv.UNITS_WEIGHT_LENGTH_METER ? "METER" : "FEET";
 
+            //Init output path
+            iv.OutputDirectoryFilePath = mySettings.Default.textBox5OutputPath;
+            textBox5.Text = iv.OutputDirectoryFilePath;
+
             //Debug
             textBox8.Text = "SysAbbr: " + iv.SysAbbr;
             textBox11.Text = "ExportAll: " + iv.ExportAll;
@@ -90,18 +100,27 @@ namespace PCF_Exporter
         {
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
+                //Get excel file
                 _excelPath = openFileDialog1.FileName;
+                textBox20.Text = _excelPath;
+                //Save excel file to settings
+                mySettings.Default.excelPath = _excelPath;
+                //Proceed to read the file
                 FileStream stream = File.Open(_excelPath, FileMode.Open, FileAccess.Read);
                 IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
+                //First row is column names in dataset
                 excelReader.IsFirstRowAsColumnNames = true;
                 DATA_SET = excelReader.AsDataSet();
                 DataTableCollection PCF_DATA_TABLES = DATA_SET.Tables;
+                PCF_DATA_TABLE_NAMES.Clear();
                 foreach (DataTable VARIABLE in PCF_DATA_TABLES)
                 {
                     PCF_DATA_TABLE_NAMES.Add(VARIABLE.TableName);
                 }
                 excelReader.Close();
                 comboBox1.DataSource = PCF_DATA_TABLE_NAMES;
+                //Save to settings
+                mySettings.Default.excelWorksheetNames = PCF_DATA_TABLE_NAMES;
             }
         }
 
@@ -174,6 +193,7 @@ namespace PCF_Exporter
             {
             iv.OutputDirectoryFilePath = fbd.SelectedPath;
             textBox5.Text = iv.OutputDirectoryFilePath;
+            mySettings.Default.textBox5OutputPath = iv.OutputDirectoryFilePath;
             }
         }
 

@@ -154,5 +154,40 @@ namespace PCF_Functions.Properties {
                 this["radioButton10WeightLengthF"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string textBox5OutputPath {
+            get {
+                return ((string)(this["textBox5OutputPath"]));
+            }
+            set {
+                this["textBox5OutputPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string excelPath {
+            get {
+                return ((string)(this["excelPath"]));
+            }
+            set {
+                this["excelPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Generic.IList<System.String> excelWorksheetNames {
+            get {
+                return ((global::System.Collections.Generic.IList<System.String>)(this["excelWorksheetNames"]));
+            }
+            set {
+                this["excelWorksheetNames"] = value;
+            }
+        }
     }
 }

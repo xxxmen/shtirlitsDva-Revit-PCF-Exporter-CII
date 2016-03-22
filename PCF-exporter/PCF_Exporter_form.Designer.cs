@@ -55,12 +55,29 @@ namespace PCF_Exporter
             this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
+            this.textBox19 = new System.Windows.Forms.TextBox();
+            this.textBox18 = new System.Windows.Forms.TextBox();
+            this.textBox17 = new System.Windows.Forms.TextBox();
+            this.textBox16 = new System.Windows.Forms.TextBox();
+            this.textBox15 = new System.Windows.Forms.TextBox();
+            this.textBox14 = new System.Windows.Forms.TextBox();
             this.textBox13 = new System.Windows.Forms.TextBox();
             this.textBox12 = new System.Windows.Forms.TextBox();
             this.textBox11 = new System.Windows.Forms.TextBox();
             this.textBox10 = new System.Windows.Forms.TextBox();
             this.textBox9 = new System.Windows.Forms.TextBox();
             this.textBox8 = new System.Windows.Forms.TextBox();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.button6 = new System.Windows.Forms.Button();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.button5 = new System.Windows.Forms.Button();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
+            this.textBox20 = new System.Windows.Forms.TextBox();
             this.groupBox6 = new PCF_Functions.RadioBox();
             this.groupBox10 = new PCF_Functions.RadioBox();
             this.radioButton10 = new System.Windows.Forms.RadioButton();
@@ -81,37 +98,21 @@ namespace PCF_Exporter
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.button6 = new System.Windows.Forms.Button();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.button5 = new System.Windows.Forms.Button();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
-            this.textBox14 = new System.Windows.Forms.TextBox();
-            this.textBox15 = new System.Windows.Forms.TextBox();
-            this.textBox16 = new System.Windows.Forms.TextBox();
-            this.textBox17 = new System.Windows.Forms.TextBox();
-            this.textBox18 = new System.Windows.Forms.TextBox();
-            this.textBox19 = new System.Windows.Forms.TextBox();
             this.Tabs.SuspendLayout();
             this.TabSetup.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBox11.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.groupBox9.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.tabPage3.SuspendLayout();
-            this.groupBox5.SuspendLayout();
-            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // Tabs
@@ -141,6 +142,7 @@ namespace PCF_Exporter
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.textBox20);
             this.groupBox2.Controls.Add(this.textBox7);
             this.groupBox2.Controls.Add(this.comboBox1);
             this.groupBox2.Controls.Add(this.button4);
@@ -149,7 +151,7 @@ namespace PCF_Exporter
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(3, 135);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(369, 195);
+            this.groupBox2.Size = new System.Drawing.Size(369, 224);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "PCF parameter INITIALIZATION";
@@ -157,7 +159,7 @@ namespace PCF_Exporter
             // textBox7
             // 
             this.textBox7.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox7.Location = new System.Drawing.Point(71, 72);
+            this.textBox7.Location = new System.Drawing.Point(71, 97);
             this.textBox7.Multiline = true;
             this.textBox7.Name = "textBox7";
             this.textBox7.Size = new System.Drawing.Size(220, 34);
@@ -169,7 +171,7 @@ namespace PCF_Exporter
             // 
             this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(99, 112);
+            this.comboBox1.Location = new System.Drawing.Point(99, 137);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(162, 21);
             this.comboBox1.TabIndex = 5;
@@ -187,7 +189,7 @@ namespace PCF_Exporter
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(202, 139);
+            this.button7.Location = new System.Drawing.Point(204, 164);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(162, 46);
             this.button7.TabIndex = 2;
@@ -197,7 +199,7 @@ namespace PCF_Exporter
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(4, 139);
+            this.button3.Location = new System.Drawing.Point(6, 164);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(162, 46);
             this.button3.TabIndex = 2;
@@ -272,6 +274,48 @@ namespace PCF_Exporter
             this.groupBox11.TabStop = false;
             this.groupBox11.Text = "DEBUG";
             // 
+            // textBox19
+            // 
+            this.textBox19.Location = new System.Drawing.Point(182, 150);
+            this.textBox19.Name = "textBox19";
+            this.textBox19.Size = new System.Drawing.Size(169, 20);
+            this.textBox19.TabIndex = 5;
+            // 
+            // textBox18
+            // 
+            this.textBox18.Location = new System.Drawing.Point(6, 150);
+            this.textBox18.Name = "textBox18";
+            this.textBox18.Size = new System.Drawing.Size(169, 20);
+            this.textBox18.TabIndex = 5;
+            // 
+            // textBox17
+            // 
+            this.textBox17.Location = new System.Drawing.Point(182, 125);
+            this.textBox17.Name = "textBox17";
+            this.textBox17.Size = new System.Drawing.Size(169, 20);
+            this.textBox17.TabIndex = 5;
+            // 
+            // textBox16
+            // 
+            this.textBox16.Location = new System.Drawing.Point(6, 125);
+            this.textBox16.Name = "textBox16";
+            this.textBox16.Size = new System.Drawing.Size(169, 20);
+            this.textBox16.TabIndex = 5;
+            // 
+            // textBox15
+            // 
+            this.textBox15.Location = new System.Drawing.Point(182, 99);
+            this.textBox15.Name = "textBox15";
+            this.textBox15.Size = new System.Drawing.Size(169, 20);
+            this.textBox15.TabIndex = 5;
+            // 
+            // textBox14
+            // 
+            this.textBox14.Location = new System.Drawing.Point(6, 99);
+            this.textBox14.Name = "textBox14";
+            this.textBox14.Size = new System.Drawing.Size(169, 20);
+            this.textBox14.TabIndex = 5;
+            // 
             // textBox13
             // 
             this.textBox13.Location = new System.Drawing.Point(181, 73);
@@ -313,6 +357,114 @@ namespace PCF_Exporter
             this.textBox8.Name = "textBox8";
             this.textBox8.Size = new System.Drawing.Size(171, 20);
             this.textBox8.TabIndex = 0;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.groupBox5);
+            this.tabPage3.Controls.Add(this.groupBox4);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(375, 477);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Run";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.button6);
+            this.groupBox5.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox5.Location = new System.Drawing.Point(3, 110);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(369, 100);
+            this.groupBox5.TabIndex = 1;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Export PCF data";
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(103, 28);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(162, 47);
+            this.button6.TabIndex = 0;
+            this.button6.Text = "Export PCF";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.textBox6);
+            this.groupBox4.Controls.Add(this.textBox5);
+            this.groupBox4.Controls.Add(this.button5);
+            this.groupBox4.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox4.Location = new System.Drawing.Point(3, 3);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(369, 107);
+            this.groupBox4.TabIndex = 0;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Output directory";
+            // 
+            // textBox6
+            // 
+            this.textBox6.BackColor = System.Drawing.SystemColors.Window;
+            this.textBox6.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox6.Location = new System.Drawing.Point(6, 69);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.ReadOnly = true;
+            this.textBox6.Size = new System.Drawing.Size(205, 13);
+            this.textBox6.TabIndex = 5;
+            this.textBox6.Text = "Selected output path:";
+            this.textBox6.Visible = false;
+            // 
+            // textBox5
+            // 
+            this.textBox5.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox5.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::PCF_Functions.Properties.Settings.Default, "textBox5OutputPath", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBox5.Location = new System.Drawing.Point(3, 88);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.ReadOnly = true;
+            this.textBox5.Size = new System.Drawing.Size(363, 13);
+            this.textBox5.TabIndex = 4;
+            this.textBox5.Text = global::PCF_Functions.Properties.Settings.Default.textBox5OutputPath;
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(103, 19);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(162, 46);
+            this.button5.TabIndex = 3;
+            this.button5.Text = "Select output directory";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(375, 477);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Help";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // openFileDialog2
+            // 
+            this.openFileDialog2.FileName = "openFileDialog1";
+            // 
+            // textBox20
+            // 
+            this.textBox20.BackColor = System.Drawing.SystemColors.Window;
+            this.textBox20.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox20.Location = new System.Drawing.Point(3, 73);
+            this.textBox20.Name = "textBox20";
+            this.textBox20.ReadOnly = true;
+            this.textBox20.Size = new System.Drawing.Size(363, 13);
+            this.textBox20.TabIndex = 7;
+            this.textBox20.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // groupBox6
             // 
@@ -572,143 +724,6 @@ namespace PCF_Exporter
             this.textBox1.TabIndex = 0;
             this.textBox1.Text = "Pipelines are defined by System Abbreviation parameter in Revit.";
             // 
-            // tabPage3
-            // 
-            this.tabPage3.Controls.Add(this.groupBox5);
-            this.tabPage3.Controls.Add(this.groupBox4);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(375, 477);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Run";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // groupBox5
-            // 
-            this.groupBox5.Controls.Add(this.button6);
-            this.groupBox5.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox5.Location = new System.Drawing.Point(3, 110);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(369, 100);
-            this.groupBox5.TabIndex = 1;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Export PCF data";
-            // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(103, 28);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(162, 47);
-            this.button6.TabIndex = 0;
-            this.button6.Text = "Export PCF";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.textBox6);
-            this.groupBox4.Controls.Add(this.textBox5);
-            this.groupBox4.Controls.Add(this.button5);
-            this.groupBox4.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox4.Location = new System.Drawing.Point(3, 3);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(369, 107);
-            this.groupBox4.TabIndex = 0;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Output directory";
-            // 
-            // textBox6
-            // 
-            this.textBox6.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox6.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox6.Location = new System.Drawing.Point(6, 69);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.ReadOnly = true;
-            this.textBox6.Size = new System.Drawing.Size(205, 13);
-            this.textBox6.TabIndex = 5;
-            this.textBox6.Text = "Selected output path:";
-            this.textBox6.Visible = false;
-            // 
-            // textBox5
-            // 
-            this.textBox5.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox5.Location = new System.Drawing.Point(3, 88);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.ReadOnly = true;
-            this.textBox5.Size = new System.Drawing.Size(363, 13);
-            this.textBox5.TabIndex = 4;
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(103, 19);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(162, 46);
-            this.button5.TabIndex = 3;
-            this.button5.Text = "Select output directory";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
-            // 
-            // tabPage4
-            // 
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(375, 477);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Help";
-            this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // openFileDialog2
-            // 
-            this.openFileDialog2.FileName = "openFileDialog1";
-            // 
-            // textBox14
-            // 
-            this.textBox14.Location = new System.Drawing.Point(6, 99);
-            this.textBox14.Name = "textBox14";
-            this.textBox14.Size = new System.Drawing.Size(169, 20);
-            this.textBox14.TabIndex = 5;
-            // 
-            // textBox15
-            // 
-            this.textBox15.Location = new System.Drawing.Point(182, 99);
-            this.textBox15.Name = "textBox15";
-            this.textBox15.Size = new System.Drawing.Size(169, 20);
-            this.textBox15.TabIndex = 5;
-            // 
-            // textBox16
-            // 
-            this.textBox16.Location = new System.Drawing.Point(6, 125);
-            this.textBox16.Name = "textBox16";
-            this.textBox16.Size = new System.Drawing.Size(169, 20);
-            this.textBox16.TabIndex = 5;
-            // 
-            // textBox17
-            // 
-            this.textBox17.Location = new System.Drawing.Point(182, 125);
-            this.textBox17.Name = "textBox17";
-            this.textBox17.Size = new System.Drawing.Size(169, 20);
-            this.textBox17.TabIndex = 5;
-            // 
-            // textBox18
-            // 
-            this.textBox18.Location = new System.Drawing.Point(6, 150);
-            this.textBox18.Name = "textBox18";
-            this.textBox18.Size = new System.Drawing.Size(169, 20);
-            this.textBox18.TabIndex = 5;
-            // 
-            // textBox19
-            // 
-            this.textBox19.Location = new System.Drawing.Point(182, 150);
-            this.textBox19.Name = "textBox19";
-            this.textBox19.Size = new System.Drawing.Size(169, 20);
-            this.textBox19.TabIndex = 5;
-            // 
             // PCF_Exporter_form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -725,6 +740,10 @@ namespace PCF_Exporter
             this.tabPage2.ResumeLayout(false);
             this.groupBox11.ResumeLayout(false);
             this.groupBox11.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox10.ResumeLayout(false);
             this.groupBox10.PerformLayout();
@@ -736,10 +755,6 @@ namespace PCF_Exporter
             this.groupBox7.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -801,5 +816,6 @@ namespace PCF_Exporter
         private System.Windows.Forms.TextBox textBox17;
         private System.Windows.Forms.TextBox textBox18;
         private System.Windows.Forms.TextBox textBox19;
+        private System.Windows.Forms.TextBox textBox20;
     }
 }
