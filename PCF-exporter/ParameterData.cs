@@ -22,22 +22,45 @@ namespace PCF_Functions
 {
     public class ParameterDefinition
     {
+        public readonly IList<ParameterDefinition> ElementParametersAll = new List<ParameterDefinition>();
+        public readonly IList<ParameterDefinition> PipelineParametersAll = new List<ParameterDefinition>();
         public ParameterDefinition()
         {
-            IList<ParameterDefinition> elementParametersAll = new List<ParameterDefinition>()
-            {
-                new ParameterDefinition(pd.PCF_ELEM_TYPE, pd.PCF_ELEM_TYPE_parameterType, pd.PCF_ELEM_TYPE_GUID),
-                new ParameterDefinition(pd.PCF_ELEM_SKEY, pd.PCF_ELEM_SKEY_parameterType, pd.PCF_ELEM_SKEY_GUID),
-                new ParameterDefinition(pd.PCF_ELEM_CATEGORY, pd.PCF_ELEM_CATEGORY_parameterType, pd.PCF_ELEM_CATEGORY_GUID),
-                new ParameterDefinition(pd.PCF_ELEM_END1, pd.PCF_ELEM_END1_parameterType, pd.PCF_ELEM_END1_GUID),
-                new ParameterDefinition(pd.PCF_ELEM_END2, pd.PCF_ELEM_END2_parameterType, pd.PCF_ELEM_END2_GUID),
-                new ParameterDefinition(pd.PCF_ELEM_BP1, pd.PCF_ELEM_BP1_parameterType, pd.PCF_ELEM_BP1_GUID),
-                new ParameterDefinition(pd.PCF_MAT_DESCR, pd.PCF_MAT_DESCR_parameterType, pd.PCF_MAT_DESCR_GUID),
-                new ParameterDefinition(pd.PCF_ELEM_TAP1, pd.PCF_ELEM_TAP1_parameterType, pd.PCF_ELEM_TAP1_GUID),
-                new ParameterDefinition(pd.PCF_ELEM_TAP2, pd.PCF_ELEM_TAP2_parameterType, pd.PCF_ELEM_TAP2_GUID),
-                new ParameterDefinition(pd.PCF_ELEM_TAP3, pd.PCF_ELEM_TAP3_parameterType, pd.PCF_ELEM_TAP3_GUID),
+            //Populate the list with element parameters
+            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_TYPE, pd.PCF_ELEM_TYPE_parameterType, pd.PCF_ELEM_TYPE_GUID));
+            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_SKEY, pd.PCF_ELEM_SKEY_parameterType, pd.PCF_ELEM_SKEY_GUID));
+            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_SPEC, pd.PCF_ELEM_SPEC_parameterType, pd.PCF_ELEM_SPEC_GUID));
+            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_CATEGORY, pd.PCF_ELEM_CATEGORY_parameterType, pd.PCF_ELEM_CATEGORY_GUID));
+            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_END1, pd.PCF_ELEM_END1_parameterType, pd.PCF_ELEM_END1_GUID));
+            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_END2, pd.PCF_ELEM_END2_parameterType, pd.PCF_ELEM_END2_GUID));
+            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_BP1, pd.PCF_ELEM_BP1_parameterType, pd.PCF_ELEM_BP1_GUID));
+            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_MAT_DESCR, pd.PCF_MAT_DESCR_parameterType, pd.PCF_MAT_DESCR_GUID));
+            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_TAP1, pd.PCF_ELEM_TAP1_parameterType, pd.PCF_ELEM_TAP1_GUID));
+            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_TAP2, pd.PCF_ELEM_TAP2_parameterType, pd.PCF_ELEM_TAP2_GUID));
+            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_TAP3, pd.PCF_ELEM_TAP3_parameterType, pd.PCF_ELEM_TAP3_GUID));
+            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_COMPID, pd.PCF_ELEM_COMPID_parameterType, pd.PCF_ELEM_COMPID_GUID));
+            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_MAT_ID, pd.PCF_MAT_ID_parameterType, pd.PCF_MAT_ID_GUID));
 
-            };
+            //Populate the list with pipeline parameters
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_AREA, pd.PCF_PIPL_AREA_parameterType, pd.PCF_PIPL_AREA_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_DATE, pd.PCF_PIPL_DATE_parameterType, pd.PCF_PIPL_DATE_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_GRAV, pd.PCF_PIPL_GRAV_parameterType, pd.PCF_PIPL_GRAV_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_INSUL, pd.PCF_PIPL_INSUL_parameterType, pd.PCF_PIPL_INSUL_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_JACKET, pd.PCF_PIPL_JACKET_parameterType, pd.PCF_PIPL_JACKET_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_MISC1, pd.PCF_PIPL_MISC1_parameterType, pd.PCF_PIPL_MISC1_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_MISC2, pd.PCF_PIPL_MISC2_parameterType, pd.PCF_PIPL_MISC2_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_MISC3, pd.PCF_PIPL_MISC3_parameterType, pd.PCF_PIPL_MISC3_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_MISC4, pd.PCF_PIPL_MISC4_parameterType, pd.PCF_PIPL_MISC4_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_MISC5, pd.PCF_PIPL_MISC5_parameterType, pd.PCF_PIPL_MISC5_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_NOMCLASS, pd.PCF_PIPL_NOMCLASS_parameterType, pd.PCF_PIPL_NOMCLASS_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_PAINT, pd.PCF_PIPL_PAINT_parameterType, pd.PCF_PIPL_PAINT_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_PREFIX, pd.PCF_PIPL_PREFIX_parameterType, pd.PCF_PIPL_PREFIX_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_PROJID, pd.PCF_PIPL_PROJID_parameterType, pd.PCF_PIPL_PROJID_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_REV, pd.PCF_PIPL_REV_parameterType, pd.PCF_PIPL_REV_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_SPEC, pd.PCF_PIPL_SPEC_parameterType, pd.PCF_PIPL_SPEC_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_TEMP, pd.PCF_PIPL_TEMP_parameterType, pd.PCF_PIPL_TEMP_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_TRACING, pd.PCF_PIPL_TRACING_parameterType, pd.PCF_PIPL_TRACING_GUID));
+            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_TYPE, pd.PCF_PIPL_TYPE_parameterType, pd.PCF_PIPL_TYPE_GUID));
         }
 
         public ParameterDefinition(string pName, ParameterType pType, Guid pGuid)
@@ -66,6 +89,10 @@ namespace PCF_Functions
         public static string PCF_ELEM_COMPID = "PCF_ELEM_COMPID";
         public static ParameterType PCF_ELEM_COMPID_parameterType = ParameterType.Integer;
         public static Guid PCF_ELEM_COMPID_GUID = new Guid("876d2334-f860-4b5a-8c24-507e2c545fc0");
+
+        public static string PCF_ELEM_SPEC = "PCF_ELEM_SPEC";
+        public static ParameterType PCF_ELEM_SPEC_parameterType = ParameterType.Text;
+        public static Guid PCF_ELEM_SPEC_GUID = new Guid("90be8246-25f7-487d-b352-554f810fcaa7");
 
         public static string PCF_MAT_DESCR = "PCF_MAT_DESCR";
         public static ParameterType PCF_MAT_DESCR_parameterType = ParameterType.Text;
@@ -187,20 +214,6 @@ namespace PCF_Functions
             PCF_ELEM_END2, PCF_ELEM_TAP1, PCF_ELEM_TAP2, PCF_ELEM_TAP3
         };
 
-        public static IList<Guid> ParameterGUID = new List<Guid>()
-        {
-            PCF_ELEM_CATEGORY_GUID, PCF_ELEM_BP1_GUID, PCF_ELEM_COMPID_GUID, PCF_MAT_DESCR_GUID, PCF_MAT_ID_GUID,
-            PCF_ELEM_TYPE_GUID, PCF_ELEM_SKEY_GUID, PCF_ELEM_END1_GUID, PCF_ELEM_END2_GUID, PCF_ELEM_TAP1_GUID, PCF_ELEM_TAP2_GUID,
-            PCF_ELEM_TAP3_GUID
-        };
-
-        public static IList<ParameterType> parameterTypes = new List<ParameterType>()
-        {
-            PCF_ELEM_CATEGORY_parameterType, PCF_ELEM_BP1_parameterType, PCF_ELEM_COMPID_parameterType, PCF_MAT_DESCR_parameterType, PCF_MAT_ID_parameterType,
-            PCF_ELEM_TYPE_parameterType, PCF_ELEM_SKEY_parameterType, PCF_ELEM_END1_parameterType, PCF_ELEM_END2_parameterType, PCF_ELEM_TAP1_parameterType,
-            PCF_ELEM_TAP2_parameterType, PCF_ELEM_TAP3_parameterType
-        };
-
         public static IList<string> parameterNames = new List<string>()
         {
             PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_CATEGORY, PCF_ELEM_END1,
@@ -214,21 +227,35 @@ namespace PCF_Functions
             PCF_PIPL_TEMP, PCF_PIPL_TRACING, PCF_PIPL_TYPE
         };
 
-        public static IList<Guid> parameterGuidPipeline = new List<Guid>()
-        {
-            PCF_PIPL_AREA_GUID, PCF_PIPL_DATE_GUID, PCF_PIPL_GRAV_GUID, PCF_PIPL_INSUL_GUID, PCF_PIPL_JACKET_GUID, PCF_PIPL_MISC1_GUID,
-            PCF_PIPL_MISC2_GUID, PCF_PIPL_MISC3_GUID, PCF_PIPL_MISC4_GUID, PCF_PIPL_MISC5_GUID, PCF_PIPL_NOMCLASS_GUID, PCF_PIPL_PAINT_GUID,
-            PCF_PIPL_PREFIX_GUID, PCF_PIPL_PROJID_GUID, PCF_PIPL_REV_GUID, PCF_PIPL_SPEC_GUID, PCF_PIPL_TEMP_GUID, PCF_PIPL_TRACING_GUID,
-            PCF_PIPL_TYPE_GUID
-        };
+        //public static IList<Guid> ParameterGUID = new List<Guid>()
+        //{
+        //    PCF_ELEM_CATEGORY_GUID, PCF_ELEM_BP1_GUID, PCF_ELEM_COMPID_GUID, PCF_MAT_DESCR_GUID, PCF_MAT_ID_GUID,
+        //    PCF_ELEM_TYPE_GUID, PCF_ELEM_SKEY_GUID, PCF_ELEM_END1_GUID, PCF_ELEM_END2_GUID, PCF_ELEM_TAP1_GUID, PCF_ELEM_TAP2_GUID,
+        //    PCF_ELEM_TAP3_GUID
+        //};
 
-        public static IList<ParameterType> parameterTypesPipeline = new List<ParameterType>()
-        {
-            PCF_PIPL_AREA_parameterType, PCF_PIPL_DATE_parameterType, PCF_PIPL_GRAV_parameterType, PCF_PIPL_INSUL_parameterType,
-            PCF_PIPL_JACKET_parameterType, PCF_PIPL_MISC1_parameterType, PCF_PIPL_MISC2_parameterType, PCF_PIPL_MISC3_parameterType,
-            PCF_PIPL_MISC4_parameterType, PCF_PIPL_MISC5_parameterType, PCF_PIPL_NOMCLASS_parameterType, PCF_PIPL_PAINT_parameterType,
-            PCF_PIPL_PREFIX_parameterType, PCF_PIPL_PROJID_parameterType, PCF_PIPL_REV_parameterType, PCF_PIPL_SPEC_parameterType,
-            PCF_PIPL_TEMP_parameterType, PCF_PIPL_TRACING_parameterType, PCF_PIPL_TYPE_parameterType
-        };
+        //public static IList<ParameterType> parameterTypes = new List<ParameterType>()
+        //{
+        //    PCF_ELEM_CATEGORY_parameterType, PCF_ELEM_BP1_parameterType, PCF_ELEM_COMPID_parameterType, PCF_MAT_DESCR_parameterType, PCF_MAT_ID_parameterType,
+        //    PCF_ELEM_TYPE_parameterType, PCF_ELEM_SKEY_parameterType, PCF_ELEM_END1_parameterType, PCF_ELEM_END2_parameterType, PCF_ELEM_TAP1_parameterType,
+        //    PCF_ELEM_TAP2_parameterType, PCF_ELEM_TAP3_parameterType
+        //};
+
+        //public static IList<Guid> parameterGuidPipeline = new List<Guid>()
+        //{
+        //    PCF_PIPL_AREA_GUID, PCF_PIPL_DATE_GUID, PCF_PIPL_GRAV_GUID, PCF_PIPL_INSUL_GUID, PCF_PIPL_JACKET_GUID, PCF_PIPL_MISC1_GUID,
+        //    PCF_PIPL_MISC2_GUID, PCF_PIPL_MISC3_GUID, PCF_PIPL_MISC4_GUID, PCF_PIPL_MISC5_GUID, PCF_PIPL_NOMCLASS_GUID, PCF_PIPL_PAINT_GUID,
+        //    PCF_PIPL_PREFIX_GUID, PCF_PIPL_PROJID_GUID, PCF_PIPL_REV_GUID, PCF_PIPL_SPEC_GUID, PCF_PIPL_TEMP_GUID, PCF_PIPL_TRACING_GUID,
+        //    PCF_PIPL_TYPE_GUID
+        //};
+
+        //public static IList<ParameterType> parameterTypesPipeline = new List<ParameterType>()
+        //{
+        //    PCF_PIPL_AREA_parameterType, PCF_PIPL_DATE_parameterType, PCF_PIPL_GRAV_parameterType, PCF_PIPL_INSUL_parameterType,
+        //    PCF_PIPL_JACKET_parameterType, PCF_PIPL_MISC1_parameterType, PCF_PIPL_MISC2_parameterType, PCF_PIPL_MISC3_parameterType,
+        //    PCF_PIPL_MISC4_parameterType, PCF_PIPL_MISC5_parameterType, PCF_PIPL_NOMCLASS_parameterType, PCF_PIPL_PAINT_parameterType,
+        //    PCF_PIPL_PREFIX_parameterType, PCF_PIPL_PROJID_parameterType, PCF_PIPL_REV_parameterType, PCF_PIPL_SPEC_parameterType,
+        //    PCF_PIPL_TEMP_parameterType, PCF_PIPL_TRACING_parameterType, PCF_PIPL_TYPE_parameterType
+        //};
     }
 }

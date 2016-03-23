@@ -15,6 +15,7 @@ using Autodesk.Revit.DB.Structure;
 
 using PCF_Functions;
 using PCF_Taps;
+using pd = PCF_Functions.ParameterData;
 
 namespace PCF_Accessories
 {
@@ -29,16 +30,16 @@ namespace PCF_Accessories
             doc = document;
             //The list of fittings, sorted by TYPE then SKEY
             accessoriesList = elements.
-                OrderBy(e => e.LookupParameter(ParameterData.PCF_ELEM_TYPE).AsString()).
-                ThenBy(e => e.LookupParameter(ParameterData.PCF_ELEM_SKEY).AsString());
+                OrderBy(e => e.LookupParameter(pd.PCF_ELEM_TYPE).AsString()).
+                ThenBy(e => e.LookupParameter(pd.PCF_ELEM_SKEY).AsString());
 
             sbAccessories = new StringBuilder();
             foreach (Element element in accessoriesList)
             {
-                sbAccessories.Append(element.LookupParameter(ParameterData.PCF_ELEM_TYPE).AsString());
+                sbAccessories.Append(element.LookupParameter(pd.PCF_ELEM_TYPE).AsString());
                 sbAccessories.AppendLine();
                 sbAccessories.Append("    COMPONENT-IDENTIFIER ");
-                sbAccessories.Append(element.LookupParameter(ParameterData.PCF_ELEM_COMPID).AsInteger());
+                sbAccessories.Append(element.LookupParameter(pd.PCF_ELEM_COMPID).AsInteger());
                 sbAccessories.AppendLine();
 
                 //Cast the elements gathered by the collector to FamilyInstances
@@ -50,7 +51,7 @@ namespace PCF_Accessories
                 ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
 
                 //Switch to different element type configurations
-                switch (element.LookupParameter(ParameterData.PCF_ELEM_TYPE).AsString())
+                switch (element.LookupParameter(pd.PCF_ELEM_TYPE).AsString())
                 {
                     case ("FILTER"):
                         //Process endpoints of the component
@@ -134,32 +135,32 @@ namespace PCF_Accessories
                 }
 
                 sbAccessories.Append("    SKEY ");
-                sbAccessories.Append(element.LookupParameter(ParameterData.PCF_ELEM_SKEY).AsString());
+                sbAccessories.Append(element.LookupParameter(pd.PCF_ELEM_SKEY).AsString());
                 sbAccessories.AppendLine();
                 sbAccessories.Append("    MATERIAL-IDENTIFIER ");
-                sbAccessories.Append(element.LookupParameter(ParameterData.PCF_MAT_ID).AsInteger());
+                sbAccessories.Append(element.LookupParameter(pd.PCF_MAT_ID).AsInteger());
                 sbAccessories.AppendLine();
                 sbAccessories.Append("    PIPING-SPEC ");
-                sbAccessories.Append(InputVars.PIPING_SPEC);
+                sbAccessories.Append(element.LookupParameter(pd.PCF_ELEM_SPEC).AsString());
                 sbAccessories.AppendLine();
                 sbAccessories.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
                 sbAccessories.Append(element.UniqueId);
                 sbAccessories.AppendLine();
 
                 //Process tap entries of the element if any
-                if (string.IsNullOrEmpty(element.LookupParameter(ParameterData.PCF_ELEM_TAP1).AsString()) == false)
+                if (string.IsNullOrEmpty(element.LookupParameter(pd.PCF_ELEM_TAP1).AsString()) == false)
                 {
-                    TapsWriter tapsWriter = new TapsWriter(element, ParameterData.PCF_ELEM_TAP1, doc);
+                    TapsWriter tapsWriter = new TapsWriter(element, pd.PCF_ELEM_TAP1, doc);
                     sbAccessories.Append(tapsWriter.tapsWriter);
                 }
-                if (string.IsNullOrEmpty(element.LookupParameter(ParameterData.PCF_ELEM_TAP2).AsString()) == false)
+                if (string.IsNullOrEmpty(element.LookupParameter(pd.PCF_ELEM_TAP2).AsString()) == false)
                 {
-                    TapsWriter tapsWriter = new TapsWriter(element, ParameterData.PCF_ELEM_TAP2, doc);
+                    TapsWriter tapsWriter = new TapsWriter(element, pd.PCF_ELEM_TAP2, doc);
                     sbAccessories.Append(tapsWriter.tapsWriter);
                 }
-                if (string.IsNullOrEmpty(element.LookupParameter(ParameterData.PCF_ELEM_TAP3).AsString()) == false)
+                if (string.IsNullOrEmpty(element.LookupParameter(pd.PCF_ELEM_TAP3).AsString()) == false)
                 {
-                    TapsWriter tapsWriter = new TapsWriter(element, ParameterData.PCF_ELEM_TAP3, doc);
+                    TapsWriter tapsWriter = new TapsWriter(element, pd.PCF_ELEM_TAP3, doc);
                     sbAccessories.Append(tapsWriter.tapsWriter);
                 }
 

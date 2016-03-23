@@ -48,6 +48,10 @@ namespace PCF_Exporter
             _doc = _uidoc.Document;
             _message = message;
 
+            //Parameter definition
+            ParameterDefinition PD = new ParameterDefinition();
+            IList<ParameterDefinition> ElementParameters = PD.ElementParametersAll;
+
             //Init excel path
             _excelPath = mySettings.Default.excelPath;
             textBox20.Text = _excelPath;

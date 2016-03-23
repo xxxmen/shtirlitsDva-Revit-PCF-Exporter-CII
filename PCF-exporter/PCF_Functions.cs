@@ -61,24 +61,9 @@ namespace PCF_Functions
         public const string PCF_GROUP_NAME = "PCF";
         public const BuiltInParameterGroup PCF_BUILTIN_GROUP_NAME = BuiltInParameterGroup.PG_ANALYTICAL_MODEL;
 
-        //Element parameter definition, remember to add new parameters to the ParameterList in the next region
-
-        #endregion
-
-        #region Pipeline parameters
-        //Pipeline parameter definition, remember to add new parameters to the ParameterList in the next region
-
-        #endregion
-
-        #region ParameterList
-        //Element: parameterAllNames and parameterTypes must correspond to each other in element position
-
-        //Pipeline: the same rules as above
-
-        #endregion
-
         //PCF specification
         public static string PIPING_SPEC = "STD";
+        #endregion
     }
 
     public class Composer

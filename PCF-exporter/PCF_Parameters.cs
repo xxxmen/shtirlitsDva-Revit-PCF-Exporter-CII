@@ -19,6 +19,8 @@ using Excel;
 using PCF_Functions;
 using BuildingCoder;
 using PCF_Exporter;
+using pd = PCF_Functions.ParameterData;
+using pdef = PCF_Functions.ParameterDefinition;
 
 namespace PCF_Parameters
 {
@@ -64,7 +66,7 @@ namespace PCF_Parameters
             string eFamilyType = null; string columnName = null;
 
             //query is using the variables in the loop to query the dataset
-            var query = from value in PCF_Exporter_form.DATA_TABLE.AsEnumerable()
+            EnumerableRowCollection<string> query = from value in PCF_Exporter_form.DATA_TABLE.AsEnumerable()
                         where value.Field<string>(0) == eFamilyType
                         select value.Field<string>(columnName);
 
@@ -87,7 +89,7 @@ namespace PCF_Parameters
                     pNumber++;
 
                     eFamilyType = "Pipe Types: " + element.Name;
-                    foreach (string parameterName in ParameterData.parameterNames)
+                    foreach (string parameterName in pd.parameterNames)
                     {
                         columnName = parameterName;
                         string parameterValue = query.First();
@@ -106,7 +108,7 @@ namespace PCF_Parameters
 
                     FamilyInstance fInstance = element as FamilyInstance;
                     eFamilyType = fInstance.Symbol.FamilyName + ": " + element.Name;
-                    foreach (string parameterName in ParameterData.parameterNames)
+                    foreach (string parameterName in pd.parameterNames)
                     {
                         columnName = parameterName;
                         string parameterValue = query.First();
@@ -178,33 +180,32 @@ namespace PCF_Parameters
             string oriFile = app.SharedParametersFilename;
             string tempFile = ExecutingAssemblyPath + "Temp.txt";
             
-            int i = 0;
             StringBuilder sbFeedback = new StringBuilder();
+
+            //IList<pdef> elementParameters = new pdef().ElementParametersAll;
             
             //Create parameter bindings
             try
             {
-                Transaction trans = new Transaction(doc, "Bind PCF parameters");
+                Transaction trans = new Transaction(doc, "Bind element PCF parameters");
                 trans.Start();
-                foreach (string name in ParameterData.parameterAllNames)
+                foreach (pdef parameter in new pdef().ElementParametersAll)
                 {
                     using (File.Create(tempFile)) { }
                     app.SharedParametersFilename = tempFile;
-                    ExternalDefinitionCreationOptions options = new ExternalDefinitionCreationOptions(name, ParameterData.parameterTypes[i]);
-                    options.GUID = ParameterData.ParameterGUID[i];
-                    ExternalDefinition def = app.OpenSharedParameterFile().Groups.Create("TemporaryDefinitionGroup").Definitions.
-                        Create(options) as ExternalDefinition;
-                    i++;
+                    ExternalDefinitionCreationOptions options = new ExternalDefinitionCreationOptions(parameter.Name, parameter.Type);
+                    options.GUID = parameter.Guid;
+                    ExternalDefinition def = app.OpenSharedParameterFile().Groups.Create("TemporaryDefinitionGroup").Definitions.Create(options) as ExternalDefinition;
 
                     BindingMap map = doc.ParameterBindings;
                     Binding binding = app.Create.NewInstanceBinding(catSet);
 
-                    if (map.Contains(def)) sbFeedback.Append("Parameter " + name + " already exists.\n");
+                    if (map.Contains(def)) sbFeedback.Append("Parameter " + parameter.Name + " already exists.\n");
                     else
                     {
                         map.Insert(def, binding, InputVars.PCF_BUILTIN_GROUP_NAME);
-                        if (map.Contains(def)) sbFeedback.Append("Parameter " + name + " added to project.\n");
-                        else sbFeedback.Append("Creation of parameter " + name + " failed for some reason.\n");
+                        if (map.Contains(def)) sbFeedback.Append("Parameter " + parameter.Name + " added to project.\n");
+                        else sbFeedback.Append("Creation of parameter " + parameter.Name + " failed for some reason.\n");
                     }
                     File.Delete(tempFile);
                 }
@@ -242,33 +243,32 @@ namespace PCF_Parameters
             string oriFile = app.SharedParametersFilename;
             string tempFile = ExecutingAssemblyPath + "Temp.txt";
 
-            int i = 0;
             StringBuilder sbFeedback = new StringBuilder();
+
+            //IList<pdef> pipelineParameters = new pdef().PipelineParametersAll;
 
             //Create parameter bindings
             try
             {
                 Transaction trans = new Transaction(doc, "Bind PCF parameters");
                 trans.Start();
-                foreach (string name in ParameterData.parameterPipelineAllNames)
+                foreach (pdef parameter in new pdef().PipelineParametersAll)
                 {
                     using (File.Create(tempFile)) { }
                     app.SharedParametersFilename = tempFile;
-                    ExternalDefinitionCreationOptions options = new ExternalDefinitionCreationOptions(name, ParameterData.parameterTypesPipeline[i]);
-                    options.GUID = ParameterData.parameterGuidPipeline[i];
-                    ExternalDefinition def = app.OpenSharedParameterFile().Groups.Create("TemporaryDefinitionGroup").Definitions.
-                        Create(options) as ExternalDefinition;
-                    i++;
+                    ExternalDefinitionCreationOptions options = new ExternalDefinitionCreationOptions(parameter.Name, parameter.Type);
+                    options.GUID = parameter.Guid;
+                    ExternalDefinition def = app.OpenSharedParameterFile().Groups.Create("TemporaryDefinitionGroup").Definitions.Create(options) as ExternalDefinition;
 
                     BindingMap map = doc.ParameterBindings;
                     Binding binding = app.Create.NewTypeBinding(catSet);
 
-                    if (map.Contains(def)) sbFeedback.Append("Parameter " + name + " already exists.\n");
+                    if (map.Contains(def)) sbFeedback.Append("Parameter " + parameter.Name + " already exists.\n");
                     else
                     {
                         map.Insert(def, binding, InputVars.PCF_BUILTIN_GROUP_NAME);
-                        if (map.Contains(def)) sbFeedback.Append("Parameter " + name + " added to project.\n");
-                        else sbFeedback.Append("Creation of parameter " + name + " failed for some reason.\n");
+                        if (map.Contains(def)) sbFeedback.Append("Parameter " + parameter.Name + " added to project.\n");
+                        else sbFeedback.Append("Creation of parameter " + parameter.Name + " failed for some reason.\n");
                     }
                     File.Delete(tempFile);
                 }
@@ -308,17 +308,15 @@ namespace PCF_Parameters
             // UIApplication uiApp = commandData.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
 
+            //List<pdef> parametersAll = new pdef().ElementParametersAll.Concat(new pdef().PipelineParametersAll).ToList();
+
             //Call the method to delete parameters
             try
             {
                 Transaction trans = new Transaction(doc, "Delete PCF parameters");
                 trans.Start();
-                int i = 0;
-                foreach (string name in ParameterData.parameterAllNames)
-                {
-                    RemoveSharedParameterBinding(doc.Application, name, ParameterData.parameterTypes[i]);
-                    i++;
-                }
+                foreach (pdef parameter in new pdef().ElementParametersAll.Concat(new pdef().PipelineParametersAll).ToList())
+                    RemoveSharedParameterBinding(doc.Application, parameter.Name, parameter.Type);
                 trans.Commit();
                 Util.InfoMsg(sbFeedback.ToString());
             }

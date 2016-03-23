@@ -14,6 +14,8 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB.Structure;
 
 using PCF_Functions;
+using iv = PCF_Functions.InputVars;
+using pd = PCF_Functions.ParameterData;
 
 namespace PCF_Fittings
 {
@@ -28,16 +30,16 @@ namespace PCF_Fittings
             doc = document;
             //The list of fittings, sorted by TYPE then SKEY
             fittingsList = elements.
-                OrderBy(e => e.LookupParameter(InputVars.PCF_ELEM_TYPE).AsString()).
-                ThenBy(e => e.LookupParameter(InputVars.PCF_ELEM_SKEY).AsString());
+                OrderBy(e => e.LookupParameter(pd.PCF_ELEM_TYPE).AsString()).
+                ThenBy(e => e.LookupParameter(pd.PCF_ELEM_SKEY).AsString());
 
             sbFittings = new StringBuilder();
             foreach (Element element in fittingsList)
             {
-                sbFittings.Append(element.LookupParameter(InputVars.PCF_ELEM_TYPE).AsString());
+                sbFittings.Append(element.LookupParameter(pd.PCF_ELEM_TYPE).AsString());
                 sbFittings.AppendLine();
                 sbFittings.Append("    COMPONENT-IDENTIFIER ");
-                sbFittings.Append(element.LookupParameter(InputVars.PCF_ELEM_COMPID).AsInteger());
+                sbFittings.Append(element.LookupParameter(pd.PCF_ELEM_COMPID).AsInteger());
                 sbFittings.AppendLine();
 
                 //Cast the elements gathered by the collector to FamilyInstances
@@ -49,7 +51,7 @@ namespace PCF_Fittings
                 ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
                 
                 //Switch to different element type configurations
-                switch (element.LookupParameter(InputVars.PCF_ELEM_TYPE).AsString())
+                switch (element.LookupParameter(pd.PCF_ELEM_TYPE).AsString())
                 {
                     case ("ELBOW"):
                         Connector primaryConnector = null; Connector secondaryConnector = null;
@@ -299,13 +301,13 @@ namespace PCF_Fittings
                 }
 
                 sbFittings.Append("    SKEY ");
-                sbFittings.Append(element.LookupParameter(InputVars.PCF_ELEM_SKEY).AsString());
+                sbFittings.Append(element.LookupParameter(pd.PCF_ELEM_SKEY).AsString());
                 sbFittings.AppendLine();
                 sbFittings.Append("    MATERIAL-IDENTIFIER ");
-                sbFittings.Append(element.LookupParameter(InputVars.PCF_MAT_ID).AsInteger());
+                sbFittings.Append(element.LookupParameter(pd.PCF_MAT_ID).AsInteger());
                 sbFittings.AppendLine();
                 sbFittings.Append("    PIPING-SPEC ");
-                sbFittings.Append(InputVars.PIPING_SPEC);
+                sbFittings.Append(element.LookupParameter(pd.PCF_ELEM_SPEC).AsString());
                 sbFittings.AppendLine();
                 sbFittings.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
                 sbFittings.Append(element.UniqueId);

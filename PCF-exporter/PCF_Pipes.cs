@@ -13,6 +13,7 @@ using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 
 using PCF_Functions;
+using pd = PCF_Functions.ParameterData;
 
 namespace PCF_Pipes
 {
@@ -28,10 +29,10 @@ namespace PCF_Pipes
 
             foreach (Element element in pipeList)
             {
-                sbPipes.Append(element.LookupParameter(ParameterData.PCF_ELEM_TYPE).AsString());
+                sbPipes.Append(element.LookupParameter(pd.PCF_ELEM_TYPE).AsString());
                 sbPipes.AppendLine();
                 sbPipes.Append("    COMPONENT-IDENTIFIER ");
-                sbPipes.Append(element.LookupParameter(ParameterData.PCF_ELEM_COMPID).AsInteger());
+                sbPipes.Append(element.LookupParameter(pd.PCF_ELEM_COMPID).AsInteger());
                 sbPipes.AppendLine();
                
                 Pipe pipe = (Pipe)element;
@@ -46,10 +47,10 @@ namespace PCF_Pipes
                 sbPipes.Append(EndWriter.WriteEP2(element, connectorEnd.Last()));
 
                 sbPipes.Append("    MATERIAL-IDENTIFIER ");
-                sbPipes.Append(element.LookupParameter(ParameterData.PCF_MAT_ID).AsInteger());
+                sbPipes.Append(element.LookupParameter(pd.PCF_MAT_ID).AsInteger());
                 sbPipes.AppendLine();
                 sbPipes.Append("    PIPING-SPEC ");
-                sbPipes.Append(InputVars.PIPING_SPEC);
+                sbPipes.Append(element.LookupParameter(pd.PCF_ELEM_SPEC).AsString());
                 sbPipes.AppendLine();
                 sbPipes.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
                 sbPipes.Append(element.UniqueId);
