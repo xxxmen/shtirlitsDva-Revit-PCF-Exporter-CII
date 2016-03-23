@@ -310,7 +310,10 @@ namespace PCF_Exporter
         private void button8_Click(object sender, EventArgs e)
         {
             ScheduleCreator SC = new ScheduleCreator();
-            SC.CreateAllItemsSchedule(_uidoc);
+            var output = SC.CreateAllItemsSchedule(_uidoc);
+            
+            if (output == Result.Succeeded) Util.InfoMsg("Schedules created successfully!");
+            else if (output == Result.Failed) Util.InfoMsg("Schedule creation failed for some reason.");
         }
     }
 }

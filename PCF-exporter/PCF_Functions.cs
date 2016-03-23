@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Text;
 using System.Globalization;
 
@@ -12,6 +13,10 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
+using Microsoft.Office.Interop.Excel;
+
+using BuildingCoder;
+using iv = PCF_Functions.InputVars;
 
 namespace PCF_Functions
 {
@@ -210,8 +215,8 @@ namespace PCF_Functions
 
         public static IList<string> parameterNames = new List<string>()
         {
-            PCF_ELEM_CATEGORY, PCF_ELEM_BP1, PCF_MAT_DESCR, PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_END1,
-            PCF_ELEM_END2
+            PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_CATEGORY, PCF_ELEM_END1,
+            PCF_ELEM_END2, PCF_ELEM_BP1, PCF_MAT_DESCR, PCF_ELEM_TAP1, PCF_ELEM_TAP2, PCF_ELEM_TAP3
         };
 
         //Pipeline: the same rules as above
@@ -479,31 +484,74 @@ namespace PCF_Functions
     public class ScheduleCreator
     {
         private UIDocument _uiDoc;
-        public ICollection<ViewSchedule> CreateAllItemsSchedule(UIDocument uiDoc)
+        public Result CreateAllItemsSchedule(UIDocument uiDoc)
         {
-            _uiDoc = uiDoc;
-            Document doc = uiDoc.Document;
-
-            Transaction t = new Transaction(doc, "Create all items schedules");
-            t.Start();
-
-            List<ViewSchedule> schedules = new List<ViewSchedule>();
-
-            ViewSchedule schedule = ViewSchedule.CreateSchedule(doc,ElementId.InvalidElementId,ElementId.InvalidElementId);
-            schedule.Name = "PCF ALL Elements";
-            schedules.Add(schedule);
-
-            foreach (SchedulableField schField in schedule.Definition.GetSchedulableFields())
+            try
             {
-                
+                _uiDoc = uiDoc;
+                Document doc = _uiDoc.Document;
+                FilteredElementCollector sharedParameters = new FilteredElementCollector(doc);
+                sharedParameters.OfClass(typeof (SharedParameterElement));
+               
+                Transaction t = new Transaction(doc, "Create all items schedules");
+                t.Start();
+
+                //StringBuilder sbDev = new StringBuilder();
+
+                ViewSchedule schedule = ViewSchedule.CreateSchedule(doc,ElementId.InvalidElementId,ElementId.InvalidElementId);
+                schedule.Name = "PCF - ALL Elements";
+                schedule.Definition.IsItemized = false;
+
+                IList<SchedulableField> schFields = schedule.Definition.GetSchedulableFields();
+
+                foreach (SchedulableField schField in schedule.Definition.GetSchedulableFields())
+                {
+                    if (schField.GetName(doc) == "Family and Type")
+                    {
+                        ScheduleField field = schedule.Definition.AddField(schField);
+                        ScheduleSortGroupField sortGroupField = new ScheduleSortGroupField(field.FieldId);
+                        schedule.Definition.AddSortGroupField(sortGroupField);
+                    }
+                }
+
+                foreach (string name in iv.parameterNames)
+                {
+                    Element parameter = (from param in sharedParameters where param.Name == name select param).First();
+                    SchedulableField queryField = (from fld in schFields where fld.ParameterId.IntegerValue == parameter.Id.IntegerValue select fld).First();
+
+                    ScheduleField field = schedule.Definition.AddField(queryField);
+                    if (name == "PCF_ELEM_TYPE")
+                    {
+                        ScheduleFilter filter = new ScheduleFilter(field.FieldId, ScheduleFilterType.HasParameter);
+                        schedule.Definition.AddFilter(filter);
+                    }
+                }
+
+             
+
+                t.Commit();
+
+                return Result.Succeeded;
+            }
+            catch (Exception e)
+            {
+                Util.InfoMsg(e.Message);
+                return Result.Failed;
             }
 
-           
 
 
+            ////Debug
+            //sbDev.Append(schField.GetName(doc) + "\n");
+            //// Clear the output file
+            //File.WriteAllBytes(InputVars.OutputDirectoryFilePath + "\\Dev.pcf", new byte[0]);
 
-
-            return schedules;
+            //// Write to output file
+            //using (StreamWriter w = File.AppendText(InputVars.OutputDirectoryFilePath + "\\Dev.pcf"))
+            //{
+            //    w.Write(sbDev);
+            //    w.Close();
+            //}
         }
     }
 }
