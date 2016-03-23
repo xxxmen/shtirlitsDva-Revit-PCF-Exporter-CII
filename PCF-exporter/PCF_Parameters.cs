@@ -87,7 +87,7 @@ namespace PCF_Parameters
                     pNumber++;
 
                     eFamilyType = "Pipe Types: " + element.Name;
-                    foreach (string parameterName in InputVars.parameterNames)
+                    foreach (string parameterName in ParameterData.parameterNames)
                     {
                         columnName = parameterName;
                         string parameterValue = query.First();
@@ -106,7 +106,7 @@ namespace PCF_Parameters
 
                     FamilyInstance fInstance = element as FamilyInstance;
                     eFamilyType = fInstance.Symbol.FamilyName + ": " + element.Name;
-                    foreach (string parameterName in InputVars.parameterNames)
+                    foreach (string parameterName in ParameterData.parameterNames)
                     {
                         columnName = parameterName;
                         string parameterValue = query.First();
@@ -186,12 +186,12 @@ namespace PCF_Parameters
             {
                 Transaction trans = new Transaction(doc, "Bind PCF parameters");
                 trans.Start();
-                foreach (string name in InputVars.parameterAllNames)
+                foreach (string name in ParameterData.parameterAllNames)
                 {
                     using (File.Create(tempFile)) { }
                     app.SharedParametersFilename = tempFile;
-                    ExternalDefinitionCreationOptions options = new ExternalDefinitionCreationOptions(name, InputVars.parameterTypes[i]);
-                    options.GUID = InputVars.ParameterGUID[i];
+                    ExternalDefinitionCreationOptions options = new ExternalDefinitionCreationOptions(name, ParameterData.parameterTypes[i]);
+                    options.GUID = ParameterData.ParameterGUID[i];
                     ExternalDefinition def = app.OpenSharedParameterFile().Groups.Create("TemporaryDefinitionGroup").Definitions.
                         Create(options) as ExternalDefinition;
                     i++;
@@ -250,12 +250,12 @@ namespace PCF_Parameters
             {
                 Transaction trans = new Transaction(doc, "Bind PCF parameters");
                 trans.Start();
-                foreach (string name in InputVars.parameterPipelineAllNames)
+                foreach (string name in ParameterData.parameterPipelineAllNames)
                 {
                     using (File.Create(tempFile)) { }
                     app.SharedParametersFilename = tempFile;
-                    ExternalDefinitionCreationOptions options = new ExternalDefinitionCreationOptions(name, InputVars.parameterTypesPipeline[i]);
-                    options.GUID = InputVars.parameterGuidPipeline[i];
+                    ExternalDefinitionCreationOptions options = new ExternalDefinitionCreationOptions(name, ParameterData.parameterTypesPipeline[i]);
+                    options.GUID = ParameterData.parameterGuidPipeline[i];
                     ExternalDefinition def = app.OpenSharedParameterFile().Groups.Create("TemporaryDefinitionGroup").Definitions.
                         Create(options) as ExternalDefinition;
                     i++;
@@ -314,9 +314,9 @@ namespace PCF_Parameters
                 Transaction trans = new Transaction(doc, "Delete PCF parameters");
                 trans.Start();
                 int i = 0;
-                foreach (string name in InputVars.parameterAllNames)
+                foreach (string name in ParameterData.parameterAllNames)
                 {
-                    RemoveSharedParameterBinding(doc.Application, name, InputVars.parameterTypes[i]);
+                    RemoveSharedParameterBinding(doc.Application, name, ParameterData.parameterTypes[i]);
                     i++;
                 }
                 trans.Commit();

@@ -28,10 +28,10 @@ namespace PCF_Pipes
 
             foreach (Element element in pipeList)
             {
-                sbPipes.Append(element.LookupParameter(InputVars.PCF_ELEM_TYPE).AsString());
+                sbPipes.Append(element.LookupParameter(ParameterData.PCF_ELEM_TYPE).AsString());
                 sbPipes.AppendLine();
                 sbPipes.Append("    COMPONENT-IDENTIFIER ");
-                sbPipes.Append(element.LookupParameter(InputVars.PCF_ELEM_COMPID).AsInteger());
+                sbPipes.Append(element.LookupParameter(ParameterData.PCF_ELEM_COMPID).AsInteger());
                 sbPipes.AppendLine();
                
                 Pipe pipe = (Pipe)element;
@@ -46,7 +46,7 @@ namespace PCF_Pipes
                 sbPipes.Append(EndWriter.WriteEP2(element, connectorEnd.Last()));
 
                 sbPipes.Append("    MATERIAL-IDENTIFIER ");
-                sbPipes.Append(element.LookupParameter(InputVars.PCF_MAT_ID).AsInteger());
+                sbPipes.Append(element.LookupParameter(ParameterData.PCF_MAT_ID).AsInteger());
                 sbPipes.AppendLine();
                 sbPipes.Append("    PIPING-SPEC ");
                 sbPipes.Append(InputVars.PIPING_SPEC);

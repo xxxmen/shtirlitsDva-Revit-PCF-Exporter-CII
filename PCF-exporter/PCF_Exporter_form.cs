@@ -152,10 +152,10 @@ namespace PCF_Exporter
         {
             iv.ExcelSheet = (string) comboBox1.SelectedItem;
             DATA_TABLE = DATA_SET.Tables[iv.ExcelSheet];
-            iv.parameterNames = null;
-            iv.parameterNames = (from dc in DATA_TABLE.Columns.Cast<DataColumn>() select dc.ColumnName).ToList();
-            iv.parameterNames.RemoveAt(0);
-            Util.InfoMsg("Following parameters will be initialized:\n"+ string.Join("\n", iv.parameterNames.ToArray()));
+            ParameterData.parameterNames = null;
+            ParameterData.parameterNames = (from dc in DATA_TABLE.Columns.Cast<DataColumn>() select dc.ColumnName).ToList();
+            ParameterData.parameterNames.RemoveAt(0);
+            Util.InfoMsg("Following parameters will be initialized:\n"+ string.Join("\n", ParameterData.parameterNames.ToArray()));
         }
 
         private void textBox3_TextChanged(object sender, EventArgs e)

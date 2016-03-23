@@ -54,17 +54,17 @@ namespace PCF_Taps
                 Transaction trans = new Transaction(doc, "Define tap");
                 trans.Start();
 
-                if (string.IsNullOrEmpty(tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP1).AsString()))
+                if (string.IsNullOrEmpty(tappedElement.LookupParameter(ParameterData.PCF_ELEM_TAP1).AsString()))
                 {
-                    tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP1).Set(tappingElement.UniqueId.ToString());
+                    tappedElement.LookupParameter(ParameterData.PCF_ELEM_TAP1).Set(tappingElement.UniqueId.ToString());
                 }
-                else if (string.IsNullOrEmpty(tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP2).AsString()))
+                else if (string.IsNullOrEmpty(tappedElement.LookupParameter(ParameterData.PCF_ELEM_TAP2).AsString()))
                 {
-                    tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP2).Set(tappingElement.UniqueId.ToString());
+                    tappedElement.LookupParameter(ParameterData.PCF_ELEM_TAP2).Set(tappingElement.UniqueId.ToString());
                 }
-                else if (string.IsNullOrEmpty(tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP3).AsString()))
+                else if (string.IsNullOrEmpty(tappedElement.LookupParameter(ParameterData.PCF_ELEM_TAP3).AsString()))
                 {
-                    tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP3).Set(tappingElement.UniqueId.ToString());
+                    tappedElement.LookupParameter(ParameterData.PCF_ELEM_TAP3).Set(tappingElement.UniqueId.ToString());
                 }
                 else
                 {
