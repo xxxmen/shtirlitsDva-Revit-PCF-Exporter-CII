@@ -308,44 +308,129 @@ namespace PCF_Functions
                 Document doc = _uiDoc.Document;
                 FilteredElementCollector sharedParameters = new FilteredElementCollector(doc);
                 sharedParameters.OfClass(typeof (SharedParameterElement));
-               
-                Transaction t = new Transaction(doc, "Create all items schedules");
+
+                #region Debug
+
+                ////Debug
+                //StringBuilder sbDev = new StringBuilder();
+                //var list = new ParameterDefinition().ElementParametersAll;
+                //int i = 0;
+
+                //foreach (SharedParameterElement sp in sharedParameters)
+                //{
+                //    sbDev.Append(sp.GuidValue + "\n");
+                //    sbDev.Append(list[i].Guid.ToString() + "\n");
+                //    i++;
+                //    if (i == list.Count) break;
+                //}
+                ////sbDev.Append( + "\n");
+                //// Clear the output file
+                //File.WriteAllBytes(InputVars.OutputDirectoryFilePath + "\\Dev.pcf", new byte[0]);
+
+                //// Write to output file
+                //using (StreamWriter w = File.AppendText(InputVars.OutputDirectoryFilePath + "\\Dev.pcf"))
+                //{
+                //    w.Write(sbDev);
+                //    w.Close();
+                //}
+
+                #endregion
+
+                Transaction t = new Transaction(doc, "Create items schedules");
                 t.Start();
 
-                //StringBuilder sbDev = new StringBuilder();
+                #region Schedule ALL elements
+                ViewSchedule schedAll = ViewSchedule.CreateSchedule(doc, ElementId.InvalidElementId,
+                    ElementId.InvalidElementId);
+                schedAll.Name = "PCF - ALL Elements";
+                schedAll.Definition.IsItemized = false;
 
-                ViewSchedule schedule = ViewSchedule.CreateSchedule(doc,ElementId.InvalidElementId,ElementId.InvalidElementId);
-                schedule.Name = "PCF - ALL Elements";
-                schedule.Definition.IsItemized = false;
+                IList<SchedulableField> schFields = schedAll.Definition.GetSchedulableFields();
 
-                IList<SchedulableField> schFields = schedule.Definition.GetSchedulableFields();
-
-                foreach (SchedulableField schField in schedule.Definition.GetSchedulableFields())
+                foreach (SchedulableField schField in schFields)
                 {
-                    if (schField.GetName(doc) == "Family and Type")
-                    {
-                        ScheduleField field = schedule.Definition.AddField(schField);
-                        ScheduleSortGroupField sortGroupField = new ScheduleSortGroupField(field.FieldId);
-                        schedule.Definition.AddSortGroupField(sortGroupField);
-                    }
+                    if (schField.GetName(doc) != "Family and Type") continue;
+                    ScheduleField field = schedAll.Definition.AddField(schField);
+                    ScheduleSortGroupField sortGroupField = new ScheduleSortGroupField(field.FieldId);
+                    schedAll.Definition.AddSortGroupField(sortGroupField);
                 }
 
-                foreach (string name in ParameterData.parameterNames)
+                foreach (ParameterDefinition pDef in new ParameterDefinition().ElementParametersAll)
                 {
-                    Element parameter = (from param in sharedParameters where param.Name == name select param).First();
+                    SharedParameterElement parameter = (from SharedParameterElement param in sharedParameters
+                        where param.GuidValue.CompareTo(pDef.Guid) == 0
+                        select param).First();
+                    SchedulableField queryField =
+                        (from fld in schFields
+                            where fld.ParameterId.IntegerValue == parameter.Id.IntegerValue
+                            select fld).First();
+
+                    ScheduleField field = schedAll.Definition.AddField(queryField);
+                    if (pDef.Name != "PCF_ELEM_TYPE") continue;
+                    ScheduleFilter filter = new ScheduleFilter(field.FieldId, ScheduleFilterType.HasParameter);
+                    schedAll.Definition.AddFilter(filter);
+                }
+                #endregion
+
+                #region Schedule FILTERED elements
+                ViewSchedule schedFilter = ViewSchedule.CreateSchedule(doc, ElementId.InvalidElementId,
+                    ElementId.InvalidElementId);
+                schedFilter.Name = "PCF - Filtered Elements";
+                schedFilter.Definition.IsItemized = false;
+
+                schFields = schedFilter.Definition.GetSchedulableFields();
+
+                foreach (SchedulableField schField in schFields)
+                {
+                    if (schField.GetName(doc) != "Family and Type") continue;
+                    ScheduleField field = schedFilter.Definition.AddField(schField);
+                    ScheduleSortGroupField sortGroupField = new ScheduleSortGroupField(field.FieldId);
+                    schedFilter.Definition.AddSortGroupField(sortGroupField);
+                }
+
+                foreach (ParameterDefinition pDef in new ParameterDefinition().ElementParametersAll)
+                {
+                    SharedParameterElement parameter = (from SharedParameterElement param in sharedParameters where param.GuidValue.CompareTo(pDef.Guid) == 0
+                                                        select param).First();
                     SchedulableField queryField = (from fld in schFields where fld.ParameterId.IntegerValue == parameter.Id.IntegerValue select fld).First();
 
-                    ScheduleField field = schedule.Definition.AddField(queryField);
-                    if (name == "PCF_ELEM_TYPE")
-                    {
-                        ScheduleFilter filter = new ScheduleFilter(field.FieldId, ScheduleFilterType.HasParameter);
-                        schedule.Definition.AddFilter(filter);
-                    }
+                    ScheduleField field = schedFilter.Definition.AddField(queryField);
+                    if (pDef.Name != "PCF_ELEM_TYPE") continue;
+                    ScheduleFilter filter = new ScheduleFilter(field.FieldId, ScheduleFilterType.HasParameter);
+                    schedFilter.Definition.AddFilter(filter);
+                    filter = new ScheduleFilter(field.FieldId, ScheduleFilterType.NotEqual,"");
+                    schedFilter.Definition.AddFilter(filter);
+                }
+                #endregion
+
+                #region Schedule Pipelines
+                ViewSchedule schedPipeline = ViewSchedule.CreateSchedule(doc, new ElementId(BuiltInCategory.OST_PipingSystem), ElementId.InvalidElementId);
+                schedPipeline.Name = "PCF - Pipelines";
+                schedPipeline.Definition.IsItemized = false;
+
+                schFields = schedPipeline.Definition.GetSchedulableFields();
+
+                foreach (SchedulableField schField in schFields)
+                {
+                    if (schField.GetName(doc) != "Family and Type") continue;
+                    ScheduleField field = schedPipeline.Definition.AddField(schField);
+                    ScheduleSortGroupField sortGroupField = new ScheduleSortGroupField(field.FieldId);
+                    schedPipeline.Definition.AddSortGroupField(sortGroupField);
                 }
 
-             
+                foreach (ParameterDefinition pDef in new ParameterDefinition().PipelineParametersAll)
+                {
+                    SharedParameterElement parameter = (from SharedParameterElement param in sharedParameters
+                                                        where param.GuidValue.CompareTo(pDef.Guid) == 0
+                                                        select param).First();
+                    SchedulableField queryField = (from fld in schFields where fld.ParameterId.IntegerValue == parameter.Id.IntegerValue select fld).First();
+                    schedPipeline.Definition.AddField(queryField);
+                }
+                #endregion
 
                 t.Commit();
+
+                sharedParameters.Dispose();
 
                 return Result.Succeeded;
             }
@@ -357,17 +442,6 @@ namespace PCF_Functions
 
 
 
-            ////Debug
-            //sbDev.Append(schField.GetName(doc) + "\n");
-            //// Clear the output file
-            //File.WriteAllBytes(InputVars.OutputDirectoryFilePath + "\\Dev.pcf", new byte[0]);
-
-            //// Write to output file
-            //using (StreamWriter w = File.AppendText(InputVars.OutputDirectoryFilePath + "\\Dev.pcf"))
-            //{
-            //    w.Write(sbDev);
-            //    w.Close();
-            //}
         }
     }
 }

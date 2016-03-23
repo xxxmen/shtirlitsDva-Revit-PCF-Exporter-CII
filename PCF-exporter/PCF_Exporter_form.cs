@@ -48,10 +48,6 @@ namespace PCF_Exporter
             _doc = _uidoc.Document;
             _message = message;
 
-            //Parameter definition
-            ParameterDefinition PD = new ParameterDefinition();
-            IList<ParameterDefinition> ElementParameters = PD.ElementParametersAll;
-
             //Init excel path
             _excelPath = mySettings.Default.excelPath;
             textBox20.Text = _excelPath;
@@ -318,6 +314,11 @@ namespace PCF_Exporter
             
             if (output == Result.Succeeded) Util.InfoMsg("Schedules created successfully!");
             else if (output == Result.Failed) Util.InfoMsg("Schedule creation failed for some reason.");
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
