@@ -210,26 +210,26 @@ namespace PCF_Functions
 
         #endregion
 
-        public static IList<string> parameterAllNames = new List<string>()
+        public static IList<string> parameterAllNames = new List<string>
         {
             PCF_ELEM_CATEGORY, PCF_ELEM_BP1, PCF_ELEM_COMPID, PCF_MAT_DESCR, PCF_MAT_ID, PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_END1,
             PCF_ELEM_END2, PCF_ELEM_TAP1, PCF_ELEM_TAP2, PCF_ELEM_TAP3
         };
 
-        public static IList<string> parameterNames = new List<string>()
+        public static IList<string> parameterNames = new List<string>
         {
             PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_CATEGORY, PCF_ELEM_SPEC, PCF_ELEM_END1,
             PCF_ELEM_END2, PCF_ELEM_BP1, PCF_MAT_DESCR, PCF_ELEM_TAP1, PCF_ELEM_TAP2, PCF_ELEM_TAP3
         };
 
         //Add here user defined parameter names
-        public static IList<string> elemParametersExport = new List<string>()
+        public static readonly IList<string> elemParametersExport = new List<string>
         {
-            "Family and Type", PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_CATEGORY, PCF_ELEM_SPEC, PCF_ELEM_END1,
+            PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_CATEGORY, PCF_ELEM_SPEC, PCF_ELEM_END1,
             PCF_ELEM_END2, PCF_ELEM_BP1, PCF_MAT_DESCR
         };
 
-        public static IList<string> parameterPipelineAllNames = new List<string>()
+        public static IList<string> parameterPipelineAllNames = new List<string>
         {
             PCF_PIPL_AREA, PCF_PIPL_DATE, PCF_PIPL_GRAV, PCF_PIPL_INSUL, PCF_PIPL_JACKET, PCF_PIPL_MISC1, PCF_PIPL_MISC2, PCF_PIPL_MISC3,
             PCF_PIPL_MISC4, PCF_PIPL_MISC5, PCF_PIPL_NOMCLASS, PCF_PIPL_PAINT, PCF_PIPL_PREFIX, PCF_PIPL_PROJID, PCF_PIPL_REV, PCF_PIPL_SPEC,

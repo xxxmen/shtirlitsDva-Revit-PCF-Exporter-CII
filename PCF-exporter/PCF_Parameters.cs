@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
+using System.Linq.Dynamic;
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
@@ -31,48 +32,103 @@ namespace PCF_Parameters
         {
             Document doc = uiApp.ActiveUIDocument.Document;
 
+            #region Element schedule export
+
             FilteredElementCollector collector = new FilteredElementCollector(doc);
             //Define a collector (Pipe OR FamInst) AND (Fitting OR Accessory OR Pipe).
             //This is to eliminate FamilySymbols from collector which would throw an exception later on.
             collector.WherePasses(new LogicalAndFilter(new List<ElementFilter>
-                    {new LogicalOrFilter(new List<ElementFilter>
-                        {
-                            new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
-                            new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
-                            new ElementClassFilter(typeof (Pipe))
-                        }),
-                    new LogicalOrFilter(new List<ElementFilter>
-                                {
-                                    new ElementClassFilter(typeof(Pipe)),
-                                    new ElementClassFilter(typeof(FamilyInstance))
-                                })
-                        }));
+            {
+                new LogicalOrFilter(new List<ElementFilter>
+                {
+                    new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
+                    new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
+                    new ElementClassFilter(typeof (Pipe))
+                }),
+                new LogicalOrFilter(new List<ElementFilter>
+                {
+                    new ElementClassFilter(typeof (Pipe)),
+                    new ElementClassFilter(typeof (FamilyInstance))
+                })
+            }));
 
             //Group all elements by their Family and Type
-            IEnumerable<IGrouping<string, Element>> elementGroups = from e in collector group e by e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
+            IOrderedEnumerable<Element> orderedCollector =
+                collector.OrderBy(e => e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString());
+            IEnumerable<IGrouping<string, Element>> elementGroups = from e in orderedCollector
+                group e by e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
 
             xel.Application excel = new xel.Application();
-            if (null == excel) { Util.ErrorMsg("Failed to get or start Excel."); return Result.Failed;}
+            if (null == excel)
+            {
+                Util.ErrorMsg("Failed to get or start Excel.");
+                return Result.Failed;
+            }
             excel.Visible = true;
             xel.Workbook workbook = excel.Workbooks.Add(Missing.Value);
             xel.Worksheet worksheet;
             worksheet = excel.ActiveSheet as xel.Worksheet;
             worksheet.Name = "PCF Export - elements";
-            int i = 1;
-            foreach (string s in pd.elemParametersExport)
-            {
-                worksheet.Cells[1, i] = s;
-                i++;
-            }
-            worksheet.Range["A1", "Z1"].Font.Bold = true;
+
+            worksheet.Range["A1", Util.GetColumnName(pd.elemParametersExport.Count)+"1"].Font.Bold = true;
             worksheet.Columns.ColumnWidth = 20;
-            int j = 2;
+
+            worksheet.Cells[1, 1] = "Family and Type";
+
+            //Export family and type names to first column and parameter values
+            int row = 2, col = 2;
             foreach (IGrouping<string, Element> gp in elementGroups)
             {
-                worksheet.Cells[j, 1] = gp.Key;
-                j++;
+                worksheet.Cells[row, 1] = gp.Key;
+                foreach (string s in pd.elemParametersExport)
+                {
+                    if (row == 2) worksheet.Cells[1, col] = s; //Fill out top row only in the first iteration
+                    Guid parGuid = (from d in new pdef().ElementParametersAll where d.Name == s select d.Guid).First();
+                    worksheet.Cells[row, col] = gp.First().get_Parameter(parGuid).AsString();
+                    col++; //Increment column
+                }
+                row++; col = 2; //Increment row and reset column
             }
-            
+
+            #endregion
+
+            #region Pipeline schedule export
+
+            collector = new FilteredElementCollector(doc);
+
+            //Collect piping systems
+            collector.OfClass(typeof(PipingSystem));
+
+            //Group all elements by their Family and Type
+            orderedCollector = collector.OrderBy(e => e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString());
+            elementGroups = from e in orderedCollector group e by e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
+
+            excel.Sheets.Add(Missing.Value, Missing.Value, Missing.Value, Missing.Value);
+            worksheet = excel.ActiveSheet as xel.Worksheet;
+            worksheet.Name = "PCF Export - pipelines";
+
+            worksheet.Range["A1", Util.GetColumnName(pd.parameterPipelineAllNames.Count)+"1"].Font.Bold = true;
+            worksheet.Columns.ColumnWidth = 20;
+
+            worksheet.Cells[1, 1] = "Family and Type";
+
+            //Export family and type names to first column and parameter values
+            row = 2; col = 2;
+            foreach (IGrouping<string, Element> gp in elementGroups)
+            {
+                worksheet.Cells[row, 1] = gp.Key;
+                foreach (string s in pd.parameterPipelineAllNames)
+                {
+                    if (row == 2) worksheet.Cells[1, col] = s; //Fill out top row only in the first iteration
+                    Guid parGuid = (from d in new pdef().PipelineParametersAll where d.Name == s select d.Guid).First();
+                    worksheet.Cells[row, col] = gp.First().get_Parameter(parGuid).AsString();
+                    col++; //Increment column
+                }
+                row++; col = 2; //Increment row and reset column
+            }
+
+            #endregion
+
             collector.Dispose();
             return Result.Succeeded;
         }
