@@ -160,15 +160,6 @@ namespace PCF_Parameters
             FilteredElementCollector pCollector = new FilteredElementCollector(doc);
             pCollector.OfCategory(BuiltInCategory.OST_PipeCurves).OfClass(typeof(Pipe));
 
-            //Reading of excel moved to form class
-            //Use ExcelDataReader to import data from the excel to a dataset
-            //FileStream stream = File.Open(filename, FileMode.Open, FileAccess.Read);
-            //IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
-            //excelReader.IsFirstRowAsColumnNames = true;
-            //DataSet PCF_DATA_SOURCE = excelReader.AsDataSet();
-            //DataTable PCF_DATA = PCF_DATA_SOURCE.Tables[InputVars.ExcelSheet];
-
-
             //prepare input variables which are initialized when looping the elements
             string eFamilyType = null; string columnName = null;
 
@@ -195,12 +186,15 @@ namespace PCF_Parameters
                     //reporting
                     pNumber++;
 
-                    eFamilyType = "Pipe Types: " + element.Name;
-                    foreach (string parameterName in pd.parameterNames)
+                    //eFamilyType = "Pipe Types: " + element.Name;
+                    eFamilyType = element.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
+                    foreach (string parameterName in pd.parameterNames) // <-- pd.parameterNames must be correctly initialized by FormCaller!!!
                     {
-                        columnName = parameterName;
+                        columnName = parameterName; //This is needed to execute query correctly by deferred execution
                         string parameterValue = query.First();
-                        element.LookupParameter(parameterName).Set(parameterValue);
+                        Guid parGuid = (from d in new pdef().ElementParametersAll where d.Name == parameterName select d.Guid).First();
+                        element.get_Parameter(parGuid).Set(parameterValue);
+
                     }
 
                         //sbParameters.Append(eFamilyType);

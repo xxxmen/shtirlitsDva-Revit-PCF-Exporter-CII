@@ -53,7 +53,26 @@ namespace PCF_Exporter
             textBox20.Text = _excelPath;
             PCF_DATA_TABLE_NAMES = mySettings.Default.excelWorksheetNames;
             comboBox1.DataSource = PCF_DATA_TABLE_NAMES;
+            comboBox1.SelectedIndex = PCF_DATA_TABLE_NAMES.IndexOf(mySettings.Default.excelWorksheetSelectedName);
 
+            //Initialize dataset at loading of form if path is not null or empty. Add handling for bad path if file does not exist. Maybe in the populator class.
+            if (string.IsNullOrEmpty(_excelPath)){}
+            else
+            {
+                FileStream stream = File.Open(_excelPath, FileMode.Open, FileAccess.Read);
+                IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
+                //First row is column names in dataset
+                excelReader.IsFirstRowAsColumnNames = true;
+                DATA_SET = excelReader.AsDataSet();
+                //DataTableCollection PCF_DATA_TABLES = DATA_SET.Tables;
+                excelReader.Close();
+                iv.ExcelSheet = (string)comboBox1.SelectedItem;
+                DATA_TABLE = DATA_SET.Tables[iv.ExcelSheet];
+                ParameterData.parameterNames = null;
+                ParameterData.parameterNames = (from dc in DATA_TABLE.Columns.Cast<DataColumn>() select dc.ColumnName).ToList();
+                ParameterData.parameterNames.RemoveAt(0);
+            }
+            
             //Init Scope
             iv.SysAbbr = mySettings.Default.textBox3SpecificPipeline;
             iv.ExportAll = mySettings.Default.radioButton1AllPipelines;
@@ -151,6 +170,7 @@ namespace PCF_Exporter
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             iv.ExcelSheet = (string) comboBox1.SelectedItem;
+            mySettings.Default.excelWorksheetSelectedName = iv.ExcelSheet;
             DATA_TABLE = DATA_SET.Tables[iv.ExcelSheet];
             ParameterData.parameterNames = null;
             ParameterData.parameterNames = (from dc in DATA_TABLE.Columns.Cast<DataColumn>() select dc.ColumnName).ToList();
