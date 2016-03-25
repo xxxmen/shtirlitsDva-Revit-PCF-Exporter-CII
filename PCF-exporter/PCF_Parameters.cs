@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
-
+using System.Reflection;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.DB.Plumbing;
@@ -13,8 +13,7 @@ using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB.Structure;
-
-using Excel;
+using xel = Microsoft.Office.Interop.Excel;
 
 using PCF_Functions;
 using BuildingCoder;
@@ -26,6 +25,58 @@ namespace PCF_Parameters
 {
     //[TransactionAttribute(TransactionMode.Manual)]
     //[RegenerationAttribute(RegenerationOption.Manual)]
+    public class ExportParameters
+    {
+        internal Result ExecuteMyCommand(UIApplication uiApp)
+        {
+            Document doc = uiApp.ActiveUIDocument.Document;
+
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            //Define a collector (Pipe OR FamInst) AND (Fitting OR Accessory OR Pipe).
+            //This is to eliminate FamilySymbols from collector which would throw an exception later on.
+            collector.WherePasses(new LogicalAndFilter(new List<ElementFilter>
+                    {new LogicalOrFilter(new List<ElementFilter>
+                        {
+                            new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
+                            new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
+                            new ElementClassFilter(typeof (Pipe))
+                        }),
+                    new LogicalOrFilter(new List<ElementFilter>
+                                {
+                                    new ElementClassFilter(typeof(Pipe)),
+                                    new ElementClassFilter(typeof(FamilyInstance))
+                                })
+                        }));
+
+            //Group all elements by their Family and Type
+            IEnumerable<IGrouping<string, Element>> elementGroups = from e in collector group e by e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
+
+            xel.Application excel = new xel.Application();
+            if (null == excel) { Util.ErrorMsg("Failed to get or start Excel."); return Result.Failed;}
+            excel.Visible = true;
+            xel.Workbook workbook = excel.Workbooks.Add(Missing.Value);
+            xel.Worksheet worksheet;
+            worksheet = excel.ActiveSheet as xel.Worksheet;
+            worksheet.Name = "PCF Export - elements";
+            int i = 1;
+            foreach (string s in pd.elemParametersExport)
+            {
+                worksheet.Cells[1, i] = s;
+                i++;
+            }
+            worksheet.Range["A1", "Z1"].Font.Bold = true;
+            worksheet.Columns.ColumnWidth = 20;
+            int j = 2;
+            foreach (IGrouping<string, Element> gp in elementGroups)
+            {
+                worksheet.Cells[j, 1] = gp.Key;
+                j++;
+            }
+            
+            collector.Dispose();
+            return Result.Succeeded;
+        }
+    }
 
     public class PopulateParameters // : IExternalCommand
     {

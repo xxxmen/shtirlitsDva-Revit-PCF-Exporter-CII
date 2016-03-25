@@ -27,6 +27,7 @@ namespace PCF_Functions
         public ParameterDefinition()
         {
             //Populate the list with element parameters
+            //User defined
             ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_TYPE, pd.PCF_ELEM_TYPE_parameterType, pd.PCF_ELEM_TYPE_GUID));
             ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_SKEY, pd.PCF_ELEM_SKEY_parameterType, pd.PCF_ELEM_SKEY_GUID));
             ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_SPEC, pd.PCF_ELEM_SPEC_parameterType, pd.PCF_ELEM_SPEC_GUID));
@@ -35,6 +36,7 @@ namespace PCF_Functions
             ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_END2, pd.PCF_ELEM_END2_parameterType, pd.PCF_ELEM_END2_GUID));
             ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_BP1, pd.PCF_ELEM_BP1_parameterType, pd.PCF_ELEM_BP1_GUID));
             ElementParametersAll.Add(new ParameterDefinition(pd.PCF_MAT_DESCR, pd.PCF_MAT_DESCR_parameterType, pd.PCF_MAT_DESCR_GUID));
+            //Programattically defined
             ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_TAP1, pd.PCF_ELEM_TAP1_parameterType, pd.PCF_ELEM_TAP1_GUID));
             ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_TAP2, pd.PCF_ELEM_TAP2_parameterType, pd.PCF_ELEM_TAP2_GUID));
             ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_TAP3, pd.PCF_ELEM_TAP3_parameterType, pd.PCF_ELEM_TAP3_GUID));
@@ -216,8 +218,15 @@ namespace PCF_Functions
 
         public static IList<string> parameterNames = new List<string>()
         {
-            PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_CATEGORY, PCF_ELEM_END1,
+            PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_CATEGORY, PCF_ELEM_SPEC, PCF_ELEM_END1,
             PCF_ELEM_END2, PCF_ELEM_BP1, PCF_MAT_DESCR, PCF_ELEM_TAP1, PCF_ELEM_TAP2, PCF_ELEM_TAP3
+        };
+
+        //Add here user defined parameter names
+        public static IList<string> elemParametersExport = new List<string>()
+        {
+            "Family and Type", PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_CATEGORY, PCF_ELEM_SPEC, PCF_ELEM_END1,
+            PCF_ELEM_END2, PCF_ELEM_BP1, PCF_MAT_DESCR
         };
 
         public static IList<string> parameterPipelineAllNames = new List<string>()

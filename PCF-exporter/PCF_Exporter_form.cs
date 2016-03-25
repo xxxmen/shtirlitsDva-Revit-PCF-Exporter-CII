@@ -318,7 +318,10 @@ namespace PCF_Exporter
 
         private void button9_Click(object sender, EventArgs e)
         {
-
+            ExportParameters EP = new ExportParameters();
+            var output = EP.ExecuteMyCommand(_uiapp);
+            if (output == Result.Succeeded) Util.InfoMsg("Elements exported to EXCEL successfully!");
+            else if (output == Result.Failed) Util.InfoMsg("Element export to EXCEL failed for some reason.");
         }
     }
 }
