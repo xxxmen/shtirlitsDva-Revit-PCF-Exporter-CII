@@ -24,8 +24,6 @@ using pdef = PCF_Functions.ParameterDefinition;
 
 namespace PCF_Parameters
 {
-    //[TransactionAttribute(TransactionMode.Manual)]
-    //[RegenerationAttribute(RegenerationOption.Manual)]
     public class ExportParameters
     {
         internal Result ExecuteMyCommand(UIApplication uiApp)
@@ -134,15 +132,9 @@ namespace PCF_Parameters
         }
     }
 
-    public class PopulateParameters // : IExternalCommand
+    public class PopulateParameters
     {
-        //public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
-        //{
-        //    return Result.Succeeded;
-        //    //return ExecuteMyCommand(data.Application, ref msg);
-        //}
-
-        internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg, string path)
+        internal Result PopulateElementData(UIApplication uiApp, ref string msg, string path)
         {
             // UIApplication uiApp = commandData.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
@@ -262,6 +254,82 @@ namespace PCF_Parameters
 
             return Result.Succeeded;
 
+        }
+
+        internal Result PopulatePipelineData(UIApplication uiApp, ref string msg, string path)
+        {
+            Document doc = uiApp.ActiveUIDocument.Document;
+            string filename = path;
+            StringBuilder sbFeedback = new StringBuilder();
+
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            collector.OfClass(typeof (PipingSystem));
+
+            //prepare input variables which are initialized when looping the elements
+            string eFamilyType = null; string columnName = null;
+
+            //query is using the variables in the loop to query the dataset
+            EnumerableRowCollection<string> query = from value in PCF_Exporter_form.DATA_TABLE.AsEnumerable()
+                                                    where value.Field<string>(0) == eFamilyType
+                                                    select value.Field<string>(columnName);
+            //Debugging
+            //StringBuilder sbParameters = new StringBuilder();
+
+            //Loop all elements pipes and fittings and accessories, setting parameters as defined in the dataset
+            try
+            {
+                Transaction trans = new Transaction(doc, "Initialize PCF parameters");
+                trans.Start();
+                //Reporting the number of different elements initialized
+                int sNumber = 0;
+                foreach (Element element in collector)
+                {
+                    //reporting
+                    sNumber++;
+                    //eFamilyType = "Pipe Types: " + element.Name;
+                    eFamilyType = element.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
+                    foreach (string parameterName in pd.parameterNames) // <-- pd.parameterNames must be correctly initialized by FormCaller!!!
+                    {
+                        columnName = parameterName; //This is needed to execute query correctly by deferred execution
+                        string parameterValue = query.First();
+                        Guid parGuid = (from d in new pdef().PipelineParametersAll where d.Name == parameterName select d.Guid).First();
+                        element.get_Parameter(parGuid).Set(parameterValue);
+                    }
+
+                    //sbParameters.Append(eFamilyType);
+                    //sbParameters.AppendLine();
+                }
+
+                //sbParameters.Append(eFamilyType);
+                //sbParameters.AppendLine();
+                //}
+                trans.Commit();
+                sbFeedback.Append(sNumber + " Pipe Systems (Pipelines) initialized.\n");
+                Util.InfoMsg(sbFeedback.ToString());
+                //excelReader.Close();
+
+                //// Debugging
+                //// Clear the output file
+                //File.WriteAllBytes(InputVars.OutputDirectoryFilePath + "Parameters.pcf", new byte[0]);
+
+                //// Write to output file
+                //using (StreamWriter w = File.AppendText(InputVars.OutputDirectoryFilePath + "Parameters.pcf"))
+                //{
+                //    w.Write(sbParameters);
+                //    w.Close();
+                //}
+            }
+            catch (Autodesk.Revit.Exceptions.OperationCanceledException)
+            {
+                return Result.Cancelled;
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                Util.ErrorMsg("Population of parameters failed with the following exception: \n"+msg);
+                return Result.Failed;
+            }
+            return Result.Succeeded;
         }
     }
 

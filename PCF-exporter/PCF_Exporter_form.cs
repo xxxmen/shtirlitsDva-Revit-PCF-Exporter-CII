@@ -56,21 +56,28 @@ namespace PCF_Exporter
             comboBox1.SelectedIndex = PCF_DATA_TABLE_NAMES.IndexOf(mySettings.Default.excelWorksheetSelectedName);
 
             //Initialize dataset at loading of form if path is not null or empty. Add handling for bad path if file does not exist. Maybe in the populator class.
-            if (string.IsNullOrEmpty(_excelPath)){}
-            else
+            try
             {
-                FileStream stream = File.Open(_excelPath, FileMode.Open, FileAccess.Read);
-                IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
-                //First row is column names in dataset
-                excelReader.IsFirstRowAsColumnNames = true;
-                DATA_SET = excelReader.AsDataSet();
-                //DataTableCollection PCF_DATA_TABLES = DATA_SET.Tables;
-                excelReader.Close();
-                iv.ExcelSheet = (string)comboBox1.SelectedItem;
-                DATA_TABLE = DATA_SET.Tables[iv.ExcelSheet];
-                ParameterData.parameterNames = null;
-                ParameterData.parameterNames = (from dc in DATA_TABLE.Columns.Cast<DataColumn>() select dc.ColumnName).ToList();
-                ParameterData.parameterNames.RemoveAt(0);
+                if (string.IsNullOrEmpty(_excelPath)){}
+                else
+                {
+                    FileStream stream = File.Open(_excelPath, FileMode.Open, FileAccess.Read);
+                    IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
+                    //First row is column names in dataset
+                    excelReader.IsFirstRowAsColumnNames = true;
+                    DATA_SET = excelReader.AsDataSet();
+                    //DataTableCollection PCF_DATA_TABLES = DATA_SET.Tables;
+                    excelReader.Close();
+                    iv.ExcelSheet = (string)comboBox1.SelectedItem;
+                    DATA_TABLE = DATA_SET.Tables[iv.ExcelSheet];
+                    ParameterData.parameterNames = null;
+                    ParameterData.parameterNames = (from dc in DATA_TABLE.Columns.Cast<DataColumn>() select dc.ColumnName).ToList();
+                    ParameterData.parameterNames.RemoveAt(0);
+                }
+            }
+            catch (Exception e)
+            {
+                Util.ErrorMsg("Initialization of EXCEL data threw an exception: \n"+e.Message+"\nPlease reselect EXCEL workbook.");
             }
             
             //Init Scope
@@ -159,12 +166,13 @@ namespace PCF_Exporter
         private void button3_Click(object sender, EventArgs e)
         {
             PopulateParameters PP = new PopulateParameters();
-            PP.ExecuteMyCommand(_uiapp, ref _message, _excelPath);
+            PP.PopulateElementData(_uiapp, ref _message, _excelPath);
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            //This is the button for Populate Pipeline Parameters
+            PopulateParameters PP = new PopulateParameters();
+            PP.PopulatePipelineData(_uiapp, ref _message, _excelPath);
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
