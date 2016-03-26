@@ -149,16 +149,32 @@ namespace PCF_Parameters
             string filename = path;
             StringBuilder sbFeedback = new StringBuilder();
 
-            //Two collectors are made because I couldn't figure out a way to obta
-            FilteredElementCollector eCollector = new FilteredElementCollector(doc);
-            eCollector.WherePasses(new LogicalOrFilter(new List<ElementFilter>
-                    {
-                        new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
-                        new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
-                    })).OfClass(typeof(FamilyInstance));
+            ////Two collectors are made because I couldn't figure out a way to obta
+            //FilteredElementCollector eCollector = new FilteredElementCollector(doc);
+            //eCollector.WherePasses(new LogicalOrFilter(new List<ElementFilter>
+            //        {
+            //            new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
+            //            new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
+            //        })).OfClass(typeof(FamilyInstance));
 
-            FilteredElementCollector pCollector = new FilteredElementCollector(doc);
-            pCollector.OfCategory(BuiltInCategory.OST_PipeCurves).OfClass(typeof(Pipe));
+            //FilteredElementCollector pCollector = new FilteredElementCollector(doc);
+            //pCollector.OfCategory(BuiltInCategory.OST_PipeCurves).OfClass(typeof(Pipe));
+
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            collector.WherePasses(new LogicalAndFilter(new List<ElementFilter>
+            {
+                new LogicalOrFilter(new List<ElementFilter>
+                {
+                    new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
+                    new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
+                    new ElementClassFilter(typeof (Pipe))
+                }),
+                new LogicalOrFilter(new List<ElementFilter>
+                {
+                    new ElementClassFilter(typeof (Pipe)),
+                    new ElementClassFilter(typeof (FamilyInstance))
+                })
+            }));
 
             //prepare input variables which are initialized when looping the elements
             string eFamilyType = null; string columnName = null;
@@ -177,15 +193,14 @@ namespace PCF_Parameters
             {
                 Transaction trans = new Transaction(doc, "Initialize PCF parameters");
                 trans.Start();
-
                 //Reporting the number of different elements initialized
                 int pNumber = 0, fNumber = 0, aNumber = 0;
-
-                foreach (Element element in pCollector)
+                foreach (Element element in collector)
                 {
                     //reporting
-                    pNumber++;
-
+                    if (string.Equals(element.Category.Name.ToString(), "Pipes")) pNumber++;
+                    if (string.Equals(element.Category.Name.ToString(), "Pipe Fittings")) fNumber++;
+                    if (string.Equals(element.Category.Name.ToString(), "Pipe Accessories")) aNumber++;
                     //eFamilyType = "Pipe Types: " + element.Name;
                     eFamilyType = element.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
                     foreach (string parameterName in pd.parameterNames) // <-- pd.parameterNames must be correctly initialized by FormCaller!!!
@@ -194,31 +209,30 @@ namespace PCF_Parameters
                         string parameterValue = query.First();
                         Guid parGuid = (from d in new pdef().ElementParametersAll where d.Name == parameterName select d.Guid).First();
                         element.get_Parameter(parGuid).Set(parameterValue);
-
                     }
 
                         //sbParameters.Append(eFamilyType);
                         //sbParameters.AppendLine();
-                    }
+                }
 
-                foreach (Element element in eCollector)
-                {
-                    //reporting
-                    if (string.Equals(element.Category.Name.ToString(),"Pipe Fittings")) fNumber++;
-                    if (string.Equals(element.Category.Name.ToString(), "Pipe Accessories")) aNumber++;
+                //foreach (Element element in eCollector)
+                //{
+                //    //reporting
+                //    if (string.Equals(element.Category.Name.ToString(),"Pipe Fittings")) fNumber++;
+                //    if (string.Equals(element.Category.Name.ToString(), "Pipe Accessories")) aNumber++;
 
-                    FamilyInstance fInstance = element as FamilyInstance;
-                    eFamilyType = fInstance.Symbol.FamilyName + ": " + element.Name;
-                    foreach (string parameterName in pd.parameterNames)
-                    {
-                        columnName = parameterName;
-                        string parameterValue = query.First();
-                        element.LookupParameter(parameterName).Set(parameterValue);
-                    }
+                //    FamilyInstance fInstance = element as FamilyInstance;
+                //    eFamilyType = fInstance.Symbol.FamilyName + ": " + element.Name;
+                //    foreach (string parameterName in pd.parameterNames)
+                //    {
+                //        columnName = parameterName;
+                //        string parameterValue = query.First();
+                //        element.LookupParameter(parameterName).Set(parameterValue);
+                //    }
 
                     //sbParameters.Append(eFamilyType);
                     //sbParameters.AppendLine();
-                }
+                //}
                 trans.Commit();
                 sbFeedback.Append(pNumber + " Pipes initialized.\n"+fNumber + " Pipe fittings initialized.\n"+aNumber+" Pipe accessories initialized.");
                 Util.InfoMsg(sbFeedback.ToString());
