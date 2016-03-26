@@ -333,9 +333,6 @@ namespace PCF_Parameters
         }
     }
 
-    //[TransactionAttribute(TransactionMode.Manual)]
-    //[RegenerationAttribute(RegenerationOption.Manual)]
-
     public class CreateParameterBindings //: IExternalCommand
     {
         //public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
@@ -474,9 +471,6 @@ namespace PCF_Parameters
         }
 
     }
-
-    //[TransactionAttribute(TransactionMode.Manual)]
-    //[RegenerationAttribute(RegenerationOption.Manual)]
 
     public class DeleteParameters //: IExternalCommand
     {

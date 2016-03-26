@@ -13,6 +13,7 @@ using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 
 using PCF_Functions;
+using pdef = PCF_Functions.ParameterDefinition;
 
 namespace PCF_Pipeline
 {
@@ -22,14 +23,26 @@ namespace PCF_Pipeline
         private static StringBuilder sbPipeline;
         private static string key;
 
-        public static StringBuilder Export(string pipeLineGroupingKey)
+        public static StringBuilder Export(string pipeLineGroupingKey, Document doc)
         {
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            collector.OfClass(typeof (PipingSystem));
+            
             key = pipeLineGroupingKey;
             sbPipeline = new StringBuilder();
+
+            var currentSys = (from e in collector
+                where e.get_Parameter(BuiltInParameter.RBS_DUCT_PIPE_SYSTEM_ABBREVIATION_PARAM).AsString() == key
+                select e).First();
+
+            
 
             sbPipeline.Append("PIPELINE-REFERENCE ");
             sbPipeline.Append(key);
             sbPipeline.AppendLine();
+
+            Guid parGuid = (from d in new pdef().PipelineParametersAll where d.Name == s select d.Guid).First();
+            currentSys.get_Parameter(parGuid).AsString();
 
             sbPipeline.Append("    PIPING-SPEC STD");
             sbPipeline.AppendLine();

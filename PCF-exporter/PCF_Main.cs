@@ -55,6 +55,7 @@ namespace PCF_Exporter
                 if (InputVars.ExportAll == false)
                 {
                     //Define a collector with multiple filters to collect PipeFittings OR PipeAccessories OR Pipes + filter by System Abbreviation
+                    //System Abbreviation filter also filters FamilySymbols out.
                     collector.WherePasses(
                         new LogicalOrFilter(
                             new List<ElementFilter>
@@ -63,10 +64,6 @@ namespace PCF_Exporter
                                 new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
                                 new ElementClassFilter(typeof (Pipe))
                             })).WherePasses(sysAbbr);
-
-                    //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
-                    pipelineGroups = from e in collector
-                                     group e by e.LookupParameter(InputVars.PipelineGroupParameterName).AsString();
                 }
 
                 //If user chooses to export all pipelines get all elements and create grouping
@@ -87,12 +84,10 @@ namespace PCF_Exporter
                                     new ElementClassFilter(typeof(FamilyInstance))
                                 })
                         }));
-                    
-                    //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
-                    pipelineGroups = from e in collector
-                                     group e by e.LookupParameter(InputVars.PipelineGroupParameterName).AsString();
                 }
-                else pipelineGroups = null;
+                //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
+                pipelineGroups = from e in collector
+                                 group e by e.LookupParameter(InputVars.PipelineGroupParameterName).AsString();
                 #endregion
 
                 #region Initialize Material Data
@@ -135,7 +130,7 @@ namespace PCF_Exporter
                                    where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeAccessory
                                    select element).ToList();
 
-                    StringBuilder sbPipeline = PCF_Pipeline.PCF_Pipeline_Export.Export(gp.Key);
+                    StringBuilder sbPipeline = PCF_Pipeline.PCF_Pipeline_Export.Export(gp.Key, doc);
                     StringBuilder sbPipes = PCF_Pipes.PCF_Pipes_Export.Export(pipeList);
                     StringBuilder sbFittings = PCF_Fittings.PCF_Fittings_Export.Export(fittingList, doc);
                     StringBuilder sbAccessories = PCF_Accessories.PCF_Accessories_Export.Export(accessoryList, doc);
