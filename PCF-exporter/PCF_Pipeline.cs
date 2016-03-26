@@ -34,15 +34,17 @@ namespace PCF_Pipeline
             var currentSys = (from e in collector
                 where e.get_Parameter(BuiltInParameter.RBS_DUCT_PIPE_SYSTEM_ABBREVIATION_PARAM).AsString() == key
                 select e).First();
-
             
-
             sbPipeline.Append("PIPELINE-REFERENCE ");
             sbPipeline.Append(key);
             sbPipeline.AppendLine();
 
-            Guid parGuid = (from d in new pdef().PipelineParametersAll where d.Name == s select d.Guid).First();
-            currentSys.get_Parameter(parGuid).AsString();
+            foreach (pdef p in new pdef().PipelineParametersAll)
+            {
+                currentSys.get_Parameter(p.Guid).AsString();
+            }
+
+            
 
             sbPipeline.Append("    PIPING-SPEC STD");
             sbPipeline.AppendLine();

@@ -17,52 +17,54 @@ using Autodesk.Revit.Attributes;
 using BuildingCoder;
 using iv = PCF_Functions.InputVars;
 using pd = PCF_Functions.ParameterData;
+using pdef = PCF_Functions.ParameterDefinition;
 
 namespace PCF_Functions
 {
     public class ParameterDefinition
     {
-        public readonly IList<ParameterDefinition> ElementParametersAll = new List<ParameterDefinition>();
-        public readonly IList<ParameterDefinition> PipelineParametersAll = new List<ParameterDefinition>();
+        public readonly IList<pdef> ElementParametersAll = new List<pdef>();
+        public readonly IList<pdef> PipelineParametersAll = new List<pdef>();
+
         public ParameterDefinition()
         {
             //Populate the list with element parameters
             //User defined
-            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_TYPE, pd.PCF_ELEM_TYPE_parameterType, pd.PCF_ELEM_TYPE_GUID));
-            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_SKEY, pd.PCF_ELEM_SKEY_parameterType, pd.PCF_ELEM_SKEY_GUID));
-            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_SPEC, pd.PCF_ELEM_SPEC_parameterType, pd.PCF_ELEM_SPEC_GUID));
-            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_CATEGORY, pd.PCF_ELEM_CATEGORY_parameterType, pd.PCF_ELEM_CATEGORY_GUID));
-            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_END1, pd.PCF_ELEM_END1_parameterType, pd.PCF_ELEM_END1_GUID));
-            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_END2, pd.PCF_ELEM_END2_parameterType, pd.PCF_ELEM_END2_GUID));
-            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_BP1, pd.PCF_ELEM_BP1_parameterType, pd.PCF_ELEM_BP1_GUID));
-            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_MAT_DESCR, pd.PCF_MAT_DESCR_parameterType, pd.PCF_MAT_DESCR_GUID));
+            ElementParametersAll.Add(new pdef(pd.PCF_ELEM_TYPE, "U", pd.PCF_ELEM_TYPE_parameterType, pd.PCF_ELEM_TYPE_GUID));
+            ElementParametersAll.Add(new pdef(pd.PCF_ELEM_SKEY, "U", pd.PCF_ELEM_SKEY_parameterType, pd.PCF_ELEM_SKEY_GUID));
+            ElementParametersAll.Add(new pdef(pd.PCF_ELEM_SPEC, "U", pd.PCF_ELEM_SPEC_parameterType, pd.PCF_ELEM_SPEC_GUID, "PIPING-SPEC"));
+            ElementParametersAll.Add(new pdef(pd.PCF_ELEM_CATEGORY, "U", pd.PCF_ELEM_CATEGORY_parameterType, pd.PCF_ELEM_CATEGORY_GUID, "CATEGORY"));
+            ElementParametersAll.Add(new pdef(pd.PCF_ELEM_END1, "U", pd.PCF_ELEM_END1_parameterType, pd.PCF_ELEM_END1_GUID));
+            ElementParametersAll.Add(new pdef(pd.PCF_ELEM_END2, "U", pd.PCF_ELEM_END2_parameterType, pd.PCF_ELEM_END2_GUID));
+            ElementParametersAll.Add(new pdef(pd.PCF_ELEM_BP1, "U", pd.PCF_ELEM_BP1_parameterType, pd.PCF_ELEM_BP1_GUID));
+            ElementParametersAll.Add(new pdef(pd.PCF_MAT_DESCR, "U", pd.PCF_MAT_DESCR_parameterType, pd.PCF_MAT_DESCR_GUID));
             //Programattically defined
-            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_TAP1, pd.PCF_ELEM_TAP1_parameterType, pd.PCF_ELEM_TAP1_GUID));
-            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_TAP2, pd.PCF_ELEM_TAP2_parameterType, pd.PCF_ELEM_TAP2_GUID));
-            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_TAP3, pd.PCF_ELEM_TAP3_parameterType, pd.PCF_ELEM_TAP3_GUID));
-            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_ELEM_COMPID, pd.PCF_ELEM_COMPID_parameterType, pd.PCF_ELEM_COMPID_GUID));
-            ElementParametersAll.Add(new ParameterDefinition(pd.PCF_MAT_ID, pd.PCF_MAT_ID_parameterType, pd.PCF_MAT_ID_GUID));
+            ElementParametersAll.Add(new pdef(pd.PCF_ELEM_TAP1, "P", pd.PCF_ELEM_TAP1_parameterType, pd.PCF_ELEM_TAP1_GUID));
+            ElementParametersAll.Add(new pdef(pd.PCF_ELEM_TAP2, "P", pd.PCF_ELEM_TAP2_parameterType, pd.PCF_ELEM_TAP2_GUID));
+            ElementParametersAll.Add(new pdef(pd.PCF_ELEM_TAP3, "P", pd.PCF_ELEM_TAP3_parameterType, pd.PCF_ELEM_TAP3_GUID));
+            ElementParametersAll.Add(new pdef(pd.PCF_ELEM_COMPID, "P", pd.PCF_ELEM_COMPID_parameterType, pd.PCF_ELEM_COMPID_GUID));
+            ElementParametersAll.Add(new pdef(pd.PCF_MAT_ID, "P", pd.PCF_MAT_ID_parameterType, pd.PCF_MAT_ID_GUID));
 
             //Populate the list with pipeline parameters
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_AREA, pd.PCF_PIPL_AREA_parameterType, pd.PCF_PIPL_AREA_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_DATE, pd.PCF_PIPL_DATE_parameterType, pd.PCF_PIPL_DATE_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_GRAV, pd.PCF_PIPL_GRAV_parameterType, pd.PCF_PIPL_GRAV_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_INSUL, pd.PCF_PIPL_INSUL_parameterType, pd.PCF_PIPL_INSUL_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_JACKET, pd.PCF_PIPL_JACKET_parameterType, pd.PCF_PIPL_JACKET_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_MISC1, pd.PCF_PIPL_MISC1_parameterType, pd.PCF_PIPL_MISC1_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_MISC2, pd.PCF_PIPL_MISC2_parameterType, pd.PCF_PIPL_MISC2_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_MISC3, pd.PCF_PIPL_MISC3_parameterType, pd.PCF_PIPL_MISC3_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_MISC4, pd.PCF_PIPL_MISC4_parameterType, pd.PCF_PIPL_MISC4_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_MISC5, pd.PCF_PIPL_MISC5_parameterType, pd.PCF_PIPL_MISC5_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_NOMCLASS, pd.PCF_PIPL_NOMCLASS_parameterType, pd.PCF_PIPL_NOMCLASS_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_PAINT, pd.PCF_PIPL_PAINT_parameterType, pd.PCF_PIPL_PAINT_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_PREFIX, pd.PCF_PIPL_PREFIX_parameterType, pd.PCF_PIPL_PREFIX_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_PROJID, pd.PCF_PIPL_PROJID_parameterType, pd.PCF_PIPL_PROJID_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_REV, pd.PCF_PIPL_REV_parameterType, pd.PCF_PIPL_REV_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_SPEC, pd.PCF_PIPL_SPEC_parameterType, pd.PCF_PIPL_SPEC_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_TEMP, pd.PCF_PIPL_TEMP_parameterType, pd.PCF_PIPL_TEMP_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_TRACING, pd.PCF_PIPL_TRACING_parameterType, pd.PCF_PIPL_TRACING_GUID));
-            PipelineParametersAll.Add(new ParameterDefinition(pd.PCF_PIPL_TYPE, pd.PCF_PIPL_TYPE_parameterType, pd.PCF_PIPL_TYPE_GUID));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_AREA, pd.PCF_PIPL_AREA_parameterType, pd.PCF_PIPL_AREA_GUID, "AREA"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_DATE, pd.PCF_PIPL_DATE_parameterType, pd.PCF_PIPL_DATE_GUID, "DATE-DMY"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_GRAV, pd.PCF_PIPL_GRAV_parameterType, pd.PCF_PIPL_GRAV_GUID, "SPECIFIC-GRAVITY"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_INSUL, pd.PCF_PIPL_INSUL_parameterType, pd.PCF_PIPL_INSUL_GUID, "INSULATION-SPEC"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_JACKET, pd.PCF_PIPL_JACKET_parameterType, pd.PCF_PIPL_JACKET_GUID, "JACKET-SPEC"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_MISC1, pd.PCF_PIPL_MISC1_parameterType, pd.PCF_PIPL_MISC1_GUID, "MISC-SPEC1"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_MISC2, pd.PCF_PIPL_MISC2_parameterType, pd.PCF_PIPL_MISC2_GUID, "MISC-SPEC2"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_MISC3, pd.PCF_PIPL_MISC3_parameterType, pd.PCF_PIPL_MISC3_GUID, "MISC-SPEC3"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_MISC4, pd.PCF_PIPL_MISC4_parameterType, pd.PCF_PIPL_MISC4_GUID, "MISC-SPEC4"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_MISC5, pd.PCF_PIPL_MISC5_parameterType, pd.PCF_PIPL_MISC5_GUID, "MISC-SPEC5"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_NOMCLASS, pd.PCF_PIPL_NOMCLASS_parameterType, pd.PCF_PIPL_NOMCLASS_GUID, "NOMINAL-CLASS"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_PAINT, pd.PCF_PIPL_PAINT_parameterType, pd.PCF_PIPL_PAINT_GUID, "PAINTING-SPEC"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_PREFIX, pd.PCF_PIPL_PREFIX_parameterType, pd.PCF_PIPL_PREFIX_GUID, "SPOOL-PREFIX"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_PROJID, pd.PCF_PIPL_PROJID_parameterType, pd.PCF_PIPL_PROJID_GUID, "PROJECT-IDENTIFIER"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_REV, pd.PCF_PIPL_REV_parameterType, pd.PCF_PIPL_REV_GUID, "REVISION"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_SPEC, pd.PCF_PIPL_SPEC_parameterType, pd.PCF_PIPL_SPEC_GUID, "PIPING-SPEC"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_TEMP, pd.PCF_PIPL_TEMP_parameterType, pd.PCF_PIPL_TEMP_GUID, "PIPELINE-TEMP"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_TRACING, pd.PCF_PIPL_TRACING_parameterType, pd.PCF_PIPL_TRACING_GUID, "TRACING-SPEC"));
+            PipelineParametersAll.Add(new pdef(pd.PCF_PIPL_TYPE, pd.PCF_PIPL_TYPE_parameterType, pd.PCF_PIPL_TYPE_GUID, "PIPELINE-TYPE"));
         }
 
         public ParameterDefinition(string pName, ParameterType pType, Guid pGuid)
@@ -72,9 +74,36 @@ namespace PCF_Functions
             Guid = pGuid;
         }
 
-        public string Name { get; set; }
-        public ParameterType Type { get; set; }
-        public Guid Guid { get; set; }
+        public ParameterDefinition(string pName, string pUsage, ParameterType pType, Guid pGuid)
+        {
+            Name = pName;
+            Usage = pUsage;
+            Type = pType;
+            Guid = pGuid;
+        }
+
+        public ParameterDefinition(string pName, ParameterType pType, Guid pGuid, string pKeyword)
+        {
+            Name = pName;
+            Type = pType;
+            Guid = pGuid;
+            Keyword = pKeyword;
+        }
+
+        public ParameterDefinition(string pName, string pUsage, ParameterType pType, Guid pGuid, string pKeyword)
+        {
+            Name = pName;
+            Usage = pUsage;
+            Type = pType;
+            Guid = pGuid;
+            Keyword = pKeyword;
+        }
+
+        public string Name { get; }
+        public string Usage { get; } //U = user defined values, P = programatically defined values
+        public ParameterType Type { get; }
+        public Guid Guid { get; }
+        public string Keyword { get; } //The keyword as defined in the PCF reference guide
     }
 
     public static class ParameterData
