@@ -51,15 +51,17 @@ namespace PCF_Exporter
             //Init excel path
             _excelPath = mySettings.Default.excelPath;
             textBox20.Text = _excelPath;
-            PCF_DATA_TABLE_NAMES = mySettings.Default.excelWorksheetNames;
-            comboBox1.DataSource = PCF_DATA_TABLE_NAMES;
-            comboBox1.SelectedIndex = PCF_DATA_TABLE_NAMES.IndexOf(mySettings.Default.excelWorksheetSelectedName);
+            if (!mySettings.Default.excelWorksheetNames.IsNullOrEmpty())
+            {
+                PCF_DATA_TABLE_NAMES = mySettings.Default.excelWorksheetNames;
+                comboBox1.DataSource = PCF_DATA_TABLE_NAMES;
+                comboBox1.SelectedIndex = PCF_DATA_TABLE_NAMES.IndexOf(mySettings.Default.excelWorksheetSelectedName);
+            }
 
             //Initialize dataset at loading of form if path is not null or empty. Add handling for bad path if file does not exist. Maybe in the populator class.
             try
             {
-                if (string.IsNullOrEmpty(_excelPath)){}
-                else
+                if (!string.IsNullOrEmpty(_excelPath))
                 {
                     FileStream stream = File.Open(_excelPath, FileMode.Open, FileAccess.Read);
                     IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);

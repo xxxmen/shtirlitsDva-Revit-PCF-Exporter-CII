@@ -67,22 +67,28 @@ namespace PCF_Parameters
             xel.Worksheet worksheet;
             worksheet = excel.ActiveSheet as xel.Worksheet;
             worksheet.Name = "PCF Export - elements";
-
-            worksheet.Range["A1", Util.GetColumnName(pd.elemParametersExport.Count)+"1"].Font.Bold = true;
+            
             worksheet.Columns.ColumnWidth = 20;
 
             worksheet.Cells[1, 1] = "Family and Type";
+
+            //Query parameters
+            string curDomain = "ELEM", curUsage = "U";
+            var query = from p in new pdef().ListParametersAll
+                where p.Domain == curDomain && p.Usage == curUsage
+                select p;
+            //Formatting must occur here, because it depends on query
+            worksheet.Range["A1", Util.GetColumnName(query.Count()) + "1"].Font.Bold = true;
 
             //Export family and type names to first column and parameter values
             int row = 2, col = 2;
             foreach (IGrouping<string, Element> gp in elementGroups)
             {
                 worksheet.Cells[row, 1] = gp.Key;
-                foreach (string s in pd.elemParametersExport)
+                foreach (var p in query.ToList())
                 {
-                    if (row == 2) worksheet.Cells[1, col] = s; //Fill out top row only in the first iteration
-                    Guid parGuid = (from d in new pdef().ElementParametersAll where d.Name == s select d.Guid).First();
-                    worksheet.Cells[row, col] = gp.First().get_Parameter(parGuid).AsString();
+                    if (row == 2) worksheet.Cells[1, col] = p.Name; //Fill out top row only in the first iteration
+                    worksheet.Cells[row, col] = gp.First().get_Parameter(p.Guid).AsString();
                     col++; //Increment column
                 }
                 row++; col = 2; //Increment row and reset column
@@ -105,21 +111,24 @@ namespace PCF_Parameters
             worksheet = excel.ActiveSheet as xel.Worksheet;
             worksheet.Name = "PCF Export - pipelines";
 
-            worksheet.Range["A1", Util.GetColumnName(pd.parameterPipelineAllNames.Count)+"1"].Font.Bold = true;
             worksheet.Columns.ColumnWidth = 20;
 
             worksheet.Cells[1, 1] = "Family and Type";
+
+            //Change domain for query
+            curDomain = "PIPL";
+            
+            worksheet.Range["A1", Util.GetColumnName(query.Count()) + "1"].Font.Bold = true;
 
             //Export family and type names to first column and parameter values
             row = 2; col = 2;
             foreach (IGrouping<string, Element> gp in elementGroups)
             {
                 worksheet.Cells[row, 1] = gp.Key;
-                foreach (string s in pd.parameterPipelineAllNames)
+                foreach (var p in query.ToList())
                 {
-                    if (row == 2) worksheet.Cells[1, col] = s; //Fill out top row only in the first iteration
-                    Guid parGuid = (from d in new pdef().PipelineParametersAll where d.Name == s select d.Guid).First();
-                    worksheet.Cells[row, col] = gp.First().get_Parameter(parGuid).AsString();
+                    if (row == 2) worksheet.Cells[1, col] = p.Name; //Fill out top row only in the first iteration
+                    worksheet.Cells[row, col] = gp.First().get_Parameter(p.Guid).AsString();
                     col++; //Increment column
                 }
                 row++; col = 2; //Increment row and reset column
@@ -136,21 +145,15 @@ namespace PCF_Parameters
     {
         internal Result PopulateElementData(UIApplication uiApp, ref string msg, string path)
         {
-            // UIApplication uiApp = commandData.Application;
+            //Test to see if the list of parameter names is defined at all, if not -- break.
+            if (pd.parameterNames.IsNullOrEmpty())
+            {
+                Util.ErrorMsg("Parameter names are incorrectly defined. Please reselect the EXCEL workbook.");
+                return Result.Failed;
+            };
             Document doc = uiApp.ActiveUIDocument.Document;
             string filename = path;
             StringBuilder sbFeedback = new StringBuilder();
-
-            ////Two collectors are made because I couldn't figure out a way to obta
-            //FilteredElementCollector eCollector = new FilteredElementCollector(doc);
-            //eCollector.WherePasses(new LogicalOrFilter(new List<ElementFilter>
-            //        {
-            //            new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
-            //            new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
-            //        })).OfClass(typeof(FamilyInstance));
-
-            //FilteredElementCollector pCollector = new FilteredElementCollector(doc);
-            //pCollector.OfCategory(BuiltInCategory.OST_PipeCurves).OfClass(typeof(Pipe));
 
             FilteredElementCollector collector = new FilteredElementCollector(doc);
             collector.WherePasses(new LogicalAndFilter(new List<ElementFilter>
@@ -176,7 +179,10 @@ namespace PCF_Parameters
                         where value.Field<string>(0) == eFamilyType
                         select value.Field<string>(columnName);
 
-            
+            var pQuery = from p in new pdef().ListParametersAll
+                        where p.Domain == "ELEM"
+                        select p;
+
             //Debugging
             //StringBuilder sbParameters = new StringBuilder();
 
@@ -193,13 +199,19 @@ namespace PCF_Parameters
                     if (string.Equals(element.Category.Name.ToString(), "Pipes")) pNumber++;
                     if (string.Equals(element.Category.Name.ToString(), "Pipe Fittings")) fNumber++;
                     if (string.Equals(element.Category.Name.ToString(), "Pipe Accessories")) aNumber++;
-                    //eFamilyType = "Pipe Types: " + element.Name;
+                    
                     eFamilyType = element.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
                     foreach (string parameterName in pd.parameterNames) // <-- pd.parameterNames must be correctly initialized by FormCaller!!!
                     {
                         columnName = parameterName; //This is needed to execute query correctly by deferred execution
                         string parameterValue = query.First();
-                        Guid parGuid = (from d in new pdef().ElementParametersAll where d.Name == parameterName select d.Guid).First();
+                        Guid parGuid = (from d in pQuery where d.Name == parameterName select d.Guid).First();
+                        //Check if parGuid returns a match
+                        if (parGuid == null)
+                        {
+                            Util.ErrorMsg("Wrong parameter set. Select ELEMENT parameters.");
+                            return Result.Failed;
+                        }
                         element.get_Parameter(parGuid).Set(parameterValue);
                     }
 
@@ -207,24 +219,9 @@ namespace PCF_Parameters
                         //sbParameters.AppendLine();
                 }
 
-                //foreach (Element element in eCollector)
-                //{
-                //    //reporting
-                //    if (string.Equals(element.Category.Name.ToString(),"Pipe Fittings")) fNumber++;
-                //    if (string.Equals(element.Category.Name.ToString(), "Pipe Accessories")) aNumber++;
-
-                //    FamilyInstance fInstance = element as FamilyInstance;
-                //    eFamilyType = fInstance.Symbol.FamilyName + ": " + element.Name;
-                //    foreach (string parameterName in pd.parameterNames)
-                //    {
-                //        columnName = parameterName;
-                //        string parameterValue = query.First();
-                //        element.LookupParameter(parameterName).Set(parameterValue);
-                //    }
-
-                    //sbParameters.Append(eFamilyType);
-                    //sbParameters.AppendLine();
-                //}
+                //sbParameters.Append(eFamilyType);
+                //sbParameters.AppendLine();
+                
                 trans.Commit();
                 sbFeedback.Append(pNumber + " Pipes initialized.\n"+fNumber + " Pipe fittings initialized.\n"+aNumber+" Pipe accessories initialized.");
                 Util.InfoMsg(sbFeedback.ToString());
@@ -258,6 +255,12 @@ namespace PCF_Parameters
 
         internal Result PopulatePipelineData(UIApplication uiApp, ref string msg, string path)
         {
+            //Test to see if the list of parameter names is defined at all, if not -- break.
+            if (pd.parameterNames.IsNullOrEmpty())
+            {
+                Util.ErrorMsg("Parameter names are incorrectly defined. Please reselect the EXCEL workbook.");
+                return Result.Failed;
+            };
             Document doc = uiApp.ActiveUIDocument.Document;
             string filename = path;
             StringBuilder sbFeedback = new StringBuilder();
@@ -272,6 +275,11 @@ namespace PCF_Parameters
             EnumerableRowCollection<string> query = from value in PCF_Exporter_form.DATA_TABLE.AsEnumerable()
                                                     where value.Field<string>(0) == eFamilyType
                                                     select value.Field<string>(columnName);
+
+            var pQuery = from p in new pdef().ListParametersAll
+                         where p.Domain == "PIPL"
+                         select p;
+
             //Debugging
             //StringBuilder sbParameters = new StringBuilder();
 
@@ -286,13 +294,19 @@ namespace PCF_Parameters
                 {
                     //reporting
                     sNumber++;
-                    //eFamilyType = "Pipe Types: " + element.Name;
+                    
                     eFamilyType = element.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
                     foreach (string parameterName in pd.parameterNames) // <-- pd.parameterNames must be correctly initialized by FormCaller!!!
                     {
                         columnName = parameterName; //This is needed to execute query correctly by deferred execution
                         string parameterValue = query.First();
-                        Guid parGuid = (from d in new pdef().PipelineParametersAll where d.Name == parameterName select d.Guid).First();
+                        Guid parGuid = (from d in pQuery.ToList() where d.Name == parameterName select d.Guid).First();
+                        //Check if parGuid returns a match
+                        if (parGuid == null)
+                        {
+                            Util.ErrorMsg("Wrong parameter set. Select PIPELINE parameters.");
+                            return Result.Failed;
+                        }
                         element.get_Parameter(parGuid).Set(parameterValue);
                     }
 
@@ -333,16 +347,10 @@ namespace PCF_Parameters
         }
     }
 
-    public class CreateParameterBindings //: IExternalCommand
+    public class CreateParameterBindings
     {
-        //public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
-        //{
-        //    return ExecuteMyCommand(data.Application, ref msg);
-        //}
-
         internal Result CreateElementBindings(UIApplication uiApp, ref string msg)
         {
-            // UIApplication uiApp = commandData.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
             Application app = doc.Application;
             Autodesk.Revit.Creation.Application ca = app.Create;
@@ -361,15 +369,14 @@ namespace PCF_Parameters
             string tempFile = ExecutingAssemblyPath + "Temp.txt";
             
             StringBuilder sbFeedback = new StringBuilder();
-
-            //IList<pdef> elementParameters = new pdef().ElementParametersAll;
-            
+            //Parameter query
+            var query = from p in new pdef().ListParametersAll where p.Domain == "ELEM" select p;
             //Create parameter bindings
             try
             {
                 Transaction trans = new Transaction(doc, "Bind element PCF parameters");
                 trans.Start();
-                foreach (pdef parameter in new pdef().ElementParametersAll)
+                foreach (pdef parameter in query.ToList())
                 {
                     using (File.Create(tempFile)) { }
                     app.SharedParametersFilename = tempFile;
@@ -425,14 +432,15 @@ namespace PCF_Parameters
 
             StringBuilder sbFeedback = new StringBuilder();
 
-            //IList<pdef> pipelineParameters = new pdef().PipelineParametersAll;
+            //Parameter query
+            var query = from p in new pdef().ListParametersAll where p.Domain == "PIPL" select p;
 
             //Create parameter bindings
             try
             {
                 Transaction trans = new Transaction(doc, "Bind PCF parameters");
                 trans.Start();
-                foreach (pdef parameter in new pdef().PipelineParametersAll)
+                foreach (pdef parameter in query.ToList())
                 {
                     using (File.Create(tempFile)) { }
                     app.SharedParametersFilename = tempFile;
@@ -485,14 +493,12 @@ namespace PCF_Parameters
             // UIApplication uiApp = commandData.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
 
-            //List<pdef> parametersAll = new pdef().ElementParametersAll.Concat(new pdef().PipelineParametersAll).ToList();
-
             //Call the method to delete parameters
             try
             {
                 Transaction trans = new Transaction(doc, "Delete PCF parameters");
                 trans.Start();
-                foreach (pdef parameter in new pdef().ElementParametersAll.Concat(new pdef().PipelineParametersAll).ToList())
+                foreach (pdef parameter in new pdef().ListParametersAll.ToList())
                     RemoveSharedParameterBinding(doc.Application, parameter.Name, parameter.Type);
                 trans.Commit();
                 Util.InfoMsg(sbFeedback.ToString());
@@ -536,9 +542,6 @@ namespace PCF_Parameters
                 if (map.Contains(def)) sbFeedback.Append("Failed to delete parameter " + name + " for some reason.\n");
                 else sbFeedback.Append("Parameter " + name + " deleted.\n");
             }
-
-            //if (def != null) map.Remove(def); //Legacy code
         }
-
     }
 }

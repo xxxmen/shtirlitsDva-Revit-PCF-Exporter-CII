@@ -17,6 +17,7 @@ using Microsoft.Office.Interop.Excel;
 
 using BuildingCoder;
 using iv = PCF_Functions.InputVars;
+using pdef = PCF_Functions.ParameterDefinition;
 
 namespace PCF_Functions
 {
@@ -355,15 +356,15 @@ namespace PCF_Functions
                     schedAll.Definition.AddSortGroupField(sortGroupField);
                 }
 
-                foreach (ParameterDefinition pDef in new ParameterDefinition().ElementParametersAll)
+                string curUsage = "U";
+                string curDomain = "ELEM";
+                var query = from p in new pdef().ListParametersAll where p.Usage == curUsage && p.Domain == curDomain select p;
+                
+                foreach (pdef pDef in query.ToList())
                 {
                     SharedParameterElement parameter = (from SharedParameterElement param in sharedParameters
-                        where param.GuidValue.CompareTo(pDef.Guid) == 0
-                        select param).First();
-                    SchedulableField queryField =
-                        (from fld in schFields
-                            where fld.ParameterId.IntegerValue == parameter.Id.IntegerValue
-                            select fld).First();
+                        where param.GuidValue.CompareTo(pDef.Guid) == 0 select param).First();
+                    SchedulableField queryField = (from fld in schFields where fld.ParameterId.IntegerValue == parameter.Id.IntegerValue select fld).First();
 
                     ScheduleField field = schedAll.Definition.AddField(queryField);
                     if (pDef.Name != "PCF_ELEM_TYPE") continue;
@@ -388,7 +389,7 @@ namespace PCF_Functions
                     schedFilter.Definition.AddSortGroupField(sortGroupField);
                 }
 
-                foreach (ParameterDefinition pDef in new ParameterDefinition().ElementParametersAll)
+                foreach (pdef pDef in query.ToList())
                 {
                     SharedParameterElement parameter = (from SharedParameterElement param in sharedParameters where param.GuidValue.CompareTo(pDef.Guid) == 0
                                                         select param).First();
@@ -418,11 +419,11 @@ namespace PCF_Functions
                     schedPipeline.Definition.AddSortGroupField(sortGroupField);
                 }
 
-                foreach (ParameterDefinition pDef in new ParameterDefinition().PipelineParametersAll)
+                curDomain = "PIPL";
+                foreach (pdef pDef in query.ToList())
                 {
                     SharedParameterElement parameter = (from SharedParameterElement param in sharedParameters
-                                                        where param.GuidValue.CompareTo(pDef.Guid) == 0
-                                                        select param).First();
+                                                        where param.GuidValue.CompareTo(pDef.Guid) == 0 select param).First();
                     SchedulableField queryField = (from fld in schFields where fld.ParameterId.IntegerValue == parameter.Id.IntegerValue select fld).First();
                     schedPipeline.Definition.AddField(queryField);
                 }
