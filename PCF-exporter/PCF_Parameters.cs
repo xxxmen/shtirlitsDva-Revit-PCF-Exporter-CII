@@ -205,6 +205,7 @@ namespace PCF_Parameters
                     {
                         columnName = parameterName; //This is needed to execute query correctly by deferred execution
                         string parameterValue = query.First();
+                        if (string.IsNullOrEmpty(parameterValue)) continue;
                         Guid parGuid = (from d in pQuery where d.Name == parameterName select d.Guid).First();
                         //Check if parGuid returns a match
                         if (parGuid == null)
@@ -265,8 +266,18 @@ namespace PCF_Parameters
             string filename = path;
             StringBuilder sbFeedback = new StringBuilder();
 
+            //Get the systems of things and get the SystemTypes
             FilteredElementCollector collector = new FilteredElementCollector(doc);
-            collector.OfClass(typeof (PipingSystem));
+            IList<Element> elementList = collector.OfClass(typeof (PipingSystem)).ToElements();
+            //IList<ElementId> systemTypeIdList = new List<ElementId>();
+            //foreach (Element element in elementList) systemTypeIdList.Add(element.get_Parameter(BuiltInParameter.RBS_PIPING_SYSTEM_TYPE_PARAM).AsElementId());
+            //List<Element> sQuery = (from id in systemTypeIdList select doc.GetElement(id)).Distinct().ToList();
+
+            IList<PipingSystem> systemList = elementList.Cast<PipingSystem>().ToList();
+            IList<ElementId> systemTypeIdList = systemList.Select(sys => sys.GetTypeId()).ToList();
+            List<Element> sQuery = (from id in systemTypeIdList select doc.GetElement(id)).Distinct().ToList();
+            //IList<PipingSystemType> systemTypeList = sQuery
+
 
             //prepare input variables which are initialized when looping the elements
             string eFamilyType = null; string columnName = null;
@@ -283,23 +294,25 @@ namespace PCF_Parameters
             //Debugging
             //StringBuilder sbParameters = new StringBuilder();
 
+            Transaction trans = new Transaction(doc, "Initialize PCF parameters");
+            trans.Start();
+
             //Loop all elements pipes and fittings and accessories, setting parameters as defined in the dataset
             try
             {
-                Transaction trans = new Transaction(doc, "Initialize PCF parameters");
-                trans.Start();
                 //Reporting the number of different elements initialized
                 int sNumber = 0;
-                foreach (Element element in collector)
+                foreach (Element element in sQuery)
                 {
                     //reporting
                     sNumber++;
-                    
+
                     eFamilyType = element.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
                     foreach (string parameterName in pd.parameterNames) // <-- pd.parameterNames must be correctly initialized by FormCaller!!!
                     {
                         columnName = parameterName; //This is needed to execute query correctly by deferred execution
                         string parameterValue = query.First();
+                        if (string.IsNullOrEmpty(parameterValue)) continue;
                         Guid parGuid = (from d in pQuery.ToList() where d.Name == parameterName select d.Guid).First();
                         //Check if parGuid returns a match
                         if (parGuid == null)
@@ -341,6 +354,7 @@ namespace PCF_Parameters
             {
                 msg = ex.Message;
                 Util.ErrorMsg("Population of parameters failed with the following exception: \n"+msg);
+                trans.RollBack();
                 return Result.Failed;
             }
             return Result.Succeeded;
