@@ -187,11 +187,12 @@ namespace PCF_Parameters
             //Debugging
             //StringBuilder sbParameters = new StringBuilder();
 
+            Transaction trans = new Transaction(doc, "Initialize PCF parameters");
+            trans.Start();
+
             //Loop all elements pipes and fittings and accessories, setting parameters as defined in the dataset
             try
             {
-                Transaction trans = new Transaction(doc, "Initialize PCF parameters");
-                trans.Start();
                 //Reporting the number of different elements initialized
                 int pNumber = 0, fNumber = 0, aNumber = 0;
                 foreach (Element element in collector)
@@ -205,7 +206,7 @@ namespace PCF_Parameters
                     foreach (string parameterName in pd.parameterNames) // <-- pd.parameterNames must be correctly initialized by FormCaller!!!
                     {
                         columnName = parameterName; //This is needed to execute query correctly by deferred execution
-                        string parameterValue = query.First();
+                        string parameterValue = query.FirstOrDefault();
                         if (string.IsNullOrEmpty(parameterValue)) continue;
                         Guid parGuid = (from d in pQuery where d.Name == parameterName select d.Guid).First();
                         //Check if parGuid returns a match
@@ -248,6 +249,8 @@ namespace PCF_Parameters
             catch (Exception ex)
             {
                 msg = ex.Message;
+                Util.ErrorMsg("Population of parameters failed with the following exception: \n" + msg);
+                trans.RollBack();
                 return Result.Failed;
             }
 
@@ -311,11 +314,11 @@ namespace PCF_Parameters
                     //reporting
                     sNumber++;
 
-                    eFamilyType = "Piping system: " + element.Name;
+                    eFamilyType = "Piping System: " + element.Name;
                     foreach (string parameterName in pd.parameterNames) // <-- pd.parameterNames must be correctly initialized by FormCaller!!!
                     {
                         columnName = parameterName; //This is needed to execute query correctly by deferred execution
-                        string parameterValue = query.First();
+                        string parameterValue = query.FirstOrDefault();
                         if (string.IsNullOrEmpty(parameterValue)) continue;
                         Guid parGuid = (from d in pQuery.ToList() where d.Name == parameterName select d.Guid).First();
                         //Check if parGuid returns a match
