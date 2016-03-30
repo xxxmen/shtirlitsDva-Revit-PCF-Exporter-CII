@@ -11,7 +11,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
-
+using BuildingCoder;
 using PCF_Functions;
 using pdef = PCF_Functions.ParameterDefinition;
 
@@ -25,32 +25,42 @@ namespace PCF_Pipeline
 
         public static StringBuilder Export(string pipeLineGroupingKey, Document doc)
         {
-            FilteredElementCollector collector = new FilteredElementCollector(doc);
-            collector.OfClass(typeof (PipingSystem));
-            
             key = pipeLineGroupingKey;
-            sbPipeline = new StringBuilder();
 
-            var currentSys = (from e in collector
-                where e.get_Parameter(BuiltInParameter.RBS_DUCT_PIPE_SYSTEM_ABBREVIATION_PARAM).AsString() == key
-                select e).First();
-
-            var query = from p in new pdef().ListParametersAll
-                         where p.Domain == "PIPL"
-                         select p;
-
-            sbPipeline.Append("PIPELINE-REFERENCE ");
-            sbPipeline.Append(key);
-            sbPipeline.AppendLine();
-
-            foreach (pdef p in query.ToList())
+            try
             {
-                if (string.IsNullOrEmpty(currentSys.get_Parameter(p.Guid).AsString())) continue;
-                sbPipeline.Append("    ");
-                sbPipeline.Append(p.Keyword);
-                sbPipeline.Append(" ");
-                sbPipeline.Append(currentSys.get_Parameter(p.Guid).AsString());
+                //Instantiate collector
+                FilteredElementCollector collector = new FilteredElementCollector(doc);
+                //Get the elements
+                collector.OfClass(typeof (PipingSystemType));
+                //Select correct systemType
+                Element sQuery = (from PipingSystemType st in collector
+                    where string.Equals(st.Abbreviation, key)
+                    select st).FirstOrDefault();
+            
+                sbPipeline = new StringBuilder();
+
+                var query = from p in new pdef().ListParametersAll
+                    where p.Domain == "PIPL"
+                    select p;
+
+                sbPipeline.Append("PIPELINE-REFERENCE ");
+                sbPipeline.Append(key);
                 sbPipeline.AppendLine();
+
+                foreach (pdef p in query.ToList())
+                {
+                    if (string.IsNullOrEmpty(sQuery.get_Parameter(p.Guid).AsString())) continue;
+                    sbPipeline.Append("    ");
+                    sbPipeline.Append(p.Keyword);
+                    sbPipeline.Append(" ");
+                    sbPipeline.Append(sQuery.get_Parameter(p.Guid).AsString());
+                    sbPipeline.AppendLine();
+                }
+            }
+            catch (Exception e)
+            {
+                Util.ErrorMsg(e.Message);
             }
 
             return sbPipeline;

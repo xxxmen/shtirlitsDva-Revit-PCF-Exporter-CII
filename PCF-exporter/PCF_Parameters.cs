@@ -271,15 +271,16 @@ namespace PCF_Parameters
             StringBuilder sbFeedback = new StringBuilder();
 
             //Get the systems of things and get the SystemTypes
+            //Collector for PipingSystems
             FilteredElementCollector collector = new FilteredElementCollector(doc);
             IList<Element> elementList = collector.OfClass(typeof (PipingSystem)).ToElements();
-            //IList<ElementId> systemTypeIdList = new List<ElementId>();
-            //foreach (Element element in elementList) systemTypeIdList.Add(element.get_Parameter(BuiltInParameter.RBS_PIPING_SYSTEM_TYPE_PARAM).AsElementId());
-            //List<Element> sQuery = (from id in systemTypeIdList select doc.GetElement(id)).Distinct().ToList();
-
+            //Collector returns Element, cast to PipingSystem
             IList<PipingSystem> systemList = elementList.Cast<PipingSystem>().ToList();
+            //Get the PipingSystemType Id from the PipingSystem elements
             IList<ElementId> systemTypeIdList = systemList.Select(sys => sys.GetTypeId()).ToList();
-            var systemTypeList = from id in systemTypeIdList select doc.GetElement(id);
+            //Retrieve PipingSystemType from doc
+            IEnumerable<Element> systemTypeList = from id in systemTypeIdList select doc.GetElement(id);
+            //Group PipingSystemType by Name and retrieve first element of group -> equals to filtering a list to contain only unique elements
             List<Element> sQuery = (from st in systemTypeList
                 group st by new {st.Name} //http://stackoverflow.com/a/9589705/6073998 {st.Name, st.Attribute1, st.Attribute2}
                 into stGroup

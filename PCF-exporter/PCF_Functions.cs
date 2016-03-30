@@ -71,7 +71,7 @@ namespace PCF_Functions
     {
         #region Preamble
         //PCF Preamble composition
-        static StringBuilder sbPreamble = new StringBuilder();
+        static readonly StringBuilder sbPreamble = new StringBuilder();
         public static StringBuilder PreambleComposer()
         {
             sbPreamble.Append("ISOGEN-FILES ISOGEN.FLS");
@@ -100,7 +100,7 @@ namespace PCF_Functions
         {
             materialGroups = elementGroups;
             sbMaterials.Append("MATERIALS");
-            foreach (IGrouping<string, Element> group in elementGroups)
+            foreach (IGrouping<string, Element> group in materialGroups)
             {
                 groupNumber++;
                 sbMaterials.AppendLine();

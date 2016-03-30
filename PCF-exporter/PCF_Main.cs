@@ -41,9 +41,10 @@ namespace PCF_Exporter
                 StringBuilder sbCollect = new StringBuilder();
                 #endregion
 
-                #region Compose preamble 
+                #region Compose preamble
                 //Compose preamble
-                StringBuilder sbPreamble = Composer.PreambleComposer();
+                StringBuilder sbPreamble = null;
+                sbPreamble = Composer.PreambleComposer();
                 
                 //Append preamble
                 sbCollect.Append(sbPreamble);
@@ -129,6 +130,8 @@ namespace PCF_Exporter
                     IList<Element> accessoryList = (from element in gp
                                    where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeAccessory
                                    select element).ToList();
+
+
 
                     StringBuilder sbPipeline = PCF_Pipeline.PCF_Pipeline_Export.Export(gp.Key, doc);
                     StringBuilder sbPipes = PCF_Pipes.PCF_Pipes_Export.Export(pipeList);
