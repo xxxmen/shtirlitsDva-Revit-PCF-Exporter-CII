@@ -18,6 +18,7 @@ using xel = Microsoft.Office.Interop.Excel;
 
 using PCF_Functions;
 using BuildingCoder;
+using MoreLinq;
 using PCF_Exporter;
 using pd = PCF_Functions.ParameterData;
 using pdef = PCF_Functions.ParameterDefinition;
@@ -275,9 +276,11 @@ namespace PCF_Parameters
 
             IList<PipingSystem> systemList = elementList.Cast<PipingSystem>().ToList();
             IList<ElementId> systemTypeIdList = systemList.Select(sys => sys.GetTypeId()).ToList();
-            List<Element> sQuery = (from id in systemTypeIdList select doc.GetElement(id)).Distinct().ToList();
-            //IList<PipingSystemType> systemTypeList = sQuery
-
+            var systemTypeList = from id in systemTypeIdList select doc.GetElement(id);
+            List<Element> sQuery = (from st in systemTypeList
+                group st by new {st.Name} //http://stackoverflow.com/a/9589705/6073998 {st.Name, st.Attribute1, st.Attribute2}
+                into stGroup
+                select stGroup.First()).ToList();
 
             //prepare input variables which are initialized when looping the elements
             string eFamilyType = null; string columnName = null;
@@ -287,6 +290,7 @@ namespace PCF_Parameters
                                                     where value.Field<string>(0) == eFamilyType
                                                     select value.Field<string>(columnName);
 
+            //Get a query for pipeline parameters
             var pQuery = from p in new pdef().ListParametersAll
                          where p.Domain == "PIPL"
                          select p;
@@ -307,7 +311,7 @@ namespace PCF_Parameters
                     //reporting
                     sNumber++;
 
-                    eFamilyType = element.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
+                    eFamilyType = "Piping system: " + element.Name;
                     foreach (string parameterName in pd.parameterNames) // <-- pd.parameterNames must be correctly initialized by FormCaller!!!
                     {
                         columnName = parameterName; //This is needed to execute query correctly by deferred execution
