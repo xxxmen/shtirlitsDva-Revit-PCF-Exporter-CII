@@ -89,7 +89,6 @@
   <ItemGroup>
     <Compile Include="ActiveUIDoc.cs" />
     <Compile Include="App.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="ParameterData.cs" />
     <Compile Include="PCF_Pipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
