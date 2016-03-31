@@ -71,8 +71,8 @@ namespace PCF_Functions
     {
         #region Preamble
         //PCF Preamble composition
-        static readonly StringBuilder sbPreamble = new StringBuilder();
-        public static StringBuilder PreambleComposer()
+        readonly StringBuilder sbPreamble = new StringBuilder();
+        public StringBuilder PreambleComposer()
         {
             sbPreamble.Append("ISOGEN-FILES ISOGEN.FLS");
             sbPreamble.AppendLine();
@@ -93,10 +93,10 @@ namespace PCF_Functions
         #endregion
 
         #region Materials section
-        static StringBuilder sbMaterials = new StringBuilder();
-        static IEnumerable<IGrouping<string, Element>> materialGroups = null;
-        static int groupNumber;
-        public static StringBuilder MaterialsSection(IEnumerable<IGrouping<string, Element>> elementGroups)
+        StringBuilder sbMaterials = new StringBuilder();
+        IEnumerable<IGrouping<string, Element>> materialGroups = null;
+        int groupNumber;
+        public StringBuilder MaterialsSection(IEnumerable<IGrouping<string, Element>> elementGroups)
         {
             materialGroups = elementGroups;
             sbMaterials.Append("MATERIALS");

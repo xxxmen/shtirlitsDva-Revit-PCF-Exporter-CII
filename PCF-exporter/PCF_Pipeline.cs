@@ -34,7 +34,7 @@ namespace PCF_Pipeline
                 //Get the elements
                 collector.OfClass(typeof (PipingSystemType));
                 //Select correct systemType
-                Element sQuery = (from PipingSystemType st in collector
+                PipingSystemType sQuery = (from PipingSystemType st in collector
                     where string.Equals(st.Abbreviation, key)
                     select st).FirstOrDefault();
             
