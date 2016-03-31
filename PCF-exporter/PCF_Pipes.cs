@@ -14,6 +14,7 @@ using Autodesk.Revit.Attributes;
 
 using PCF_Functions;
 using pd = PCF_Functions.ParameterData;
+using pdef = PCF_Functions.ParameterDefinition;
 
 namespace PCF_Pipes
 {
@@ -46,12 +47,30 @@ namespace PCF_Pipes
                 sbPipes.Append(EndWriter.WriteEP1(element, connectorEnd.First()));
                 sbPipes.Append(EndWriter.WriteEP2(element, connectorEnd.Last()));
 
-                sbPipes.Append("    MATERIAL-IDENTIFIER ");
-                sbPipes.Append(element.LookupParameter(pd.PCF_MAT_ID).AsInteger());
-                sbPipes.AppendLine();
-                sbPipes.Append("    PIPING-SPEC ");
-                sbPipes.Append(element.LookupParameter(pd.PCF_ELEM_SPEC).AsString());
-                sbPipes.AppendLine();
+                var pQuery = from p in new pdef().ListParametersAll where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM") select p;
+
+                foreach (pdef p in pQuery)
+                {
+                    //Check for parameter's storage type (can be Int for select few parameters)
+                    int sT = (int)element.get_Parameter(p.Guid).StorageType;
+
+                    if (sT == 1) //Integer
+                    {
+                        //Check if the parameter contains anything
+                        if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsInteger().ToString())) continue;
+                        sbPipes.Append("    " + p.Keyword + " ");
+                        sbPipes.Append(element.get_Parameter(p.Guid).AsInteger());
+                    }
+                    else if (sT == 3) //String
+                    {
+                        //Check if the parameter contains anything
+                        if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsString())) continue;
+                        sbPipes.Append("    " + p.Keyword + " ");
+                        sbPipes.Append(element.get_Parameter(p.Guid).AsString());
+                    }
+                    sbPipes.AppendLine();
+                }
+
                 sbPipes.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
                 sbPipes.Append(element.UniqueId);
                 sbPipes.AppendLine();
