@@ -43,8 +43,9 @@ namespace PCF_Exporter
 
                 #region Compose preamble
                 //Compose preamble
-                StringBuilder sbPreamble = null;
-                sbPreamble = Composer.PreambleComposer();
+                Composer composer = new Composer();
+                
+                StringBuilder sbPreamble = composer.PreambleComposer();
                 
                 //Append preamble
                 sbCollect.Append(sbPreamble);
@@ -144,7 +145,7 @@ namespace PCF_Exporter
                 #endregion
 
                 #region Materials
-                StringBuilder sbMaterials = Composer.MaterialsSection(materialGroups);
+                StringBuilder sbMaterials = composer.MaterialsSection(materialGroups);
                 sbCollect.Append(sbMaterials);
                 #endregion
 

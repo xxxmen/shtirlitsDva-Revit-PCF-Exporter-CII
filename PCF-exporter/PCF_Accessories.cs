@@ -16,6 +16,7 @@ using Autodesk.Revit.DB.Structure;
 using PCF_Functions;
 using PCF_Taps;
 using pd = PCF_Functions.ParameterData;
+using pdef = PCF_Functions.ParameterDefinition;
 
 namespace PCF_Accessories
 {
@@ -36,6 +37,9 @@ namespace PCF_Accessories
             sbAccessories = new StringBuilder();
             foreach (Element element in accessoriesList)
             {
+                //If the Element Type field is empty -> ignore the component
+                if (string.IsNullOrEmpty(element.LookupParameter(pd.PCF_ELEM_TYPE).AsString())) continue;
+
                 sbAccessories.Append(element.LookupParameter(pd.PCF_ELEM_TYPE).AsString());
                 sbAccessories.AppendLine();
                 sbAccessories.Append("    COMPONENT-IDENTIFIER ");
@@ -134,15 +138,30 @@ namespace PCF_Accessories
 
                 }
 
-                sbAccessories.Append("    SKEY ");
-                sbAccessories.Append(element.LookupParameter(pd.PCF_ELEM_SKEY).AsString());
-                sbAccessories.AppendLine();
-                sbAccessories.Append("    MATERIAL-IDENTIFIER ");
-                sbAccessories.Append(element.LookupParameter(pd.PCF_MAT_ID).AsInteger());
-                sbAccessories.AppendLine();
-                sbAccessories.Append("    PIPING-SPEC ");
-                sbAccessories.Append(element.LookupParameter(pd.PCF_ELEM_SPEC).AsString());
-                sbAccessories.AppendLine();
+                var pQuery = from p in new pdef().ListParametersAll where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM") select p;
+
+                foreach (pdef p in pQuery)
+                {
+                    //Check for parameter's storage type (can be Int for select few parameters)
+                    int sT = (int)element.get_Parameter(p.Guid).StorageType;
+
+                    if (sT == 1)
+                    {
+                        //Check if the parameter contains anything
+                        if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsInteger().ToString())) continue;
+                        sbAccessories.Append("    " + p.Keyword + " ");
+                        sbAccessories.Append(element.get_Parameter(p.Guid).AsInteger());
+                    }
+                    else if (sT == 3)
+                    {
+                        //Check if the parameter contains anything
+                        if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsString())) continue;
+                        sbAccessories.Append("    " + p.Keyword + " ");
+                        sbAccessories.Append(element.get_Parameter(p.Guid).AsString());
+                    }
+                    sbAccessories.AppendLine();
+                }
+
                 sbAccessories.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
                 sbAccessories.Append(element.UniqueId);
                 sbAccessories.AppendLine();
@@ -163,10 +182,7 @@ namespace PCF_Accessories
                     TapsWriter tapsWriter = new TapsWriter(element, pd.PCF_ELEM_TAP3, doc);
                     sbAccessories.Append(tapsWriter.tapsWriter);
                 }
-
-                
             }
-
 
             //// Clear the output file
             //System.IO.File.WriteAllBytes(InputVars.OutputDirectoryFilePath + "Accessories.pcf", new byte[0]);

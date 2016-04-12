@@ -231,6 +231,8 @@ namespace PCF_Exporter
         {
             PCFExport pcfExporter = new PCFExport();
             Result result = pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
+            if (result == Result.Succeeded) Util.InfoMsg("PCF data exported successfully!");
+            if (result == Result.Failed) Util.InfoMsg("PCF data export failed for some reason.");
         }
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e)
