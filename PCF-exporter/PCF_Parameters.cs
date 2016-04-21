@@ -129,7 +129,9 @@ namespace PCF_Parameters
                 foreach (var p in query.ToList())
                 {
                     if (row == 2) worksheet.Cells[1, col] = p.Name; //Fill out top row only in the first iteration
-                    worksheet.Cells[row, col] = gp.First().get_Parameter(p.Guid).AsString();
+                    ElementId id = gp.First().GetTypeId();
+                    PipingSystemType ps = (PipingSystemType)doc.GetElement(id); //SystemType parameters can only be read from type elements
+                    worksheet.Cells[row, col] = ps.get_Parameter(p.Guid).AsString();
                     col++; //Increment column
                 }
                 row++; col = 2; //Increment row and reset column
