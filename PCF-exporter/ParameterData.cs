@@ -82,7 +82,7 @@ namespace PCF_Functions
         {
             Name = pName;
             Domain = pDomain;
-            Usage = pUsage;
+            Usage = pUsage; //U = user, P = programmatic
             Type = pType;
             Guid = pGuid;
             Keyword = pKeyword;

@@ -31,11 +31,66 @@ namespace PCF_Parameters
         {
             Document doc = uiApp.ActiveUIDocument.Document;
 
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+
+            #region Pipeline schedule export
+
+            //Collect piping systems
+            collector.OfClass(typeof(PipingSystem));
+
+            //Group all elements by their Family and Type
+            IOrderedEnumerable<Element> orderedCollector = collector.OrderBy(e => e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString());
+            IEnumerable<IGrouping<string, Element>> elementGroups = from e in orderedCollector group e by e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
+
+            xel.Application excel = new xel.Application();
+            if (null == excel)
+            {
+                Util.ErrorMsg("Failed to get or start Excel.");
+                return Result.Failed;
+            }
+            excel.Visible = true;
+
+            xel.Workbook workbook = excel.Workbooks.Add(Missing.Value);
+            xel.Worksheet worksheet;
+            worksheet = excel.ActiveSheet as xel.Worksheet;
+            worksheet.Name = "PCF Export - pipelines";
+            
+            worksheet.Columns.ColumnWidth = 20;
+
+            worksheet.Cells[1, 1] = "Family and Type";
+
+            //Change domain for query
+            string curDomain = "PIPL", curUsage = "U";
+
+            var query = from p in new pdef().ListParametersAll
+                        where p.Domain == curDomain && p.Usage == curUsage
+                        select p;
+
+            worksheet.Range["A1", Util.GetColumnName(query.Count()) + "1"].Font.Bold = true;
+
+            //Export family and type names to first column and parameter values
+            int row = 2, col = 2;
+            foreach (IGrouping<string, Element> gp in elementGroups)
+            {
+                worksheet.Cells[row, 1] = gp.Key;
+                foreach (var p in query.ToList())
+                {
+                    if (row == 2) worksheet.Cells[1, col] = p.Name; //Fill out top row only in the first iteration
+                    ElementId id = gp.First().GetTypeId();
+                    PipingSystemType ps = (PipingSystemType)doc.GetElement(id); //SystemType parameters can only be read from type elements
+                    worksheet.Cells[row, col] = ps.get_Parameter(p.Guid).AsString();
+                    col++; //Increment column
+                }
+                row++; col = 2; //Increment row and reset column
+            }
+
+            #endregion
+
             #region Element schedule export
 
-            FilteredElementCollector collector = new FilteredElementCollector(doc);
             //Define a collector (Pipe OR FamInst) AND (Fitting OR Accessory OR Pipe).
             //This is to eliminate FamilySymbols from collector which would throw an exception later on.
+            collector = new FilteredElementCollector(doc);
             collector.WherePasses(new LogicalAndFilter(new List<ElementFilter>
             {
                 new LogicalOrFilter(new List<ElementFilter>
@@ -52,37 +107,28 @@ namespace PCF_Parameters
             }));
 
             //Group all elements by their Family and Type
-            IOrderedEnumerable<Element> orderedCollector =
+            orderedCollector =
                 collector.OrderBy(e => e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString());
-            IEnumerable<IGrouping<string, Element>> elementGroups = from e in orderedCollector
+            elementGroups = from e in orderedCollector
                 group e by e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
 
-            xel.Application excel = new xel.Application();
-            if (null == excel)
-            {
-                Util.ErrorMsg("Failed to get or start Excel.");
-                return Result.Failed;
-            }
-            excel.Visible = true;
-            xel.Workbook workbook = excel.Workbooks.Add(Missing.Value);
-            xel.Worksheet worksheet;
+
+            excel.Sheets.Add(Missing.Value, Missing.Value, Missing.Value, Missing.Value);
             worksheet = excel.ActiveSheet as xel.Worksheet;
             worksheet.Name = "PCF Export - elements";
-            
+
             worksheet.Columns.ColumnWidth = 20;
 
             worksheet.Cells[1, 1] = "Family and Type";
 
             //Query parameters
-            string curDomain = "ELEM", curUsage = "U";
-            var query = from p in new pdef().ListParametersAll
-                where p.Domain == curDomain && p.Usage == curUsage
-                select p;
+            curDomain = "ELEM";
+            
             //Formatting must occur here, because it depends on query
             worksheet.Range["A1", Util.GetColumnName(query.Count()) + "1"].Font.Bold = true;
 
             //Export family and type names to first column and parameter values
-            int row = 2, col = 2;
+            row = 2; col = 2;
             foreach (IGrouping<string, Element> gp in elementGroups)
             {
                 worksheet.Cells[row, 1] = gp.Key;
@@ -97,47 +143,7 @@ namespace PCF_Parameters
 
             #endregion
 
-            #region Pipeline schedule export
-
-            collector = new FilteredElementCollector(doc);
-
-            //Collect piping systems
-            collector.OfClass(typeof(PipingSystem));
-
-            //Group all elements by their Family and Type
-            orderedCollector = collector.OrderBy(e => e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString());
-            elementGroups = from e in orderedCollector group e by e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
-
-            excel.Sheets.Add(Missing.Value, Missing.Value, Missing.Value, Missing.Value);
-            worksheet = excel.ActiveSheet as xel.Worksheet;
-            worksheet.Name = "PCF Export - pipelines";
-
-            worksheet.Columns.ColumnWidth = 20;
-
-            worksheet.Cells[1, 1] = "Family and Type";
-
-            //Change domain for query
-            curDomain = "PIPL";
             
-            worksheet.Range["A1", Util.GetColumnName(query.Count()) + "1"].Font.Bold = true;
-
-            //Export family and type names to first column and parameter values
-            row = 2; col = 2;
-            foreach (IGrouping<string, Element> gp in elementGroups)
-            {
-                worksheet.Cells[row, 1] = gp.Key;
-                foreach (var p in query.ToList())
-                {
-                    if (row == 2) worksheet.Cells[1, col] = p.Name; //Fill out top row only in the first iteration
-                    ElementId id = gp.First().GetTypeId();
-                    PipingSystemType ps = (PipingSystemType)doc.GetElement(id); //SystemType parameters can only be read from type elements
-                    worksheet.Cells[row, col] = ps.get_Parameter(p.Guid).AsString();
-                    col++; //Increment column
-                }
-                row++; col = 2; //Increment row and reset column
-            }
-
-            #endregion
 
             collector.Dispose();
             return Result.Succeeded;
