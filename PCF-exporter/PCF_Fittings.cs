@@ -204,10 +204,7 @@ namespace PCF_Fittings
                         }
 
                         XYZ endPointOriginOletPrimary = primaryConnector.Origin;
-                        double connectorSizeOletPrimary = primaryConnector.Radius;
-
                         XYZ endPointOriginOletSecondary = secondaryConnector.Origin;
-                        double connectorSizeOletSecondary = secondaryConnector.Radius;
 
                         //get reference elements
                         ConnectorSet refConnectors = primaryConnector.AllRefs;
