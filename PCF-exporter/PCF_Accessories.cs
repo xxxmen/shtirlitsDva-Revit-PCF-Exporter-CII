@@ -117,23 +117,62 @@ namespace PCF_Accessories
                         break;
 
                     case ("INSTRUMENT-DIAL"):
-                        //Process endpoints of the component
+                        ////Process endpoints of the component
+                        //primaryConnector = null;
+
+                        //foreach (Connector connector in connectorSet) primaryConnector = connector;
+
+                        ////Process endpoints of the component
+                        //sbAccessories.Append(EndWriter.WriteEP1(element, primaryConnector));
+
+                        ////The co-ords point is obtained by creating an unbound line from primary connector and taking an arbitrary point a long the line.
+                        //reverseConnectorVector = -primaryConnector.CoordinateSystem.BasisZ.Multiply(0.656167979);
+                        //XYZ coOrdsPoint = primaryConnector.Origin;
+                        //Transform pointTranslation;
+                        //pointTranslation = Transform.CreateTranslation(reverseConnectorVector);
+                        //coOrdsPoint = pointTranslation.OfPoint(coOrdsPoint);
+
                         primaryConnector = null;
-
                         foreach (Connector connector in connectorSet) primaryConnector = connector;
+                        //Connector information extraction
 
-                        //Process endpoints of the component
                         sbAccessories.Append(EndWriter.WriteEP1(element, primaryConnector));
 
-                        //The co-ords point is obtained by creating an unbound line from primary connector and taking an arbitrary point a long the line.
-                        reverseConnectorVector = -primaryConnector.CoordinateSystem.BasisZ.Multiply(0.656167979);
-                        XYZ coOrdsPoint = primaryConnector.Origin;
-                        Transform pointTranslation;
-                        pointTranslation = Transform.CreateTranslation(reverseConnectorVector);
-                        coOrdsPoint = pointTranslation.OfPoint(coOrdsPoint);
-
-                        sbAccessories.Append(EndWriter.WriteCO(coOrdsPoint));
+                        XYZ primConOrigin = primaryConnector.Origin;
                         
+                        //Analyses the geometry to obtain a point opposite the main connector.
+                        //Extraction of the direction of the connector and reversing it
+                        reverseConnectorVector = -primaryConnector.CoordinateSystem.BasisZ;
+                        Line detectorLine = Line.CreateUnbound(primConOrigin, reverseConnectorVector);
+                        //Begin geometry analysis
+                        GeometryElement geometryElement = familyInstance.get_Geometry(options);
+
+                        //Prepare resulting point
+                        XYZ endPointAnalyzed = null;
+
+                        foreach (GeometryObject geometry in geometryElement)
+                        {
+                            GeometryInstance instance = geometry as GeometryInstance;
+                            if (null == instance) continue;
+                            foreach (GeometryObject instObj in instance.GetInstanceGeometry())
+                            {
+                                Solid solid = instObj as Solid;
+                                if (null == solid || 0 == solid.Faces.Size || 0 == solid.Edges.Size) continue;
+                                foreach (Face face in solid.Faces)
+                                {
+                                    IntersectionResultArray results = null;
+                                    XYZ intersection = null;
+                                    SetComparisonResult result = face.Intersect(detectorLine, out results);
+                                    if (result != SetComparisonResult.Overlap) continue;
+                                    intersection = results.get_Item(0).XYZPoint;
+                                    if (intersection.IsAlmostEqualTo(primConOrigin) == false) endPointAnalyzed = intersection;
+                                }
+                                
+                            }
+                        }
+
+                        sbAccessories.Append(EndWriter.WriteCO(endPointAnalyzed));
+
                         break;
 
                 }

@@ -1,0 +1,14 @@
+E:\Github\pcf-exporter\PCF-exporter\bin\x64\Debug\PCF-Exporter.dll.config
+E:\Github\pcf-exporter\PCF-exporter\bin\x64\Debug\PCF-Exporter.dll
+E:\Github\pcf-exporter\PCF-exporter\bin\x64\Debug\PCF-Exporter.pdb
+E:\Github\pcf-exporter\PCF-exporter\bin\x64\Debug\Excel.dll
+E:\Github\pcf-exporter\PCF-exporter\bin\x64\Debug\ICSharpCode.SharpZipLib.dll
+E:\Github\pcf-exporter\PCF-exporter\bin\x64\Debug\System.Linq.Dynamic.dll
+E:\Github\pcf-exporter\PCF-exporter\bin\x64\Debug\Excel.pdb
+E:\Github\pcf-exporter\PCF-exporter\obj\x64\Debug\PCF-Exporter.csprojResolveAssemblyReference.cache
+E:\Github\pcf-exporter\PCF-exporter\obj\x64\Debug\PCF-Exporter.csproj.ResolveComReference.cache
+E:\Github\pcf-exporter\PCF-exporter\obj\x64\Debug\PCF_Exporter.PCF_Exporter_form.resources
+E:\Github\pcf-exporter\PCF-exporter\obj\x64\Debug\PCF_Functions.Properties.Resources.resources
+E:\Github\pcf-exporter\PCF-exporter\obj\x64\Debug\PCF-Exporter.csproj.GenerateResource.Cache
+E:\Github\pcf-exporter\PCF-exporter\obj\x64\Debug\PCF-Exporter.dll
+E:\Github\pcf-exporter\PCF-exporter\obj\x64\Debug\PCF-Exporter.pdb
