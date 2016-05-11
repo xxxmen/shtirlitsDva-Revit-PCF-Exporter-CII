@@ -41,7 +41,7 @@ namespace PCF_Pipes
                 ConnectorSet connectorSet = pipe.ConnectorManager.Connectors;
                 //Filter out non-end types of connectors
                 IList<Connector> connectorEnd = (from Connector connector in connectorSet 
-                                   where connector.ConnectorType.ToString() == "End"
+                                   where connector.ConnectorType.ToString().Equals("End")// == "End"
                                    select connector).ToList();
 
                 sbPipes.Append(EndWriter.WriteEP1(element, connectorEnd.First()));
