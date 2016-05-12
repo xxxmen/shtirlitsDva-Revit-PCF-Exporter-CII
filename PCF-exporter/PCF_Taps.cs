@@ -131,7 +131,7 @@ namespace PCF_Taps
                 //Filter out non-end types of connectors. The output is converted to a list to prevent deferred execution (I am afraid
                 //that deferred execution leads to inconsisten returns of connectors from the connector set but am not sure it does).
                 IList<Connector> connectorTapEnds = (from Connector connector in connectorTapSet
-                                                     where connector.ConnectorType.ToString() == "End"
+                                                     where connector.ConnectorType.ToString().Equals("End")
                                                      select connector).ToList();
 
                 Connector end1 = connectorTapEnds.First(); Connector end2 = connectorTapEnds.Last();

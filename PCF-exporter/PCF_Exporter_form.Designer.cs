@@ -43,6 +43,7 @@ namespace PCF_Exporter
         private void InitializeComponent()
         {
             PCF_Functions.Properties.Settings settings1 = new PCF_Functions.Properties.Settings();
+            PCF_Functions.Properties.Settings settings2 = new PCF_Functions.Properties.Settings();
             this.Tabs = new System.Windows.Forms.TabControl();
             this.TabSetup = new System.Windows.Forms.TabPage();
             this.radioBox1 = new PCF_Functions.RadioBox();
@@ -322,7 +323,6 @@ namespace PCF_Exporter
             this.groupBox11.TabIndex = 2;
             this.groupBox11.TabStop = false;
             this.groupBox11.Text = "DEBUG";
-            this.groupBox11.Visible = false;
             // 
             // textBox19
             // 
@@ -623,7 +623,22 @@ namespace PCF_Exporter
             // 
             this.radioButton2.AutoSize = true;
             this.radioButton2.Checked = settings1.radioButton2SpecificPipeline;
-            this.radioButton2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", settings1, "radioButton2SpecificPipeline", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            settings2.excelPath = "";
+            settings2.excelWorksheetSelectedName = "";
+            settings2.radioButton10WeightLengthF = false;
+            settings2.radioButton1AllPipelines = true;
+            settings2.radioButton2SpecificPipeline = false;
+            settings2.radioButton3BoreMM = true;
+            settings2.radioButton4BoreINCH = false;
+            settings2.radioButton5CoordsMm = true;
+            settings2.radioButton6CoordsInch = false;
+            settings2.radioButton7WeightKgs = true;
+            settings2.radioButton8WeightLbs = false;
+            settings2.radioButton9WeightLengthM = true;
+            settings2.SettingsKey = "";
+            settings2.textBox3SpecificPipeline = "Input here";
+            settings2.textBox5OutputPath = "";
+            this.radioButton2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", settings2, "radioButton2SpecificPipeline", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.radioButton2.Location = new System.Drawing.Point(46, 62);
             this.radioButton2.Name = "radioButton2";
             this.radioButton2.Size = new System.Drawing.Size(105, 17);

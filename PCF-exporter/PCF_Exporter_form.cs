@@ -81,7 +81,7 @@ namespace PCF_Exporter
             //{
             //    Util.ErrorMsg("Initialization of EXCEL data threw an exception: \n"+e.Message+"\nPlease reselect EXCEL workbook.");
             //}
-            
+
             //Init Scope
             iv.SysAbbr = mySettings.Default.textBox3SpecificPipeline;
             iv.ExportAll = mySettings.Default.radioButton1AllPipelines;
