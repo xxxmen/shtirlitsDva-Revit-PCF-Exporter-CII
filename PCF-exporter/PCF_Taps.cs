@@ -17,42 +17,39 @@ using Autodesk.Revit.Exceptions;
 
 using PCF_Functions;
 using BuildingCoder;
+using OperationCanceledException = Autodesk.Revit.Exceptions.OperationCanceledException;
 
 namespace PCF_Taps
 {
-    [TransactionAttribute(TransactionMode.Manual)]
-    [RegenerationAttribute(RegenerationOption.Manual)]
-
-    public class DefineTapConnection : IExternalCommand
+    public class DefineTapConnection
     {
-        public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
+        public Result defineTapConnection(ExternalCommandData commandData, ref string msg, ElementSet elements)
         {
-            return ExecuteMyCommand(data.Application, ref msg, elements);
-        }
-
-        internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg, ElementSet elements)
-        {
-            // UIApplication uiApp = commandData.Application;
+            UIApplication uiApp = commandData.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
             Application app = doc.Application;
             UIDocument uidoc = uiApp.ActiveUIDocument;
-
-            //Select tapped element
-            Element tappedElement = Util.SelectSingleElement(uidoc, "Select tapped element.");
-
-            //Pipe type to restrict selection of tapping element
-            Type t = typeof(Pipe);
-
-            //Select tap element
-            Element tappingElement = Util.SelectSingleElementOfType(uidoc, t, "Select tapping element (must be a pipe).", false);
-
-            ////Debugging
-            //StringBuilder sbTaps = new StringBuilder();
+            Transaction trans = new Transaction(doc, "Define tap");
+            trans.Start();
 
             try
             {
-                Transaction trans = new Transaction(doc, "Define tap");
-                trans.Start();
+
+                //Select tapped element
+                Element tappedElement = Util.SelectSingleElement(uidoc, "Select tapped element.");
+
+                if (!(tappedElement != null)) throw new Exception("Tap Connection cancelled!");
+
+                //Pipe type to restrict selection of tapping element
+                Type t = typeof(Pipe);
+
+                //Select tap element
+                Element tappingElement = Util.SelectSingleElementOfType(uidoc, t, "Select tapping element (must be a pipe).", false);
+
+                if (!(tappingElement != null)) throw new Exception("Tap Connection cancelled!");
+
+                ////Debugging
+                //StringBuilder sbTaps = new StringBuilder();
 
                 if (string.IsNullOrEmpty(tappedElement.LookupParameter(ParameterData.PCF_ELEM_TAP1).AsString()))
                 {
@@ -97,11 +94,13 @@ namespace PCF_Taps
 
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
+                trans.RollBack();
                 return Result.Cancelled;
             }
 
             catch (Exception ex)
             {
+                trans.RollBack();
                 msg = ex.Message;
                 return Result.Failed;
             }

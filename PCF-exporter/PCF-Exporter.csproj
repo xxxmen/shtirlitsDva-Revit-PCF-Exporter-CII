@@ -180,13 +180,19 @@
       <DependentUpon>PCF_Exporter_form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ImgPcfExport16.png" />
     <EmbeddedResource Include="ImgPcfExport32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ImgTapCon32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ImgTapCon16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
