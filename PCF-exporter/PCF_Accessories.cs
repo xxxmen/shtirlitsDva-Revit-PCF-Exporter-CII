@@ -15,8 +15,6 @@ using Autodesk.Revit.DB.Structure;
 
 using PCF_Functions;
 using PCF_Taps;
-using pd = PCF_Functions.ParameterData;
-using pdef = PCF_Functions.ParameterDefinition;
 
 namespace PCF_Accessories
 {
@@ -31,19 +29,16 @@ namespace PCF_Accessories
             doc = document;
             //The list of fittings, sorted by TYPE then SKEY
             accessoriesList = elements.
-                OrderBy(e => e.LookupParameter(pd.PCF_ELEM_TYPE).AsString()).
-                ThenBy(e => e.LookupParameter(pd.PCF_ELEM_SKEY).AsString());
+                OrderBy(e => e.LookupParameter(InputVars.PCF_ELEM_TYPE).AsString()).
+                ThenBy(e => e.LookupParameter(InputVars.PCF_ELEM_SKEY).AsString());
 
             sbAccessories = new StringBuilder();
             foreach (Element element in accessoriesList)
             {
-                //If the Element Type field is empty -> ignore the component
-                if (string.IsNullOrEmpty(element.LookupParameter(pd.PCF_ELEM_TYPE).AsString())) continue;
-
-                sbAccessories.Append(element.LookupParameter(pd.PCF_ELEM_TYPE).AsString());
+                sbAccessories.Append(element.LookupParameter(InputVars.PCF_ELEM_TYPE).AsString());
                 sbAccessories.AppendLine();
                 sbAccessories.Append("    COMPONENT-IDENTIFIER ");
-                sbAccessories.Append(element.LookupParameter(pd.PCF_ELEM_COMPID).AsInteger());
+                sbAccessories.Append(element.LookupParameter(InputVars.PCF_ELEM_COMPID).AsInteger());
                 sbAccessories.AppendLine();
 
                 //Cast the elements gathered by the collector to FamilyInstances
@@ -55,7 +50,7 @@ namespace PCF_Accessories
                 ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
 
                 //Switch to different element type configurations
-                switch (element.LookupParameter(pd.PCF_ELEM_TYPE).AsString())
+                switch (element.LookupParameter(InputVars.PCF_ELEM_TYPE).AsString())
                 {
                     case ("FILTER"):
                         //Process endpoints of the component
@@ -117,111 +112,65 @@ namespace PCF_Accessories
                         break;
 
                     case ("INSTRUMENT-DIAL"):
-                        ////Process endpoints of the component
-                        //primaryConnector = null;
-
-                        //foreach (Connector connector in connectorSet) primaryConnector = connector;
-
-                        ////Process endpoints of the component
-                        //sbAccessories.Append(EndWriter.WriteEP1(element, primaryConnector));
-
-                        ////The co-ords point is obtained by creating an unbound line from primary connector and taking an arbitrary point a long the line.
-                        //reverseConnectorVector = -primaryConnector.CoordinateSystem.BasisZ.Multiply(0.656167979);
-                        //XYZ coOrdsPoint = primaryConnector.Origin;
-                        //Transform pointTranslation;
-                        //pointTranslation = Transform.CreateTranslation(reverseConnectorVector);
-                        //coOrdsPoint = pointTranslation.OfPoint(coOrdsPoint);
-
+                        //Process endpoints of the component
                         primaryConnector = null;
-                        foreach (Connector connector in connectorSet) primaryConnector = connector;
-                        //Connector information extraction
 
+                        foreach (Connector connector in connectorSet) primaryConnector = connector;
+
+                        //Process endpoints of the component
                         sbAccessories.Append(EndWriter.WriteEP1(element, primaryConnector));
 
-                        XYZ primConOrigin = primaryConnector.Origin;
+                        //The co-ords point is obtained by creating an unbound line from primary connector and taking an arbitrary point a long the line.
+                        reverseConnectorVector = -primaryConnector.CoordinateSystem.BasisZ.Multiply(0.656167979);
+                        XYZ coOrdsPoint = primaryConnector.Origin;
+                        Transform pointTranslation;
+                        pointTranslation = Transform.CreateTranslation(reverseConnectorVector);
+                        coOrdsPoint = pointTranslation.OfPoint(coOrdsPoint);
+
+                        sbAccessories.Append(EndWriter.WriteCO(coOrdsPoint));
                         
-                        //Analyses the geometry to obtain a point opposite the main connector.
-                        //Extraction of the direction of the connector and reversing it
-                        reverseConnectorVector = -primaryConnector.CoordinateSystem.BasisZ;
-                        Line detectorLine = Line.CreateUnbound(primConOrigin, reverseConnectorVector);
-                        //Begin geometry analysis
-                        GeometryElement geometryElement = familyInstance.get_Geometry(options);
-
-                        //Prepare resulting point
-                        XYZ endPointAnalyzed = null;
-
-                        foreach (GeometryObject geometry in geometryElement)
-                        {
-                            GeometryInstance instance = geometry as GeometryInstance;
-                            if (null == instance) continue;
-                            foreach (GeometryObject instObj in instance.GetInstanceGeometry())
-                            {
-                                Solid solid = instObj as Solid;
-                                if (null == solid || 0 == solid.Faces.Size || 0 == solid.Edges.Size) continue;
-                                foreach (Face face in solid.Faces)
-                                {
-                                    IntersectionResultArray results = null;
-                                    XYZ intersection = null;
-                                    SetComparisonResult result = face.Intersect(detectorLine, out results);
-                                    if (result != SetComparisonResult.Overlap) continue;
-                                    intersection = results.get_Item(0).XYZPoint;
-                                    if (intersection.IsAlmostEqualTo(primConOrigin) == false) endPointAnalyzed = intersection;
-                                }
-                                
-                            }
-                        }
-
-                        sbAccessories.Append(EndWriter.WriteCO(endPointAnalyzed));
-
                         break;
 
                 }
 
-                var pQuery = from p in new pdef().ListParametersAll where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM") select p;
-
-                foreach (pdef p in pQuery)
-                {
-                    //Check for parameter's storage type (can be Int for select few parameters)
-                    int sT = (int)element.get_Parameter(p.Guid).StorageType;
-
-                    if (sT == 1)
-                    {
-                        //Check if the parameter contains anything
-                        if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsInteger().ToString())) continue;
-                        sbAccessories.Append("    " + p.Keyword + " ");
-                        sbAccessories.Append(element.get_Parameter(p.Guid).AsInteger());
-                    }
-                    else if (sT == 3)
-                    {
-                        //Check if the parameter contains anything
-                        if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsString())) continue;
-                        sbAccessories.Append("    " + p.Keyword + " ");
-                        sbAccessories.Append(element.get_Parameter(p.Guid).AsString());
-                    }
-                    sbAccessories.AppendLine();
-                }
-
+                sbAccessories.Append("    SKEY ");
+                sbAccessories.Append(element.LookupParameter(InputVars.PCF_ELEM_SKEY).AsString());
+                sbAccessories.AppendLine();
+                sbAccessories.Append("    MATERIAL-IDENTIFIER ");
+                sbAccessories.Append(element.LookupParameter(InputVars.PCF_MAT_ID).AsInteger());
+                sbAccessories.AppendLine();
+                sbAccessories.Append("    PIPING-SPEC ");
+                sbAccessories.Append(InputVars.PIPING_SPEC);
+                sbAccessories.AppendLine();
                 sbAccessories.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
                 sbAccessories.Append(element.UniqueId);
                 sbAccessories.AppendLine();
 
                 //Process tap entries of the element if any
-                if (string.IsNullOrEmpty(element.LookupParameter(pd.PCF_ELEM_TAP1).AsString()) == false)
+
+                string PCF_ELEM_TAP1_value = element.LookupParameter(InputVars.PCF_ELEM_TAP1).AsString();
+                string PCF_ELEM_TAP2_value = element.LookupParameter(InputVars.PCF_ELEM_TAP2).AsString();
+                string PCF_ELEM_TAP3_value = element.LookupParameter(InputVars.PCF_ELEM_TAP3).AsString();
+
+                if (String.IsNullOrEmpty(PCF_ELEM_TAP1_value) == false)
                 {
-                    TapsWriter tapsWriter = new TapsWriter(element, pd.PCF_ELEM_TAP1, doc);
+                    TapsWriter tapsWriter = new TapsWriter(element, InputVars.PCF_ELEM_TAP1, doc);
                     sbAccessories.Append(tapsWriter.tapsWriter);
                 }
-                if (string.IsNullOrEmpty(element.LookupParameter(pd.PCF_ELEM_TAP2).AsString()) == false)
+                if (String.IsNullOrEmpty(PCF_ELEM_TAP2_value) == false)
                 {
-                    TapsWriter tapsWriter = new TapsWriter(element, pd.PCF_ELEM_TAP2, doc);
+                    TapsWriter tapsWriter = new TapsWriter(element, InputVars.PCF_ELEM_TAP2, doc);
                     sbAccessories.Append(tapsWriter.tapsWriter);
                 }
-                if (string.IsNullOrEmpty(element.LookupParameter(pd.PCF_ELEM_TAP3).AsString()) == false)
+                if (String.IsNullOrEmpty(PCF_ELEM_TAP3_value) == false)
                 {
-                    TapsWriter tapsWriter = new TapsWriter(element, pd.PCF_ELEM_TAP3, doc);
+                    TapsWriter tapsWriter = new TapsWriter(element, InputVars.PCF_ELEM_TAP3, doc);
                     sbAccessories.Append(tapsWriter.tapsWriter);
                 }
+
+                
             }
+
 
             //// Clear the output file
             //System.IO.File.WriteAllBytes(InputVars.OutputDirectoryFilePath + "Accessories.pcf", new byte[0]);

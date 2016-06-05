@@ -19,29 +19,24 @@ namespace PCF_Output
 {
     public class Output
     {
-        private static StringBuilder _collect;
-        private static string _outputDir;
-        private static Document _document;
+        static StringBuilder preamble, pipes, fittings, accessories, materials;
+        static string outputDir;
 
-        public static void OutputWriter(Document doc, StringBuilder collect, string outputDirectory)
+        public static void OutputWriter(StringBuilder Preamble, StringBuilder Pipes, StringBuilder Fittings, StringBuilder Accessories, StringBuilder Materials, string OutputDirectory)
         {
-            _collect = collect; _outputDir = outputDirectory;
-            _document = doc;
+            preamble = Preamble; pipes = Pipes; fittings = Fittings; accessories = Accessories; materials = Materials; outputDir = OutputDirectory;
 
-            string docName = _document.ProjectInformation.Name;
-            string dateAndTime = DateTime.Now.ToString();
-            dateAndTime = dateAndTime.Replace(" ", "_");
-            dateAndTime = dateAndTime.Replace(":", "-");
-            //string filename = _outputDir+"\\" + docName + "_" + dateAndTime + ".pcf";
-            string filename = _outputDir+"\\" + docName + ".pcf";
+            //// Clear the output file
+            System.IO.File.WriteAllBytes(outputDir + "PCF_Export.pcf", new byte[0]);
 
-            //Clear the output file
-            System.IO.File.WriteAllBytes(filename, new byte[0]);
-
-            // Write to output file
-            using (StreamWriter w = File.AppendText(filename))
+            //// Write to output file
+            using (StreamWriter w = File.AppendText(outputDir + "PCF_Export.pcf"))
             {
-                w.Write(_collect);
+                w.Write(preamble);
+                w.Write(pipes);
+                w.Write(fittings);
+                w.Write(accessories);
+                w.Write(materials);
                 w.Close();
             }
         }
