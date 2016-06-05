@@ -2,7 +2,6 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Dynamic;
 using System.Text;
 using System.Globalization;
 
@@ -15,108 +14,159 @@ using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 using Microsoft.Office.Interop.Excel;
 
-using BuildingCoder;
-using iv = PCF_Functions.InputVars;
-using pdef = PCF_Functions.ParameterDefinition;
-
 namespace PCF_Functions
 {
     public class InputVars
     {
-        #region Execution
         //File I/O
-        public static string OutputDirectoryFilePath;
-        public static string ExcelSheet = "COMP";
+        public static String DriveLetter = "E";
+        public static String OutputDirectoryFilePath = DriveLetter + ":\\Dropbox\\Revit\\Dev\\Test_01\\TestProject\\Output\\";
 
-        //Execution control
-        public static bool ExportAll = true;
+        public static String ExcelFilePath = DriveLetter + ":\\Dropbox\\Revit\\Dev\\Test_01\\TestProject\\";
+        public static String ExcelFileName = "PCF_DEVELOPEMENT_01.xlsx";
+        public static String ExcelSheet = "COMP";
 
-        //PCF File Header (preamble) control
-        public static string UNITS_BORE = "MM";
-        public static bool UNITS_BORE_MM = true;
-        public static bool UNITS_BORE_INCH = false;
-
-        public static string UNITS_CO_ORDS = "MM";
-        public static bool UNITS_CO_ORDS_MM = true;
-        public static bool UNITS_CO_ORDS_INCH = false;
-
-        public static string UNITS_WEIGHT = "KGS";
-        public static bool UNITS_WEIGHT_KGS = true;
-        public static bool UNITS_WEIGHT_LBS = false;
-
-        public static string UNITS_WEIGHT_LENGTH = "METER";
-        public static bool UNITS_WEIGHT_LENGTH_METER = true;
-        public static bool UNITS_WEIGHT_LENGTH_INCH = false;
-        public static bool UNITS_WEIGHT_LENGTH_FEET = false;
-        #endregion Execution
-
-        #region Filters
         //Filters
-        public static string SysAbbr = "FVF";
+        public static String SysAbbr = "FVF";
         public static BuiltInParameter SysAbbrParam = BuiltInParameter.RBS_DUCT_PIPE_SYSTEM_ABBREVIATION_PARAM;
-        public static string PipelineGroupParameterName = "System Abbreviation";
-        #endregion Filters
 
-        #region Element parameter definition
         //Shared parameter group
         public const string PCF_GROUP_NAME = "PCF";
         public const BuiltInParameterGroup PCF_BUILTIN_GROUP_NAME = BuiltInParameterGroup.PG_ANALYTICAL_MODEL;
 
-        //PCF specification
-        public static string PIPING_SPEC = "STD";
+        //Parameter definition, remember to add new parameters to the ParameterList in the next region
+        public static string PCF_ELEM_BP1 = "PCF_ELEM_BP1";
+        public static ParameterType PCF_ELEM_BP1_parameterType = ParameterType.Text;
+        public static Guid PCF_ELEM_BP1_GUID = new Guid("89b1e62e-f9b8-48c3-ab3a-1861a772bda8");
+
+        public static string PCF_ELEM_CATEGORY = "PCF_ELEM_CATEGORY";
+        public static ParameterType PCF_ELEM_CATEGORY_parameterType = ParameterType.Text;
+        public static Guid PCF_ELEM_CATEGORY_GUID = new Guid("35efc6ed-2f20-4aca-bf05-d81d3b79dce2");
+
+        public static string PCF_ELEM_COMPID = "PCF_ELEM_COMPID";
+        public static ParameterType PCF_ELEM_COMPID_parameterType = ParameterType.Integer;
+        public static Guid PCF_ELEM_COMPID_GUID = new Guid("876d2334-f860-4b5a-8c24-507e2c545fc0");
+
+        public static string PCF_MAT_DESCR = "PCF_MAT_DESCR";
+        public static ParameterType PCF_MAT_DESCR_parameterType = ParameterType.Text;
+        public static Guid PCF_MAT_DESCR_GUID = new Guid("d39418f2-fcb3-4dd1-b0be-3d647486ebe6");
+
+        public static string PCF_MAT_ID = "PCF_MAT_ID";
+        public static ParameterType PCF_MAT_ID_parameterType = ParameterType.Integer;
+        public static Guid PCF_MAT_ID_GUID = new Guid("fc5d3b19-af5b-47f6-a269-149b701c9364");
+
+        public static string PCF_ELEM_TYPE = "PCF_ELEM_TYPE";
+        public static ParameterType PCF_ELEM_TYPE_parameterType = ParameterType.Text;
+        public static Guid PCF_ELEM_TYPE_GUID = new Guid("bfc7b779-786d-47cd-9194-8574a5059ec8");
+
+        public static string PCF_ELEM_SKEY = "PCF_ELEM_SKEY";
+        public static ParameterType PCF_ELEM_SKEY_parameterType = ParameterType.Text;
+        public static Guid PCF_ELEM_SKEY_GUID = new Guid("3feebd29-054c-4ce8-bc64-3cff75ed6121");
+
+        public static string PCF_ELEM_END1 = "PCF_ELEM_END1";
+        public static ParameterType PCF_ELEM_END1_parameterType = ParameterType.Text;
+        public static Guid PCF_ELEM_END1_GUID = new Guid("cbc10825-c0a1-471e-9902-075a41533738");
+
+        public static string PCF_ELEM_END2 = "PCF_ELEM_END2";
+        public static ParameterType PCF_ELEM_END2_parameterType = ParameterType.Text;
+        public static Guid PCF_ELEM_END2_GUID = new Guid("ecaf3f8a-c28b-4a89-8496-728af3863b09");
+
+        public static string PCF_ELEM_TAP1 = "PCF_ELEM_TAP1";
+        public static ParameterType PCF_ELEM_TAP1_parameterType = ParameterType.Text;
+        public static Guid PCF_ELEM_TAP1_GUID = new Guid("5fda303c-5536-429b-9fcc-afb40d14c7b3");
+
+        public static string PCF_ELEM_TAP2 = "PCF_ELEM_TAP2";
+        public static ParameterType PCF_ELEM_TAP2_parameterType = ParameterType.Text;
+        public static Guid PCF_ELEM_TAP2_GUID = new Guid("e1e9bc3b-ce75-4f3a-ae43-c270f4fde937");
+
+        public static string PCF_ELEM_TAP3 = "PCF_ELEM_TAP3";
+        public static ParameterType PCF_ELEM_TAP3_parameterType = ParameterType.Text;
+        public static Guid PCF_ELEM_TAP3_GUID = new Guid("12693653-8029-4743-be6a-310b1fbc0620");
+
+        #region ParameterList
+        //parameterAllNames and parameterTypes must correspond to each other in element position
+        public static IList<string> parameterAllNames = new List<string>()
+        {
+            PCF_ELEM_CATEGORY, PCF_ELEM_BP1, PCF_ELEM_COMPID, PCF_MAT_DESCR, PCF_MAT_ID, PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_END1,
+            PCF_ELEM_END2, PCF_ELEM_TAP1, PCF_ELEM_TAP2, PCF_ELEM_TAP3
+        };
+
+        public static IList<Guid> ParameterGUID = new List<Guid>()
+        {
+            PCF_ELEM_CATEGORY_GUID, PCF_ELEM_BP1_GUID, PCF_ELEM_COMPID_GUID, PCF_MAT_DESCR_GUID, PCF_MAT_ID_GUID,
+            PCF_ELEM_TYPE_GUID, PCF_ELEM_SKEY_GUID, PCF_ELEM_END1_GUID, PCF_ELEM_END2_GUID, PCF_ELEM_TAP1_GUID, PCF_ELEM_TAP2_GUID,
+            PCF_ELEM_TAP3_GUID
+        };
+
+        public static IList<ParameterType> parameterTypes = new List<ParameterType>()
+        {
+            PCF_ELEM_CATEGORY_parameterType, PCF_ELEM_BP1_parameterType, PCF_ELEM_COMPID_parameterType, PCF_MAT_DESCR_parameterType, PCF_MAT_ID_parameterType,
+            PCF_ELEM_TYPE_parameterType, PCF_ELEM_SKEY_parameterType, PCF_ELEM_END1_parameterType, PCF_ELEM_END2_parameterType, PCF_ELEM_TAP1_parameterType,
+            PCF_ELEM_TAP2_parameterType, PCF_ELEM_TAP3_parameterType
+        };
+
+        public static IList<string> parameterNames = new List<string>()
+        {
+            PCF_ELEM_CATEGORY, PCF_ELEM_BP1, PCF_MAT_DESCR, PCF_ELEM_TYPE, PCF_ELEM_SKEY, PCF_ELEM_END1,
+            PCF_ELEM_END2
+        };
+
         #endregion
+
+        //PCF specification
+        public static String PIPING_SPEC = "STD";
     }
 
     public class Composer
     {
-        #region Preamble
         //PCF Preamble composition
-        readonly StringBuilder sbPreamble = new StringBuilder();
-        public StringBuilder PreambleComposer()
+        static StringBuilder sbPreamble = new StringBuilder();
+        public static StringBuilder PreambleComposer()
         {
             sbPreamble.Append("ISOGEN-FILES ISOGEN.FLS");
             sbPreamble.AppendLine();
-            sbPreamble.Append("UNITS-BORE "+InputVars.UNITS_BORE);
+            sbPreamble.Append("UNITS-BORE MM");
             sbPreamble.AppendLine();
-            sbPreamble.Append("UNITS-CO-ORDS "+InputVars.UNITS_CO_ORDS);
+            sbPreamble.Append("UNITS-CO-ORDS MM");
             sbPreamble.AppendLine();
-            sbPreamble.Append("UNITS-WEIGHT "+InputVars.UNITS_WEIGHT);
+            sbPreamble.Append("UNITS-WEIGHT KGS");
             sbPreamble.AppendLine();
             sbPreamble.Append("UNITS-BOLT-DIA MM");
             sbPreamble.AppendLine();
             sbPreamble.Append("UNITS-BOLT-LENGTH MM");
             sbPreamble.AppendLine();
-            sbPreamble.Append("UNITS-WEIGHT-LENGTH "+InputVars.UNITS_WEIGHT_LENGTH);
+            sbPreamble.Append("UNITS-WEIGHT-LENGTH METRE");
+            sbPreamble.AppendLine();
+            sbPreamble.Append("PIPELINE-REFERENCE " + InputVars.SysAbbr);
+            sbPreamble.AppendLine();
+            sbPreamble.Append("    PIPING-SPEC " + InputVars.PIPING_SPEC);
             sbPreamble.AppendLine();
             return sbPreamble;
         }
-        #endregion
 
-        #region Materials section
-        StringBuilder sbMaterials = new StringBuilder();
-        IEnumerable<IGrouping<string, Element>> materialGroups = null;
-        int groupNumber;
-        public StringBuilder MaterialsSection(IEnumerable<IGrouping<string, Element>> elementGroups)
+        static StringBuilder sbMaterials = new StringBuilder();
+        static IEnumerable<IGrouping<string, Element>> materialGroups = null;
+        static int groupNumber = 0;
+        public static StringBuilder MaterialsSection(IEnumerable<IGrouping<string, Element>> elementGroups)
         {
             materialGroups = elementGroups;
             sbMaterials.Append("MATERIALS");
-            foreach (IGrouping<string, Element> group in materialGroups)
+            foreach (IGrouping<string, Element> group in elementGroups)
             {
                 groupNumber++;
                 sbMaterials.AppendLine();
                 sbMaterials.Append("MATERIAL-IDENTIFIER " + groupNumber);
                 sbMaterials.AppendLine();
-                sbMaterials.Append("    DESCRIPTION "+group.Key);
+                sbMaterials.Append("    DESCRIPTION ");
+                sbMaterials.Append(group.Key);
             }
             return sbMaterials;
         }
-        #endregion
     }
 
     public class Filter
     {
-        BuiltInParameter testParam; ParameterValueProvider pvp; FilterStringRuleEvaluator str;
-        FilterStringRule paramFr; public ElementParameterFilter epf;
+        BuiltInParameter testParam; ParameterValueProvider pvp; FilterStringRuleEvaluator str; FilterStringRule paramFr; public ElementParameterFilter epf;
 
         public Filter(string valueQualifier, BuiltInParameter parameterName)
         {
@@ -132,7 +182,6 @@ namespace PCF_Functions
     {
         const double _inch_to_mm = 25.4;
         const double _foot_to_mm = 12 * _inch_to_mm;
-        const double _foot_to_inch = 12;
 
         /// <summary>
         /// Return a string for a real number formatted to two decimal places.
@@ -154,22 +203,9 @@ namespace PCF_Functions
               RealString(p.Z * _foot_to_mm));
         }
 
-        public static string PointStringInch(XYZ p)
-        {
-            return string.Format("{0:0.00} {1:0.00} {2:0.00}",
-              RealString(p.X * _foot_to_inch),
-              RealString(p.Y * _foot_to_inch),
-              RealString(p.Z * _foot_to_inch));
-        }
-
         public static string PipeSizeToMm(double l)
         {
             return string.Format("{0}", Math.Round(l * 2 * _foot_to_mm));
-        }
-
-        public static string PipeSizeToInch(double l)
-        {
-            return string.Format("{0}", RealString(l*2*_foot_to_inch));
         }
 
         public static string AngleToPCF(double l)
@@ -191,15 +227,13 @@ namespace PCF_Functions
             XYZ connectorOrigin = connector.Origin;
             double connectorSize = connector.Radius;
             sbEndWriter.Append("    END-POINT ");
-            if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(connectorOrigin));
-            if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(connectorOrigin));
+            sbEndWriter.Append(Conversion.PointStringMm(connectorOrigin));
             sbEndWriter.Append(" ");
-            if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
-            if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
-            if (string.IsNullOrEmpty(element.LookupParameter(ParameterData.PCF_ELEM_END1).AsString()) == false)
+            sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
+            if (element.LookupParameter(InputVars.PCF_ELEM_END1).HasValue == true)
             {
                 sbEndWriter.Append(" ");
-                sbEndWriter.Append(element.LookupParameter(ParameterData.PCF_ELEM_END1).AsString());
+                sbEndWriter.Append(element.LookupParameter(InputVars.PCF_ELEM_END1).AsString());
             }
             sbEndWriter.AppendLine();
             return sbEndWriter;
@@ -211,35 +245,13 @@ namespace PCF_Functions
             XYZ connectorOrigin = connector.Origin;
             double connectorSize = connector.Radius;
             sbEndWriter.Append("    END-POINT ");
-            if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(connectorOrigin));
-            if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(connectorOrigin));
+            sbEndWriter.Append(Conversion.PointStringMm(connectorOrigin));
             sbEndWriter.Append(" ");
-            if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
-            if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
-            if (string.IsNullOrEmpty(element.LookupParameter(ParameterData.PCF_ELEM_END2).AsString()) == false)
+            sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
+            if (element.LookupParameter(InputVars.PCF_ELEM_END2).HasValue == true)
             {
                 sbEndWriter.Append(" ");
-                sbEndWriter.Append(element.LookupParameter(ParameterData.PCF_ELEM_END2).AsString());
-            }
-            sbEndWriter.AppendLine();
-            return sbEndWriter;
-        }
-
-        public static StringBuilder WriteEP2(Element element, XYZ connector, double size)
-        {
-            StringBuilder sbEndWriter = new StringBuilder();
-            XYZ connectorOrigin = connector;
-            double connectorSize = size;
-            sbEndWriter.Append("    END-POINT ");
-            if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(connectorOrigin));
-            if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(connectorOrigin));
-            sbEndWriter.Append(" ");
-            if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
-            if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
-            if (string.IsNullOrEmpty(element.LookupParameter(ParameterData.PCF_ELEM_END2).AsString()) == false)
-            {
-                sbEndWriter.Append(" ");
-                sbEndWriter.Append(element.LookupParameter(ParameterData.PCF_ELEM_END2).AsString());
+                sbEndWriter.Append(element.LookupParameter(InputVars.PCF_ELEM_END2).AsString());
             }
             sbEndWriter.AppendLine();
             return sbEndWriter;
@@ -251,15 +263,13 @@ namespace PCF_Functions
             XYZ connectorOrigin = connector.Origin;
             double connectorSize = connector.Radius;
             sbEndWriter.Append("    BRANCH1-POINT ");
-            if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(connectorOrigin));
-            if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(connectorOrigin));
+            sbEndWriter.Append(Conversion.PointStringMm(connectorOrigin));
             sbEndWriter.Append(" ");
-            if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
-            if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
-            if (string.IsNullOrEmpty(element.LookupParameter(ParameterData.PCF_ELEM_BP1).AsString()) == false)
+            sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
+            if (element.LookupParameter(InputVars.PCF_ELEM_BP1).HasValue == true)
             {
                 sbEndWriter.Append(" ");
-                sbEndWriter.Append(element.LookupParameter(ParameterData.PCF_ELEM_BP1).AsString());
+                sbEndWriter.Append(element.LookupParameter(InputVars.PCF_ELEM_BP1).AsString());
             }
             sbEndWriter.AppendLine();
             return sbEndWriter;
@@ -270,8 +280,7 @@ namespace PCF_Functions
             StringBuilder sbEndWriter = new StringBuilder();
             XYZ elementLocation = ((LocationPoint)familyInstance.Location).Point;
             sbEndWriter.Append("    CENTRE-POINT ");
-            if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(elementLocation));
-            if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(elementLocation));
+            sbEndWriter.Append(Conversion.PointStringMm(elementLocation));
             sbEndWriter.AppendLine();
             return sbEndWriter;
         }
@@ -280,8 +289,7 @@ namespace PCF_Functions
         {
             StringBuilder sbEndWriter = new StringBuilder();
             sbEndWriter.Append("    CENTRE-POINT ");
-            if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(point));
-            if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(point));
+            sbEndWriter.Append(Conversion.PointStringMm(point));
             sbEndWriter.AppendLine();
             return sbEndWriter;
         }
@@ -290,159 +298,10 @@ namespace PCF_Functions
         {
             StringBuilder sbEndWriter = new StringBuilder();
             sbEndWriter.Append("    CO-ORDS ");
-            if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(point));
-            if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(point));
+            sbEndWriter.Append(Conversion.PointStringMm(point));
             sbEndWriter.AppendLine();
             return sbEndWriter;
         }
 
-    }
-
-    public class ScheduleCreator
-    {
-        private UIDocument _uiDoc;
-        public Result CreateAllItemsSchedule(UIDocument uiDoc)
-        {
-            try
-            {
-                _uiDoc = uiDoc;
-                Document doc = _uiDoc.Document;
-                FilteredElementCollector sharedParameters = new FilteredElementCollector(doc);
-                sharedParameters.OfClass(typeof (SharedParameterElement));
-
-                #region Debug
-
-                ////Debug
-                //StringBuilder sbDev = new StringBuilder();
-                //var list = new ParameterDefinition().ElementParametersAll;
-                //int i = 0;
-
-                //foreach (SharedParameterElement sp in sharedParameters)
-                //{
-                //    sbDev.Append(sp.GuidValue + "\n");
-                //    sbDev.Append(list[i].Guid.ToString() + "\n");
-                //    i++;
-                //    if (i == list.Count) break;
-                //}
-                ////sbDev.Append( + "\n");
-                //// Clear the output file
-                //File.WriteAllBytes(InputVars.OutputDirectoryFilePath + "\\Dev.pcf", new byte[0]);
-
-                //// Write to output file
-                //using (StreamWriter w = File.AppendText(InputVars.OutputDirectoryFilePath + "\\Dev.pcf"))
-                //{
-                //    w.Write(sbDev);
-                //    w.Close();
-                //}
-
-                #endregion
-
-                Transaction t = new Transaction(doc, "Create items schedules");
-                t.Start();
-
-                #region Schedule ALL elements
-                ViewSchedule schedAll = ViewSchedule.CreateSchedule(doc, ElementId.InvalidElementId,
-                    ElementId.InvalidElementId);
-                schedAll.Name = "PCF - ALL Elements";
-                schedAll.Definition.IsItemized = false;
-
-                IList<SchedulableField> schFields = schedAll.Definition.GetSchedulableFields();
-
-                foreach (SchedulableField schField in schFields)
-                {
-                    if (schField.GetName(doc) != "Family and Type") continue;
-                    ScheduleField field = schedAll.Definition.AddField(schField);
-                    ScheduleSortGroupField sortGroupField = new ScheduleSortGroupField(field.FieldId);
-                    schedAll.Definition.AddSortGroupField(sortGroupField);
-                }
-
-                string curUsage = "U";
-                string curDomain = "ELEM";
-                var query = from p in new pdef().ListParametersAll where p.Usage == curUsage && p.Domain == curDomain select p;
-                
-                foreach (pdef pDef in query.ToList())
-                {
-                    SharedParameterElement parameter = (from SharedParameterElement param in sharedParameters
-                        where param.GuidValue.CompareTo(pDef.Guid) == 0 select param).First();
-                    SchedulableField queryField = (from fld in schFields where fld.ParameterId.IntegerValue == parameter.Id.IntegerValue select fld).First();
-
-                    ScheduleField field = schedAll.Definition.AddField(queryField);
-                    if (pDef.Name != "PCF_ELEM_TYPE") continue;
-                    ScheduleFilter filter = new ScheduleFilter(field.FieldId, ScheduleFilterType.HasParameter);
-                    schedAll.Definition.AddFilter(filter);
-                }
-                #endregion
-
-                #region Schedule FILTERED elements
-                ViewSchedule schedFilter = ViewSchedule.CreateSchedule(doc, ElementId.InvalidElementId,
-                    ElementId.InvalidElementId);
-                schedFilter.Name = "PCF - Filtered Elements";
-                schedFilter.Definition.IsItemized = false;
-
-                schFields = schedFilter.Definition.GetSchedulableFields();
-
-                foreach (SchedulableField schField in schFields)
-                {
-                    if (schField.GetName(doc) != "Family and Type") continue;
-                    ScheduleField field = schedFilter.Definition.AddField(schField);
-                    ScheduleSortGroupField sortGroupField = new ScheduleSortGroupField(field.FieldId);
-                    schedFilter.Definition.AddSortGroupField(sortGroupField);
-                }
-
-                foreach (pdef pDef in query.ToList())
-                {
-                    SharedParameterElement parameter = (from SharedParameterElement param in sharedParameters where param.GuidValue.CompareTo(pDef.Guid) == 0
-                                                        select param).First();
-                    SchedulableField queryField = (from fld in schFields where fld.ParameterId.IntegerValue == parameter.Id.IntegerValue select fld).First();
-
-                    ScheduleField field = schedFilter.Definition.AddField(queryField);
-                    if (pDef.Name != "PCF_ELEM_TYPE") continue;
-                    ScheduleFilter filter = new ScheduleFilter(field.FieldId, ScheduleFilterType.HasParameter);
-                    schedFilter.Definition.AddFilter(filter);
-                    filter = new ScheduleFilter(field.FieldId, ScheduleFilterType.NotEqual,"");
-                    schedFilter.Definition.AddFilter(filter);
-                }
-                #endregion
-
-                #region Schedule Pipelines
-                ViewSchedule schedPipeline = ViewSchedule.CreateSchedule(doc, new ElementId(BuiltInCategory.OST_PipingSystem), ElementId.InvalidElementId);
-                schedPipeline.Name = "PCF - Pipelines";
-                schedPipeline.Definition.IsItemized = false;
-
-                schFields = schedPipeline.Definition.GetSchedulableFields();
-
-                foreach (SchedulableField schField in schFields)
-                {
-                    if (schField.GetName(doc) != "Family and Type") continue;
-                    ScheduleField field = schedPipeline.Definition.AddField(schField);
-                    ScheduleSortGroupField sortGroupField = new ScheduleSortGroupField(field.FieldId);
-                    schedPipeline.Definition.AddSortGroupField(sortGroupField);
-                }
-
-                curDomain = "PIPL";
-                foreach (pdef pDef in query.ToList())
-                {
-                    SharedParameterElement parameter = (from SharedParameterElement param in sharedParameters
-                                                        where param.GuidValue.CompareTo(pDef.Guid) == 0 select param).First();
-                    SchedulableField queryField = (from fld in schFields where fld.ParameterId.IntegerValue == parameter.Id.IntegerValue select fld).First();
-                    schedPipeline.Definition.AddField(queryField);
-                }
-                #endregion
-
-                t.Commit();
-
-                sharedParameters.Dispose();
-
-                return Result.Succeeded;
-            }
-            catch (Exception e)
-            {
-                Util.InfoMsg(e.Message);
-                return Result.Failed;
-            }
-
-
-
-        }
     }
 }

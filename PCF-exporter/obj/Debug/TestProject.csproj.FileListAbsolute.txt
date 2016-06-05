@@ -1,0 +1,12 @@
+E:\Dropbox\Revit\Dev\Test_01\TestProject\TestProject\obj\Debug\TestProject.csprojResolveAssemblyReference.cache
+E:\Dropbox\Revit\Dev\Test_01\TestProject\TestProject\bin\Debug\TestProject.dll
+E:\Dropbox\Revit\Dev\Test_01\TestProject\TestProject\bin\Debug\TestProject.pdb
+E:\Dropbox\Revit\Dev\Test_01\TestProject\TestProject\obj\Debug\TestProject.dll
+E:\Dropbox\Revit\Dev\Test_01\TestProject\TestProject\obj\Debug\TestProject.pdb
+E:\Dropbox\Revit\Dev\Test_01\TestProject\TestProject\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+G:\Dropbox\Revit\Dev\Test_01\TestProject\TestProject\bin\Debug\TestProject.dll
+G:\Dropbox\Revit\Dev\Test_01\TestProject\TestProject\bin\Debug\TestProject.pdb
+G:\Dropbox\Revit\Dev\Test_01\TestProject\TestProject\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+G:\Dropbox\Revit\Dev\Test_01\TestProject\TestProject\obj\Debug\TestProject.csprojResolveAssemblyReference.cache
+G:\Dropbox\Revit\Dev\Test_01\TestProject\TestProject\obj\Debug\TestProject.dll
+G:\Dropbox\Revit\Dev\Test_01\TestProject\TestProject\obj\Debug\TestProject.pdb

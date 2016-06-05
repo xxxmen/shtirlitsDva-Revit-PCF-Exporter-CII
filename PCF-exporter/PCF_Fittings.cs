@@ -14,9 +14,6 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB.Structure;
 
 using PCF_Functions;
-using iv = PCF_Functions.InputVars;
-using pd = PCF_Functions.ParameterData;
-using pdef = PCF_Functions.ParameterDefinition;
 
 namespace PCF_Fittings
 {
@@ -31,19 +28,16 @@ namespace PCF_Fittings
             doc = document;
             //The list of fittings, sorted by TYPE then SKEY
             fittingsList = elements.
-                OrderBy(e => e.LookupParameter(pd.PCF_ELEM_TYPE).AsString()).
-                ThenBy(e => e.LookupParameter(pd.PCF_ELEM_SKEY).AsString());
+                OrderBy(e => e.LookupParameter(InputVars.PCF_ELEM_TYPE).AsString()).
+                ThenBy(e => e.LookupParameter(InputVars.PCF_ELEM_SKEY).AsString());
 
             sbFittings = new StringBuilder();
             foreach (Element element in fittingsList)
             {
-                //If the Element Type field is empty -> ignore the component
-                if (string.IsNullOrEmpty(element.LookupParameter(pd.PCF_ELEM_TYPE).AsString())) continue;
-
-                sbFittings.Append(element.LookupParameter(pd.PCF_ELEM_TYPE).AsString());
+                sbFittings.Append(element.LookupParameter(InputVars.PCF_ELEM_TYPE).AsString());
                 sbFittings.AppendLine();
                 sbFittings.Append("    COMPONENT-IDENTIFIER ");
-                sbFittings.Append(element.LookupParameter(pd.PCF_ELEM_COMPID).AsInteger());
+                sbFittings.Append(element.LookupParameter(InputVars.PCF_ELEM_COMPID).AsInteger());
                 sbFittings.AppendLine();
 
                 //Cast the elements gathered by the collector to FamilyInstances
@@ -55,7 +49,7 @@ namespace PCF_Fittings
                 ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
                 
                 //Switch to different element type configurations
-                switch (element.LookupParameter(pd.PCF_ELEM_TYPE).AsString())
+                switch (element.LookupParameter(InputVars.PCF_ELEM_TYPE).AsString())
                 {
                     case ("ELBOW"):
                         Connector primaryConnector = null; Connector secondaryConnector = null;
@@ -187,7 +181,11 @@ namespace PCF_Fittings
                             }
                         }
 
-                        sbFittings.Append(EndWriter.WriteEP2(element, endPointAnalyzed, connectorSizeFlangeBlind));
+                        sbFittings.Append("    END-POINT ");
+                        sbFittings.Append(Conversion.PointStringMm(endPointAnalyzed));
+                        sbFittings.Append(" ");
+                        sbFittings.Append(Conversion.PipeSizeToMm(connectorSizeFlangeBlind));
+                        sbFittings.AppendLine();
 
                         break;
 
@@ -204,7 +202,10 @@ namespace PCF_Fittings
                         }
 
                         XYZ endPointOriginOletPrimary = primaryConnector.Origin;
+                        double connectorSizeOletPrimary = primaryConnector.Radius;
+
                         XYZ endPointOriginOletSecondary = secondaryConnector.Origin;
+                        double connectorSizeOletSecondary = secondaryConnector.Radius;
 
                         //get reference elements
                         ConnectorSet refConnectors = primaryConnector.AllRefs;
@@ -301,30 +302,15 @@ namespace PCF_Fittings
                         break;
                 }
 
-                var pQuery = from p in new pdef().ListParametersAll where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM") select p;
-
-                foreach (pdef p in pQuery)
-                {
-                    //Check for parameter's storage type (can be Int for select few parameters)
-                    int sT = (int)element.get_Parameter(p.Guid).StorageType;
-
-                    if (sT == 1)
-                    {
-                        //Check if the parameter contains anything
-                        if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsInteger().ToString())) continue;
-                        sbFittings.Append("    " + p.Keyword + " ");
-                        sbFittings.Append(element.get_Parameter(p.Guid).AsInteger());
-                    }
-                    else if (sT == 3)
-                    {
-                        //Check if the parameter contains anything
-                        if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsString())) continue;
-                        sbFittings.Append("    " + p.Keyword + " ");
-                        sbFittings.Append(element.get_Parameter(p.Guid).AsString());
-                    }
-                    sbFittings.AppendLine();
-                }
-
+                sbFittings.Append("    SKEY ");
+                sbFittings.Append(element.LookupParameter(InputVars.PCF_ELEM_SKEY).AsString());
+                sbFittings.AppendLine();
+                sbFittings.Append("    MATERIAL-IDENTIFIER ");
+                sbFittings.Append(element.LookupParameter(InputVars.PCF_MAT_ID).AsInteger());
+                sbFittings.AppendLine();
+                sbFittings.Append("    PIPING-SPEC ");
+                sbFittings.Append(InputVars.PIPING_SPEC);
+                sbFittings.AppendLine();
                 sbFittings.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
                 sbFittings.Append(element.UniqueId);
                 sbFittings.AppendLine();

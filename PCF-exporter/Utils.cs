@@ -716,7 +716,7 @@ namespace BuildingCoder
         #endregion // Formatting
 
         #region Display a message
-        const string _caption = "Message";
+        const string _caption = "Error";
 
         public static void InfoMsg(string msg)
         {
@@ -1247,70 +1247,9 @@ namespace BuildingCoder
             }
         }
         #endregion // Compatibility fix for spelling error change
-
-        #region Excel
-        public static string GetColumnName(int index)
-        {
-            const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-            var value = "";
-
-            if (index >= letters.Length)
-                value += letters[index / letters.Length - 1];
-
-            value += letters[index % letters.Length];
-
-            return value;
-        }
-        #endregion
     }
 
     #region Extension Method Classes
-
-    public static class Extensions
-    {
-        /// <summary>
-        /// Determines whether the collection is null or contains no elements.
-        /// </summary>
-        /// <typeparam name="T">The IEnumerable type.</typeparam>
-        /// <param name="enumerable">The enumerable, which may be null or empty.</param>
-        /// <returns>
-        ///     <c>true</c> if the IEnumerable is null or empty; otherwise, <c>false</c>.
-        /// </returns>
-        public static bool IsNullOrEmpty<T>(this IEnumerable<T> enumerable)
-        {
-            if (enumerable == null)
-            {
-                return true;
-            }
-            /* If this is a list, use the Count property. 
-             * The Count property is O(1) while IEnumerable.Count() is O(N). */
-            var collection = enumerable as ICollection<T>;
-            if (collection != null)
-            {
-                return collection.Count < 1;
-            }
-            return enumerable.Any();
-        }
-
-        /// <summary>
-        /// Determines whether the collection is null or contains no elements.
-        /// </summary>
-        /// <typeparam name="T">The IEnumerable type.</typeparam>
-        /// <param name="collection">The collection, which may be null or empty.</param>
-        /// <returns>
-        ///     <c>true</c> if the IEnumerable is null or empty; otherwise, <c>false</c>.
-        /// </returns>
-        public static bool IsNullOrEmpty<T>(this ICollection<T> collection)
-        {
-            if (collection == null)
-            {
-                return true;
-            }
-            return collection.Count < 1;
-        }
-    }
-
     public static class JtElementExtensionMethods
     {
         /// <summary>
