@@ -17,54 +17,51 @@ using Autodesk.Revit.Exceptions;
 
 using PCF_Functions;
 using BuildingCoder;
+using OperationCanceledException = Autodesk.Revit.Exceptions.OperationCanceledException;
 
 namespace PCF_Taps
 {
-    [TransactionAttribute(TransactionMode.Manual)]
-    [RegenerationAttribute(RegenerationOption.Manual)]
-
-    public class DefineTapConnection : IExternalCommand
+    public class DefineTapConnection
     {
-        public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
+        public Result defineTapConnection(ExternalCommandData commandData, ref string msg, ElementSet elements)
         {
-            return ExecuteMyCommand(data.Application, ref msg, elements);
-        }
-
-        internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg, ElementSet elements)
-        {
-            // UIApplication uiApp = commandData.Application;
+            UIApplication uiApp = commandData.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
             Application app = doc.Application;
             UIDocument uidoc = uiApp.ActiveUIDocument;
-
-            //Select tapped element
-            Element tappedElement = Util.SelectSingleElement(uidoc, "Select tapped element.");
-
-            //Pipe type to restrict selection of tapping element
-            Type t = typeof(Pipe);
-
-            //Select tap element
-            Element tappingElement = Util.SelectSingleElementOfType(uidoc, t, "Select tapping element (must be a pipe).", false);
-
-            //Debugging
-            StringBuilder sbTaps = new StringBuilder();
+            Transaction trans = new Transaction(doc, "Define tap");
+            trans.Start();
 
             try
             {
-                Transaction trans = new Transaction(doc, "Define tap");
-                trans.Start();
 
-                if (String.IsNullOrEmpty(tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP1).AsString()))
+                //Select tapped element
+                Element tappedElement = Util.SelectSingleElement(uidoc, "Select tapped element.");
+
+                if (!(tappedElement != null)) throw new Exception("Tap Connection cancelled!");
+
+                //Pipe type to restrict selection of tapping element
+                Type t = typeof(Pipe);
+
+                //Select tap element
+                Element tappingElement = Util.SelectSingleElementOfType(uidoc, t, "Select tapping element (must be a pipe).", false);
+
+                if (!(tappingElement != null)) throw new Exception("Tap Connection cancelled!");
+
+                ////Debugging
+                //StringBuilder sbTaps = new StringBuilder();
+
+                if (string.IsNullOrEmpty(tappedElement.LookupParameter(ParameterData.PCF_ELEM_TAP1).AsString()))
                 {
-                    tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP1).Set(tappingElement.UniqueId.ToString());
+                    tappedElement.LookupParameter(ParameterData.PCF_ELEM_TAP1).Set(tappingElement.UniqueId.ToString());
                 }
-                else if (String.IsNullOrEmpty(tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP2).AsString()))
+                else if (string.IsNullOrEmpty(tappedElement.LookupParameter(ParameterData.PCF_ELEM_TAP2).AsString()))
                 {
-                    tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP2).Set(tappingElement.UniqueId.ToString());
+                    tappedElement.LookupParameter(ParameterData.PCF_ELEM_TAP2).Set(tappingElement.UniqueId.ToString());
                 }
-                else if (String.IsNullOrEmpty(tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP3).AsString()))
+                else if (string.IsNullOrEmpty(tappedElement.LookupParameter(ParameterData.PCF_ELEM_TAP3).AsString()))
                 {
-                    tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP3).Set(tappingElement.UniqueId.ToString());
+                    tappedElement.LookupParameter(ParameterData.PCF_ELEM_TAP3).Set(tappingElement.UniqueId.ToString());
                 }
                 else
                 {
@@ -97,11 +94,13 @@ namespace PCF_Taps
 
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
+                trans.RollBack();
                 return Result.Cancelled;
             }
 
             catch (Exception ex)
             {
+                trans.RollBack();
                 msg = ex.Message;
                 return Result.Failed;
             }
@@ -131,14 +130,14 @@ namespace PCF_Taps
                 //Filter out non-end types of connectors. The output is converted to a list to prevent deferred execution (I am afraid
                 //that deferred execution leads to inconsisten returns of connectors from the connector set but am not sure it does).
                 IList<Connector> connectorTapEnds = (from Connector connector in connectorTapSet
-                                                     where connector.ConnectorType.ToString() == "End"
+                                                     where connector.ConnectorType.ToString().Equals("End")
                                                      select connector).ToList();
 
                 Connector end1 = connectorTapEnds.First(); Connector end2 = connectorTapEnds.Last();
                 double dist1 = elementOrigin.DistanceTo(end1.Origin); double dist2 = elementOrigin.DistanceTo(end2.Origin);
                 Connector tapConnector = null;
 
-                if (dist1 > dist2) tapConnector = end2; else tapConnector = end1;
+                tapConnector = dist1 > dist2 ? end2 : end1;
 
                 XYZ connectorOrigin = tapConnector.Origin;
                 double connectorSize = tapConnector.Radius;
@@ -146,9 +145,11 @@ namespace PCF_Taps
                 tapsWriter.Append("    TAP-CONNECTION");
                 tapsWriter.AppendLine();
                 tapsWriter.Append("    CO-ORDS ");
-                tapsWriter.Append(Conversion.PointStringMm(connectorOrigin));
+                if (InputVars.UNITS_CO_ORDS_MM) tapsWriter.Append(Conversion.PointStringMm(connectorOrigin));
+                if (InputVars.UNITS_CO_ORDS_INCH) tapsWriter.Append(Conversion.PointStringInch(connectorOrigin));
                 tapsWriter.Append(" ");
-                tapsWriter.Append(Conversion.PipeSizeToMm(connectorSize));
+                if (InputVars.UNITS_BORE_MM) tapsWriter.Append(Conversion.PipeSizeToMm(connectorSize));
+                if (InputVars.UNITS_BORE_INCH) tapsWriter.Append(Conversion.PipeSizeToInch(connectorSize));
                 tapsWriter.AppendLine();
             }
 
