@@ -138,7 +138,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="PCF_DEVELOPEMENT_01.xlsx" />
+    <Content Include="PCF_DEVELOPEMENT_01.xlsx" />
     <None Include="Properties\DataSources\PCF_Functions.Properties.Resources.datasource" />
     <None Include="Properties\DataSources\PCF_Functions.Properties.Settings.datasource" />
     <None Include="Properties\Settings.settings">
