@@ -203,8 +203,6 @@ namespace PCF_Exporter
             if (radioButton1.Checked == true)
             {
                 iv.ExportAll = true;
-                mySettings.Default.radioButton1AllPipelines = true;
-                mySettings.Default.radioButton2SpecificPipeline = false;
                 textBox3.Visible = false; textBox4.Visible = false;
                 textBox11.Text = "ExportAll: " + iv.ExportAll;
                 }
@@ -215,8 +213,6 @@ namespace PCF_Exporter
             if (radioButton2.Checked == true)
             {
                 iv.ExportAll = false;
-                mySettings.Default.radioButton1AllPipelines = false;
-                mySettings.Default.radioButton2SpecificPipeline = true;
                 textBox3.Visible = true; textBox4.Visible = true;
                 textBox11.Text = "ExportAll: " + iv.ExportAll;
             }
@@ -249,8 +245,6 @@ namespace PCF_Exporter
             {
                 iv.UNITS_BORE_MM = true;
                 iv.UNITS_BORE_INCH = false;
-                mySettings.Default.radioButton3BoreMM = true;
-                mySettings.Default.radioButton4BoreINCH = false;
                 iv.UNITS_BORE = "MM";
                 //debug
                 textBox9.Text = "BORE-MM: " + iv.UNITS_BORE_MM + iv.UNITS_BORE;
@@ -264,8 +258,6 @@ namespace PCF_Exporter
             {
                 iv.UNITS_BORE_MM = false;
                 iv.UNITS_BORE_INCH = true;
-                mySettings.Default.radioButton3BoreMM = false;
-                mySettings.Default.radioButton4BoreINCH = true;
                 iv.UNITS_BORE = "INCH";
                 //Debug
                 textBox9.Text = "BORE-MM: " + iv.UNITS_BORE_MM+iv.UNITS_BORE;
