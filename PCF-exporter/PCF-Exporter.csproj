@@ -124,15 +124,6 @@
     <Compile Include="RadioBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="RadioButtonGroupBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="RadioGroupBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="RadioPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
