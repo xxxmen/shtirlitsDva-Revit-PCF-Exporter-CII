@@ -178,28 +178,5 @@ namespace PCF_Functions.Properties {
                 this["excelPath"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Generic.IList<System.String> excelWorksheetNames {
-            get {
-                return ((global::System.Collections.Generic.IList<System.String>)(this["excelWorksheetNames"]));
-            }
-            set {
-                this["excelWorksheetNames"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string excelWorksheetSelectedName {
-            get {
-                return ((string)(this["excelWorksheetSelectedName"]));
-            }
-            set {
-                this["excelWorksheetSelectedName"] = value;
-            }
-        }
     }
 }

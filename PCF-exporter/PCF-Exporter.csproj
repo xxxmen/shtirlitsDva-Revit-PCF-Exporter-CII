@@ -124,21 +124,12 @@
     <Compile Include="RadioBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="RadioButtonGroupBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="RadioGroupBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="RadioPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="PCF_DEVELOPEMENT_01.xlsx" />
+    <Content Include="PCF_DEVELOPEMENT_01.xlsx" />
     <None Include="Properties\DataSources\PCF_Functions.Properties.Resources.datasource" />
     <None Include="Properties\DataSources\PCF_Functions.Properties.Settings.datasource" />
     <None Include="Properties\Settings.settings">

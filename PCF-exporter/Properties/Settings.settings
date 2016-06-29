@@ -41,11 +41,5 @@
     <Setting Name="excelPath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="excelWorksheetNames" Type="System.Collections.Generic.IList&lt;System.String&gt;" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="excelWorksheetSelectedName" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
   </Settings>
 </SettingsFile>

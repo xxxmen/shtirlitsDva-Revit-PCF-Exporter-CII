@@ -85,13 +85,17 @@ namespace PCF_Exporter
             //Init Scope
             iv.SysAbbr = mySettings.Default.textBox3SpecificPipeline;
             iv.ExportAll = mySettings.Default.radioButton1AllPipelines;
-            if (iv.ExportAll){textBox3.Visible = false; textBox4.Visible = false;}
-
+            if (iv.ExportAll)
+            {
+                textBox3.Visible = false;
+                textBox4.Visible = false;
+            }
+            
             //Init Bore
             iv.UNITS_BORE_MM = mySettings.Default.radioButton3BoreMM;
             iv.UNITS_BORE_INCH = mySettings.Default.radioButton4BoreINCH;
             iv.UNITS_BORE = iv.UNITS_BORE_MM ? "MM" : "INCH";
-
+            
             //Init cooords
             iv.UNITS_CO_ORDS_MM = mySettings.Default.radioButton5CoordsMm;
             iv.UNITS_CO_ORDS_INCH = mySettings.Default.radioButton6CoordsInch;
@@ -148,7 +152,7 @@ namespace PCF_Exporter
                 excelReader.Close();
                 comboBox1.DataSource = PCF_DATA_TABLE_NAMES;
                 //Save to settings
-                mySettings.Default.excelWorksheetNames = PCF_DATA_TABLE_NAMES;
+                //mySettings.Default.excelWorksheetNames = PCF_DATA_TABLE_NAMES;
             }
         }
 
@@ -180,7 +184,7 @@ namespace PCF_Exporter
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             iv.ExcelSheet = (string) comboBox1.SelectedItem;
-            mySettings.Default.excelWorksheetSelectedName = iv.ExcelSheet;
+            //mySettings.Default.excelWorksheetSelectedName = iv.ExcelSheet;
             DATA_TABLE = DATA_SET.Tables[iv.ExcelSheet];
             ParameterData.parameterNames = null;
             ParameterData.parameterNames = (from dc in DATA_TABLE.Columns.Cast<DataColumn>() select dc.ColumnName).ToList();
@@ -201,7 +205,7 @@ namespace PCF_Exporter
                 iv.ExportAll = true;
                 textBox3.Visible = false; textBox4.Visible = false;
                 textBox11.Text = "ExportAll: " + iv.ExportAll;
-            }
+                }
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)

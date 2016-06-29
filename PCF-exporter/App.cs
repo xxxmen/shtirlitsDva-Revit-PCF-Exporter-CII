@@ -18,7 +18,7 @@ using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB.Structure;
-using mySettings = PCF_Functions.Properties.Settings;
+//using mySettings = PCF_Functions.Properties.Settings;
 using PCF_Taps;
 
 namespace PCF_Exporter
@@ -89,7 +89,7 @@ namespace PCF_Exporter
             {
                 PCF_Exporter_form fm = new PCF_Exporter_form(commandData, message);
                 fm.ShowDialog();
-                mySettings.Default.Save();
+                PCF_Functions.Properties.Settings.Default.Save();
                 fm.Close();
                 return Result.Succeeded;
             }
