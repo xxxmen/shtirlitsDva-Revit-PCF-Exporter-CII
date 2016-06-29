@@ -100,9 +100,9 @@ namespace PCF_Exporter
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.button5 = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.Tabs.SuspendLayout();
             this.TabSetup.SuspendLayout();
             this.radioBox1.SuspendLayout();
@@ -757,14 +757,6 @@ namespace PCF_Exporter
             this.tabPage4.Text = "Help";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // openFileDialog2
-            // 
-            this.openFileDialog2.FileName = "openFileDialog1";
-            // 
             // richTextBox1
             // 
             this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -773,6 +765,14 @@ namespace PCF_Exporter
             this.richTextBox1.Size = new System.Drawing.Size(361, 463);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = resources.GetString("richTextBox1.Text");
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // openFileDialog2
+            // 
+            this.openFileDialog2.FileName = "openFileDialog1";
             // 
             // PCF_Exporter_form
             // 
