@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <RevitAddIns>
 	<AddIn Type="Application">    
-		<Assembly><PATH-TO-DLL>PCF-Exporter.dll</Assembly>
+		<Assembly>PCF-Exporter.dll</Assembly>
 		<ClientId>73348466-3f81-4752-8283-1b5dd6b04c3b</ClientId>
 		<FullClassName>PCF_Exporter.App</FullClassName>
 		<Name>PCF Tools</Name>
