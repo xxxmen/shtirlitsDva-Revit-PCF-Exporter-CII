@@ -8,7 +8,7 @@ At this point the only way to get a working copy is to open the solution in Visu
 
 ## Dependencies
 
-Installation of NuGet package "ExcelDataReader" is required. It has SharpZipLib as a dependency.
+Installation of NuGet package [ExcelDataReader] (https://github.com/ExcelDataReader/ExcelDataReader) is required. It has [SharpZipLib] (https://icsharpcode.github.io/SharpZipLib/) as a dependency.
 
 ## Documentation
 
