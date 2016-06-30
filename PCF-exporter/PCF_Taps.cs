@@ -1,23 +1,13 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Data;
-
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.ApplicationServices;
-using Autodesk.Revit.Attributes;
-using Autodesk.Revit.DB.Structure;
-using Autodesk.Revit.Exceptions;
-
 using PCF_Functions;
 using BuildingCoder;
-using OperationCanceledException = Autodesk.Revit.Exceptions.OperationCanceledException;
 
 namespace PCF_Taps
 {

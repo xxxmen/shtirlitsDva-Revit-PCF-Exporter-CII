@@ -2,22 +2,12 @@
 #endregion // Header
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-using System.Linq;
 using System.Reflection;
 using System.Windows.Media.Imaging;
 using System.IO;
 
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Architecture;
-using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.UI.Selection;
-using Autodesk.Revit.ApplicationServices;
-using Autodesk.Revit.Attributes;
-using Autodesk.Revit.DB.Structure;
 //using mySettings = PCF_Functions.Properties.Settings;
 using PCF_Taps;
 
