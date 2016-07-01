@@ -62,6 +62,18 @@ namespace PCF_Functions
             ListParametersAll.Add(new pdef(pd.PCF_PIPL_TEMP, "PIPL", "U", pd.Text, pd.PCF_PIPL_TEMP_GUID, "PIPELINE-TEMP"));
             ListParametersAll.Add(new pdef(pd.PCF_PIPL_TRACING, "PIPL", "U", pd.Text, pd.PCF_PIPL_TRACING_GUID, "TRACING-SPEC"));
             ListParametersAll.Add(new pdef(pd.PCF_PIPL_TYPE, "PIPL", "U", pd.Text, pd.PCF_PIPL_TYPE_GUID, "PIPELINE-TYPE"));
+
+            //Parameters to facilitate export of data to CII
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_PD", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01760"), "COMPONENT-ATTRIBUTE1")); //Design pressure
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_TD", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01761"), "COMPONENT-ATTRIBUTE2")); //Max temperature
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_MATNAME", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01762"), "COMPONENT-ATTRIBUTE3")); //Material name
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_WALLTHK", "ELEM", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01763"), "COMPONENT-ATTRIBUTE4")); //Wall thickness
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_INSULTHK", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01764"), "COMPONENT-ATTRIBUTE5")); //Insulation thickness
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_INSULDST", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01765"), "COMPONENT-ATTRIBUTE6")); //Insulation density
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_CORRALL", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01766"), "COMPONENT-ATTRIBUTE7")); //Corrosion allowance
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_COMPWEIGHT", "ELEM", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01767"), "COMPONENT-ATTRIBUTE8")); //Component weight
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_FLUIDDST", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01768"), "COMPONENT-ATTRIBUTE9")); //Fluid density
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_HYDROPS", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01769"), "COMPONENT-ATTRIBUTE10")); //Hydro test pressure
         }
 
        public ParameterDefinition(string pName, string pDomain, string pUsage, ParameterType pType, Guid pGuid, string pKeyword)
