@@ -53,18 +53,15 @@ namespace PCF_Functions
             ListParametersAll.Add(new pdef(pd.PCF_PIPL_MISC3, "PIPL", "U", pd.Text, pd.PCF_PIPL_MISC3_GUID, "MISC-SPEC3"));
             ListParametersAll.Add(new pdef(pd.PCF_PIPL_MISC4, "PIPL", "U", pd.Text, pd.PCF_PIPL_MISC4_GUID, "MISC-SPEC4"));
             ListParametersAll.Add(new pdef(pd.PCF_PIPL_MISC5, "PIPL", "U", pd.Text, pd.PCF_PIPL_MISC5_GUID, "MISC-SPEC5"));
-            ListParametersAll.Add(new pdef("PCF_PIPL_NOMRATE", "PIPL", "U", pd.Text, new Guid("12239D7A-B9A3-46FC-89F0-4B1427A8212D"), "NOMINAL-RATING", "COMPONENT-ATTRIBUTE1")); //CII Design pressure
+            ListParametersAll.Add(new pdef(pd.PCF_PIPL_NOMCLASS, "PIPL", "U", pd.Text, pd.PCF_PIPL_NOMCLASS_GUID, "NOMINAL-CLASS"));
             ListParametersAll.Add(new pdef(pd.PCF_PIPL_PAINT, "PIPL", "U", pd.Text, pd.PCF_PIPL_PAINT_GUID, "PAINTING-SPEC"));
             ListParametersAll.Add(new pdef(pd.PCF_PIPL_PREFIX, "PIPL", "U", pd.Text, pd.PCF_PIPL_PREFIX_GUID, "SPOOL-PREFIX"));
             ListParametersAll.Add(new pdef(pd.PCF_PIPL_PROJID, "PIPL", "U", pd.Text, pd.PCF_PIPL_PROJID_GUID, "PROJECT-IDENTIFIER"));
             ListParametersAll.Add(new pdef(pd.PCF_PIPL_REV, "PIPL", "U", pd.Text, pd.PCF_PIPL_REV_GUID, "REVISION"));
             ListParametersAll.Add(new pdef(pd.PCF_PIPL_SPEC, "PIPL", "U", pd.Text, pd.PCF_PIPL_SPEC_GUID, "PIPING-SPEC"));
-            ListParametersAll.Add(new pdef(pd.PCF_PIPL_TEMP, "PIPL", "U", pd.Text, pd.PCF_PIPL_TEMP_GUID, "PIPELINE-TEMP", "COMPONENT-ATTRIBUTE2")); //CII Maximum temperature
+            ListParametersAll.Add(new pdef(pd.PCF_PIPL_TEMP, "PIPL", "U", pd.Text, pd.PCF_PIPL_TEMP_GUID, "PIPELINE-TEMP"));
             ListParametersAll.Add(new pdef(pd.PCF_PIPL_TRACING, "PIPL", "U", pd.Text, pd.PCF_PIPL_TRACING_GUID, "TRACING-SPEC"));
             ListParametersAll.Add(new pdef(pd.PCF_PIPL_TYPE, "PIPL", "U", pd.Text, pd.PCF_PIPL_TYPE_GUID, "PIPELINE-TYPE"));
-
-            //Pipeline parameters, used to facilitate export to CII
-            ListParametersAll.Add(new pdef("PCF_PIPL_CII_MATNAME", "PIPL", "U", pd.Text, new Guid("21541D8E-2E34-4355-80B9-8B53A064E3A4"), "", "COMPONENT-ATTRIBUTE3")); //CII material name
         }
 
        public ParameterDefinition(string pName, string pDomain, string pUsage, ParameterType pType, Guid pGuid, string pKeyword)
@@ -77,24 +74,12 @@ namespace PCF_Functions
             Keyword = pKeyword;
         }
 
-        public ParameterDefinition(string pName, string pDomain, string pUsage, ParameterType pType, Guid pGuid, string pKeyword, string pCiiKeyword)
-        {
-            Name = pName;
-            Domain = pDomain;
-            Usage = pUsage; //U = user, P = programmatic
-            Type = pType;
-            Guid = pGuid;
-            Keyword = pKeyword;
-            CiiKeyword = pCiiKeyword;
-        }
-
         public string Name { get; }
         public string Domain { get; } //PIPL = Pipeline, ELEM = Element
         public string Usage { get; } //U = user defined values, P = programatically defined values
         public ParameterType Type { get; }
         public Guid Guid { get; }
         public string Keyword { get; } //The keyword as defined in the PCF reference guide
-        public string CiiKeyword { get; } //Keword used to export data to CII
     }
 
     public static class ParameterData
