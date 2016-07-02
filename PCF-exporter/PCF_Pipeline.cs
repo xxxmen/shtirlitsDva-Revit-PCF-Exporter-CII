@@ -33,7 +33,7 @@ namespace PCF_Pipeline
                 sbPipeline = new StringBuilder();
 
                 var query = from p in new pdef().ListParametersAll
-                    where p.Domain == "PIPL"
+                    where string.Equals(p.Domain, "PIPL") && !string.Equals(p.ExportingTo, "CII")
                     select p;
 
                 sbPipeline.Append("PIPELINE-REFERENCE ");

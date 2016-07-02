@@ -10,12 +10,13 @@ using pdef = PCF_Functions.ParameterDefinition;
 
 namespace PCF_Pipes
 {
-    public static class PCF_Pipes_Export
+    public static class PCF_Pipes_Export //DECOMISSION STATICNESS!! MAKE ALL OBJECTS!!!
     {
         static IList<Element> pipeList;
         public static StringBuilder sbPipes;
+        private static string pipelineAbbreviation;
 
-        public static StringBuilder Export(IList<Element> elements)
+        public static StringBuilder Export(string key, IList<Element> elements)
         {
             pipeList = elements;
             sbPipes = new StringBuilder();
@@ -62,6 +63,8 @@ namespace PCF_Pipes
                     }
                     sbPipes.AppendLine();
                 }
+
+
 
                 sbPipes.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
                 sbPipes.Append(element.UniqueId);

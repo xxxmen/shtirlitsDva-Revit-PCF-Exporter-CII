@@ -23,7 +23,7 @@ namespace PCF_Exporter
                 #region Declaration of variables
                 // Instance a collector
                 FilteredElementCollector collector = new FilteredElementCollector(doc);
-                FilteredElementCollector pipeTypeCollector = new FilteredElementCollector(doc);
+                //FilteredElementCollector pipeTypeCollector = new FilteredElementCollector(doc); //Obsolete???
 
                 // Define a Filter instance to filter by System Abbreviation
                 ElementParameterFilter sysAbbr = new Filter(InputVars.SysAbbr, InputVars.SysAbbrParam).epf;
@@ -48,38 +48,39 @@ namespace PCF_Exporter
                 #region Element collectors
                 //If user chooses to export a single pipeline get only elements in that pipeline and create grouping.
                 //Grouping is necessary even tho theres only one group to be able to process by the same code as the all pipelines case
-                if (InputVars.ExportAll == false)
+                switch (InputVars.ExportAll)
                 {
-                    //Define a collector with multiple filters to collect PipeFittings OR PipeAccessories OR Pipes + filter by System Abbreviation
-                    //System Abbreviation filter also filters FamilySymbols out.
-                    collector.WherePasses(
-                        new LogicalOrFilter(
-                            new List<ElementFilter>
-                            {
-                                new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
-                                new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
-                                new ElementClassFilter(typeof (Pipe))
-                            })).WherePasses(sysAbbr);
-                }
+                    case false:
+                        //Define a collector with multiple filters to collect PipeFittings OR PipeAccessories OR Pipes + filter by System Abbreviation
+                        //System Abbreviation filter also filters FamilySymbols out.
+                        collector.WherePasses(
+                            new LogicalOrFilter(
+                                new List<ElementFilter>
+                                {
+                                    new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
+                                    new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
+                                    new ElementClassFilter(typeof (Pipe))
+                                })).WherePasses(sysAbbr);
+                        break;
 
-                //If user chooses to export all pipelines get all elements and create grouping
-                if (InputVars.ExportAll == true)
-                {
-                    //Define a collector (Pipe OR FamInst) AND (Fitting OR Accessory OR Pipe).
-                    //This is to eliminate FamilySymbols from collector which would throw an exception later on.
-                    collector.WherePasses(new LogicalAndFilter(new List<ElementFilter>
-                    {new LogicalOrFilter(new List<ElementFilter>
+                    //If user chooses to export all pipelines get all elements and create grouping
+                    case true:
+                        //Define a collector (Pipe OR FamInst) AND (Fitting OR Accessory OR Pipe).
+                        //This is to eliminate FamilySymbols from collector which would throw an exception later on.
+                        collector.WherePasses(new LogicalAndFilter(new List<ElementFilter>
+                        {new LogicalOrFilter(new List<ElementFilter>
                         {
                             new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
                             new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
                             new ElementClassFilter(typeof (Pipe))
                         }),
-                    new LogicalOrFilter(new List<ElementFilter>
-                                {
-                                    new ElementClassFilter(typeof(Pipe)),
-                                    new ElementClassFilter(typeof(FamilyInstance))
-                                })
+                            new LogicalOrFilter(new List<ElementFilter>
+                            {
+                                new ElementClassFilter(typeof(Pipe)),
+                                new ElementClassFilter(typeof(FamilyInstance))
+                            })
                         }));
+                        break;
                 }
                 //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
                 pipelineGroups = from e in collector
@@ -129,7 +130,7 @@ namespace PCF_Exporter
 
 
                     StringBuilder sbPipeline = PCF_Pipeline.PCF_Pipeline_Export.Export(gp.Key, doc);
-                    StringBuilder sbPipes = PCF_Pipes.PCF_Pipes_Export.Export(pipeList);
+                    StringBuilder sbPipes = PCF_Pipes.PCF_Pipes_Export.Export(gp.Key, pipeList);
                     StringBuilder sbFittings = PCF_Fittings.PCF_Fittings_Export.Export(fittingList, doc);
                     StringBuilder sbAccessories = PCF_Accessories.PCF_Accessories_Export.Export(accessoryList, doc);
 
