@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing.Configuration;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -348,6 +350,11 @@ namespace PCF_Exporter
             var output = EP.ExecuteMyCommand(_uiapp);
             if (output == Result.Succeeded) Util.InfoMsg("Elements exported to EXCEL successfully!");
             else if (output == Result.Failed) Util.InfoMsg("Element export to EXCEL failed for some reason.");
+        }
+
+        private void richTextBox1_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            Process.Start(e.LinkText);
         }
     }
 }
