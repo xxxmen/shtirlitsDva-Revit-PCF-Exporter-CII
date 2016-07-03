@@ -17,10 +17,12 @@ namespace PCF_Fittings
         private IEnumerable<Element> fittingsList;
         public StringBuilder sbFittings;
         private Document doc;
+        private string key;
 
-        public StringBuilder Export(IEnumerable<Element> elements, Document document)
+        public StringBuilder Export(string pipeLineAbbreviation, IEnumerable<Element> elements, Document document)
         {
             doc = document;
+            key = pipeLineAbbreviation;
             //The list of fittings, sorted by TYPE then SKEY
             fittingsList = elements.
                 OrderBy(e => e.LookupParameter(pd.PCF_ELEM_TYPE).AsString()).
@@ -316,6 +318,32 @@ namespace PCF_Fittings
                     }
                     sbFittings.AppendLine();
                 }
+
+                #region CII export
+                //Handle CII export parameters
+                //Instantiate collector
+                FilteredElementCollector collector = new FilteredElementCollector(doc);
+                //Get the elements
+                collector.OfClass(typeof(PipingSystemType));
+                //Select correct systemType
+                PipingSystemType sQuery = (from PipingSystemType st in collector
+                                           where string.Equals(st.Abbreviation, key)
+                                           select st).FirstOrDefault();
+
+                var query = from p in new pdef().ListParametersAll
+                            where string.Equals(p.Domain, "PIPL") && string.Equals(p.ExportingTo, "CII")
+                            select p;
+
+                foreach (pdef p in query.ToList())
+                {
+                    if (string.IsNullOrEmpty(sQuery.get_Parameter(p.Guid).AsString())) continue;
+                    sbFittings.Append("    ");
+                    sbFittings.Append(p.Keyword);
+                    sbFittings.Append(" ");
+                    sbFittings.Append(sQuery.get_Parameter(p.Guid).AsString());
+                    sbFittings.AppendLine();
+                }
+                #endregion
 
                 sbFittings.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
                 sbFittings.Append(element.UniqueId);

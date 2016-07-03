@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Plumbing;
 using PCF_Functions;
 using PCF_Taps;
 using pd = PCF_Functions.ParameterData;
@@ -10,15 +11,17 @@ using pdef = PCF_Functions.ParameterDefinition;
 
 namespace PCF_Accessories
 {
-    public static class PCF_Accessories_Export
+    public class PCF_Accessories_Export
     {
-        static IEnumerable<Element> accessoriesList;
-        public static StringBuilder sbAccessories;
-        static Document doc;
+        private IEnumerable<Element> accessoriesList;
+        public StringBuilder sbAccessories;
+        private Document doc;
+        private string key;
 
-        public static StringBuilder Export(IEnumerable<Element> elements, Document document)
+        public StringBuilder Export(string pipeLineAbbreviation, IEnumerable<Element> elements, Document document)
         {
             doc = document;
+            key = pipeLineAbbreviation;
             //The list of fittings, sorted by TYPE then SKEY
             accessoriesList = elements.
                 OrderBy(e => e.LookupParameter(pd.PCF_ELEM_TYPE).AsString()).
@@ -190,6 +193,32 @@ namespace PCF_Accessories
                     }
                     sbAccessories.AppendLine();
                 }
+
+                #region CII export
+                //Handle CII export parameters
+                //Instantiate collector
+                FilteredElementCollector collector = new FilteredElementCollector(doc);
+                //Get the elements
+                collector.OfClass(typeof(PipingSystemType));
+                //Select correct systemType
+                PipingSystemType sQuery = (from PipingSystemType st in collector
+                                           where string.Equals(st.Abbreviation, key)
+                                           select st).FirstOrDefault();
+
+                var query = from p in new pdef().ListParametersAll
+                            where string.Equals(p.Domain, "PIPL") && string.Equals(p.ExportingTo, "CII")
+                            select p;
+
+                foreach (pdef p in query.ToList())
+                {
+                    if (string.IsNullOrEmpty(sQuery.get_Parameter(p.Guid).AsString())) continue;
+                    sbAccessories.Append("    ");
+                    sbAccessories.Append(p.Keyword);
+                    sbAccessories.Append(" ");
+                    sbAccessories.Append(sQuery.get_Parameter(p.Guid).AsString());
+                    sbAccessories.AppendLine();
+                }
+                #endregion
 
                 sbAccessories.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
                 sbAccessories.Append(element.UniqueId);
