@@ -12,13 +12,13 @@ using pdef = PCF_Functions.ParameterDefinition;
 
 namespace PCF_Fittings
 {
-    public static class PCF_Fittings_Export
+    public class PCF_Fittings_Export
     {
-        static IEnumerable<Element> fittingsList;
-        public static StringBuilder sbFittings;
-        static Document doc;
+        private IEnumerable<Element> fittingsList;
+        public StringBuilder sbFittings;
+        private Document doc;
 
-        public static StringBuilder Export(IEnumerable<Element> elements, Document document)
+        public StringBuilder Export(IEnumerable<Element> elements, Document document)
         {
             doc = document;
             //The list of fittings, sorted by TYPE then SKEY

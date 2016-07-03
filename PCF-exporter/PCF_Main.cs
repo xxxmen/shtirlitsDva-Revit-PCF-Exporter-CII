@@ -126,12 +126,10 @@ namespace PCF_Exporter
                     IList<Element> accessoryList = (from element in gp
                                    where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeAccessory
                                    select element).ToList();
-
-
-
-                    StringBuilder sbPipeline = PCF_Pipeline.PCF_Pipeline_Export.Export(gp.Key, doc);
-                    StringBuilder sbPipes = PCF_Pipes.PCF_Pipes_Export.Export(gp.Key, pipeList);
-                    StringBuilder sbFittings = PCF_Fittings.PCF_Fittings_Export.Export(fittingList, doc);
+                    
+                    StringBuilder sbPipeline = new PCF_Pipeline.PCF_Pipeline_Export().Export(gp.Key, doc);
+                    StringBuilder sbPipes = new PCF_Pipes.PCF_Pipes_Export().Export(gp.Key, pipeList, doc);
+                    StringBuilder sbFittings = new PCF_Fittings.PCF_Fittings_Export().Export(fittingList, doc);
                     StringBuilder sbAccessories = PCF_Accessories.PCF_Accessories_Export.Export(accessoryList, doc);
 
                     sbCollect.Append(sbPipeline); sbCollect.Append(sbPipes); sbCollect.Append(sbFittings); sbCollect.Append(sbAccessories);
