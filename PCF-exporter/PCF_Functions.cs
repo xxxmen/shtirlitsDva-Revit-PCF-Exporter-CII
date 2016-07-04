@@ -15,12 +15,14 @@ namespace PCF_Functions
     public class InputVars
     {
         #region Execution
+        //Used for "global variables".
         //File I/O
         public static string OutputDirectoryFilePath;
         public static string ExcelSheet = "COMP";
 
         //Execution control
         public static bool ExportAll = true;
+        public static int DiameterLimit = 0;
 
         //PCF File Header (preamble) control
         public static string UNITS_BORE = "MM";
@@ -37,7 +39,7 @@ namespace PCF_Functions
 
         public static string UNITS_WEIGHT_LENGTH = "METER";
         public static bool UNITS_WEIGHT_LENGTH_METER = true;
-        public static bool UNITS_WEIGHT_LENGTH_INCH = false;
+        //public static bool UNITS_WEIGHT_LENGTH_INCH = false; OBSOLETE
         public static bool UNITS_WEIGHT_LENGTH_FEET = false;
         #endregion Execution
 
@@ -50,11 +52,11 @@ namespace PCF_Functions
 
         #region Element parameter definition
         //Shared parameter group
-        public const string PCF_GROUP_NAME = "PCF";
+        //public const string PCF_GROUP_NAME = "PCF"; OBSOLETE
         public const BuiltInParameterGroup PCF_BUILTIN_GROUP_NAME = BuiltInParameterGroup.PG_ANALYTICAL_MODEL;
 
-        //PCF specification
-        public static string PIPING_SPEC = "STD";
+        //PCF specification - OBSOLETE
+        //public static string PIPING_SPEC = "STD";
         #endregion
     }
 
