@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -132,14 +133,43 @@ namespace PCF_Functions
             element = passedElement;
             diameterLimit = iv.DiameterLimit;
             diameterLimitBool = true;
+            double testedDiameter = 0;
             switch (element.Category.Id.IntegerValue)
             {
-                case ((int)BuiltInCategory.OST_PipeCurves):
-                    if (iv.UNITS_BORE_MM)
+                case (int)BuiltInCategory.OST_PipeCurves:
+                    if (iv.UNITS_BORE_MM) testedDiameter = double.Parse(Conversion.PipeSizeToMm(((MEPCurve) element).Diameter/2));
+                    else if (iv.UNITS_BORE_INCH) testedDiameter = double.Parse(Conversion.PipeSizeToInch(((MEPCurve)element).Diameter/2));
+
+                    if (testedDiameter <= diameterLimit) diameterLimitBool = false;
+
+                    break;
+
+                case (int)BuiltInCategory.OST_PipeFitting | (int)BuiltInCategory.OST_PipeAccessory:
+                    //Cast the element passed to method to FamilyInstance
+                    FamilyInstance familyInstance = (FamilyInstance)element;
+                    //MEPModel of the elements is accessed
+                    MEPModel mepmodel = familyInstance.MEPModel;
+                    //Get connector set for the element
+                    ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
+                    //Declare a variable for 
+                    Connector testedConnector;
+
+                    if (connectorSet.IsEmpty) break;
+                    else if (connectorSet.Size == 1)
                     {
-                        double pipeDiameter = double.Parse(Conversion.PipeSizeToMm(((MEPCurve) element).Diameter));
-                        if (pipeDiameter <= diameterLimit) diameterLimitBool = false;
+                        ConnectorSetIterator iterator = connectorSet.ForwardIterator();
+                        iterator.MoveNext();
+                        testedConnector = (Connector)iterator.Current;
                     }
+                    else testedConnector = (from Connector connector in connectorSet
+                            where connector.GetMEPConnectorInfo().IsPrimary
+                            select connector).FirstOrDefault();
+
+                    if (iv.UNITS_BORE_MM) testedDiameter = double.Parse(Conversion.PipeSizeToMm(testedConnector.Radius));
+                    else if (iv.UNITS_BORE_INCH) testedDiameter = double.Parse(Conversion.PipeSizeToInch(testedConnector.Radius));
+
+                    if (testedDiameter <= diameterLimit) diameterLimitBool = false;
+
                     break;
             }
             return diameterLimitBool;

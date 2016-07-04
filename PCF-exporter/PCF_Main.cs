@@ -118,13 +118,13 @@ namespace PCF_Exporter
                 foreach (IGrouping<string, Element> gp in pipelineGroups)
                 {
                     IList<Element> pipeList = (from element in gp
-                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeCurves
+                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeCurves && new FilterDiameterLimit().FilterDL(element)
                                    select element).ToList();
                     IList<Element> fittingList = (from element in gp
-                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeFitting
+                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeFitting && new FilterDiameterLimit().FilterDL(element)
                                    select element).ToList();
                     IList<Element> accessoryList = (from element in gp
-                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeAccessory
+                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeAccessory && new FilterDiameterLimit().FilterDL(element)
                                    select element).ToList();
                     
                     StringBuilder sbPipeline = new PCF_Pipeline.PCF_Pipeline_Export().Export(gp.Key, doc);
