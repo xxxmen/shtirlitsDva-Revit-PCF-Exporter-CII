@@ -10,15 +10,17 @@ using pdef = PCF_Functions.ParameterDefinition;
 
 namespace PCF_Pipes
 {
-    public static class PCF_Pipes_Export
+    public class PCF_Pipes_Export
     {
-        static IList<Element> pipeList;
-        public static StringBuilder sbPipes;
+        private IList<Element> pipeList;
+        private StringBuilder sbPipes;
+        private string key;
 
-        public static StringBuilder Export(IList<Element> elements)
+        public StringBuilder Export(string pipeLineGroupingKey, IList<Element> elements, Document doc)
         {
             pipeList = elements;
             sbPipes = new StringBuilder();
+            key = pipeLineGroupingKey;
 
             foreach (Element element in pipeList)
             {
@@ -62,6 +64,32 @@ namespace PCF_Pipes
                     }
                     sbPipes.AppendLine();
                 }
+
+                #region CII export
+                //Handle CII export parameters
+                //Instantiate collector
+                FilteredElementCollector collector = new FilteredElementCollector(doc);
+                //Get the elements
+                collector.OfClass(typeof(PipingSystemType));
+                //Select correct systemType
+                PipingSystemType sQuery = (from PipingSystemType st in collector
+                                           where string.Equals(st.Abbreviation, key)
+                                           select st).FirstOrDefault();
+
+                var query = from p in new pdef().ListParametersAll
+                            where string.Equals(p.Domain, "PIPL") && string.Equals(p.ExportingTo, "CII")
+                            select p;
+
+                foreach (pdef p in query.ToList())
+                {
+                    if (string.IsNullOrEmpty(sQuery.get_Parameter(p.Guid).AsString())) continue;
+                    sbPipes.Append("    ");
+                    sbPipes.Append(p.Keyword);
+                    sbPipes.Append(" ");
+                    sbPipes.Append(sQuery.get_Parameter(p.Guid).AsString());
+                    sbPipes.AppendLine();
+                }
+                #endregion
 
                 sbPipes.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
                 sbPipes.Append(element.UniqueId);

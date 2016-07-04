@@ -62,9 +62,21 @@ namespace PCF_Functions
             ListParametersAll.Add(new pdef(pd.PCF_PIPL_TEMP, "PIPL", "U", pd.Text, pd.PCF_PIPL_TEMP_GUID, "PIPELINE-TEMP"));
             ListParametersAll.Add(new pdef(pd.PCF_PIPL_TRACING, "PIPL", "U", pd.Text, pd.PCF_PIPL_TRACING_GUID, "TRACING-SPEC"));
             ListParametersAll.Add(new pdef(pd.PCF_PIPL_TYPE, "PIPL", "U", pd.Text, pd.PCF_PIPL_TYPE_GUID, "PIPELINE-TYPE"));
+
+            //Parameters to facilitate export of data to CII
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_PD", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01760"), "COMPONENT-ATTRIBUTE1", "CII")); //Design pressure
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_TD", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01761"), "COMPONENT-ATTRIBUTE2", "CII")); //Max temperature
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_MATNAME", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01762"), "COMPONENT-ATTRIBUTE3", "CII")); //Material name
+            ListParametersAll.Add(new pdef("PCF_ELEM_CII_WALLTHK", "ELEM", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01763"), "COMPONENT-ATTRIBUTE4", "CII")); //Wall thickness
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_INSULTHK", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01764"), "COMPONENT-ATTRIBUTE5", "CII")); //Insulation thickness
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_INSULDST", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01765"), "COMPONENT-ATTRIBUTE6", "CII")); //Insulation density
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_CORRALL", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01766"), "COMPONENT-ATTRIBUTE7", "CII")); //Corrosion allowance
+            ListParametersAll.Add(new pdef("PCF_ELEM_CII_COMPWEIGHT", "ELEM", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01767"), "COMPONENT-ATTRIBUTE8", "CII")); //Component weight
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_FLUIDDST", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01768"), "COMPONENT-ATTRIBUTE9", "CII")); //Fluid density
+            ListParametersAll.Add(new pdef("PCF_PIPL_CII_HYDROPD", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01769"), "COMPONENT-ATTRIBUTE10", "CII")); //Hydro test pressure
         }
 
-       public ParameterDefinition(string pName, string pDomain, string pUsage, ParameterType pType, Guid pGuid, string pKeyword)
+        public ParameterDefinition(string pName, string pDomain, string pUsage, ParameterType pType, Guid pGuid, string pKeyword)
         {
             Name = pName;
             Domain = pDomain;
@@ -74,12 +86,24 @@ namespace PCF_Functions
             Keyword = pKeyword;
         }
 
+        public ParameterDefinition(string pName, string pDomain, string pUsage, ParameterType pType, Guid pGuid, string pKeyword, string pExportingTo)
+        {
+            Name = pName;
+            Domain = pDomain;
+            Usage = pUsage; //U = user, P = programmatic
+            Type = pType;
+            Guid = pGuid;
+            Keyword = pKeyword;
+            ExportingTo = pExportingTo;
+        }
+
         public string Name { get; }
-        public string Domain { get; } //PIPL = Pipeline, ELEM = Element
-        public string Usage { get; } //U = user defined values, P = programatically defined values
+        public string Domain { get; } //PIPL = Pipeline, ELEM = Element.
+        public string Usage { get; } //U = user defined values, P = programatically defined values.
         public ParameterType Type { get; }
         public Guid Guid { get; }
-        public string Keyword { get; } //The keyword as defined in the PCF reference guide
+        public string Keyword { get; } //The keyword as defined in the PCF reference guide.
+        public string ExportingTo { get; } = null; //Currently used with CII export to distinguish CII parameters from other PIPL parameters.
     }
 
     public static class ParameterData
@@ -89,6 +113,8 @@ namespace PCF_Functions
         //general values
         public const ParameterType Text = ParameterType.Text;
         public const ParameterType Integer = ParameterType.Integer;
+
+        //Obsolete parameter definition. Decomission this part with low priority.
 
         public static string PCF_ELEM_BP1 = "PCF_ELEM_BP1";
         public static Guid PCF_ELEM_BP1_GUID = new Guid("89b1e62e-f9b8-48c3-ab3a-1861a772bda8");
