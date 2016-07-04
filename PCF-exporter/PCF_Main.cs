@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -82,8 +83,12 @@ namespace PCF_Exporter
                         }));
                         break;
                 }
+
+                //DiameterLimit filter applied to ALL elements.
+                IList<Element> elements = (from element in collector where new FilterDiameterLimit().FilterDL(element) select element).ToList();
+
                 //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
-                pipelineGroups = from e in collector
+                pipelineGroups = from e in elements
                                  group e by e.LookupParameter(InputVars.PipelineGroupParameterName).AsString();
                 #endregion
 
@@ -93,7 +98,7 @@ namespace PCF_Exporter
                 int materialGroupIdentifier = 0;
 
                 //Initialize material group numbers on the elements
-                IEnumerable<IGrouping<string, Element>> materialGroups = from e in collector group e by e.LookupParameter(pd.PCF_MAT_DESCR).AsString();
+                IEnumerable<IGrouping<string, Element>> materialGroups = from e in elements group e by e.LookupParameter(pd.PCF_MAT_DESCR).AsString();
 
                 Transaction trans = new Transaction(doc, "Set PCF_ELEM_COMPID and PCF_MAT_ID");
                 trans.Start();
@@ -118,13 +123,13 @@ namespace PCF_Exporter
                 foreach (IGrouping<string, Element> gp in pipelineGroups)
                 {
                     IList<Element> pipeList = (from element in gp
-                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeCurves && new FilterDiameterLimit().FilterDL(element)
+                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeCurves
                                    select element).ToList();
                     IList<Element> fittingList = (from element in gp
-                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeFitting && new FilterDiameterLimit().FilterDL(element)
+                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeFitting
                                    select element).ToList();
                     IList<Element> accessoryList = (from element in gp
-                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeAccessory && new FilterDiameterLimit().FilterDL(element)
+                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeAccessory
                                    select element).ToList();
                     
                     StringBuilder sbPipeline = new PCF_Pipeline.PCF_Pipeline_Export().Export(gp.Key, doc);
@@ -133,7 +138,6 @@ namespace PCF_Exporter
                     StringBuilder sbAccessories = new PCF_Accessories.PCF_Accessories_Export().Export(gp.Key, accessoryList, doc);
 
                     sbCollect.Append(sbPipeline); sbCollect.Append(sbPipes); sbCollect.Append(sbFittings); sbCollect.Append(sbAccessories);
-
                 }
                 #endregion
 

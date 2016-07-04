@@ -144,7 +144,8 @@ namespace PCF_Functions
 
                     break;
 
-                case (int)BuiltInCategory.OST_PipeFitting | (int)BuiltInCategory.OST_PipeAccessory:
+                case (int)BuiltInCategory.OST_PipeFitting:
+                case (int)BuiltInCategory.OST_PipeAccessory:
                     //Cast the element passed to method to FamilyInstance
                     FamilyInstance familyInstance = (FamilyInstance)element;
                     //MEPModel of the elements is accessed
@@ -152,15 +153,10 @@ namespace PCF_Functions
                     //Get connector set for the element
                     ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
                     //Declare a variable for 
-                    Connector testedConnector;
+                    Connector testedConnector = null;
 
                     if (connectorSet.IsEmpty) break;
-                    else if (connectorSet.Size == 1)
-                    {
-                        ConnectorSetIterator iterator = connectorSet.ForwardIterator();
-                        iterator.MoveNext();
-                        testedConnector = (Connector)iterator.Current;
-                    }
+                    else if (connectorSet.Size == 1) foreach (Connector connector in connectorSet) testedConnector = connector;
                     else testedConnector = (from Connector connector in connectorSet
                             where connector.GetMEPConnectorInfo().IsPrimary
                             select connector).FirstOrDefault();

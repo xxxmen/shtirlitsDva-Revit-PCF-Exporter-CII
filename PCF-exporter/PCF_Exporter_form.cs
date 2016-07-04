@@ -359,5 +359,10 @@ namespace PCF_Exporter
         {
             Process.Start(e.LinkText);
         }
+
+        private void textBox22_TextChanged(object sender, EventArgs e)
+        {
+            iv.DiameterLimit = double.Parse(textBox22.Text);
+        }
     }
 }
