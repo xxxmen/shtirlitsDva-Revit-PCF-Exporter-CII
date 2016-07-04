@@ -22,7 +22,7 @@ namespace PCF_Functions
 
         //Execution control
         public static bool ExportAll = true;
-        public static int DiameterLimit = 0;
+        public static decimal DiameterLimit = 0;
 
         //PCF File Header (preamble) control
         public static string UNITS_BORE = "MM";

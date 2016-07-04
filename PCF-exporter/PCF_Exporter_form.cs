@@ -107,6 +107,9 @@ namespace PCF_Exporter
             iv.OutputDirectoryFilePath = mySettings.Default.textBox5OutputPath;
             textBox5.Text = iv.OutputDirectoryFilePath;
 
+            //Init diameter limit
+            iv.DiameterLimit = decimal.Parse(mySettings.Default.textBox22DiameterLimit);
+
             //Debug
             textBox8.Text = "SysAbbr: " + iv.SysAbbr;
             textBox11.Text = "ExportAll: " + iv.ExportAll;
