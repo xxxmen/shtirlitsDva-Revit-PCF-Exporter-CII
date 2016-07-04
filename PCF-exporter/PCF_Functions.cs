@@ -156,7 +156,7 @@ namespace PCF_Functions
                     Connector testedConnector = null;
 
                     if (connectorSet.IsEmpty) break;
-                    else if (connectorSet.Size == 1) foreach (Connector connector in connectorSet) testedConnector = connector;
+                    if (connectorSet.Size == 1) foreach (Connector connector in connectorSet) testedConnector = connector;
                     else testedConnector = (from Connector connector in connectorSet
                             where connector.GetMEPConnectorInfo().IsPrimary
                             select connector).FirstOrDefault();
