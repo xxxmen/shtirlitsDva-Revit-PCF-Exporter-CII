@@ -108,7 +108,7 @@ namespace PCF_Exporter
             textBox5.Text = iv.OutputDirectoryFilePath;
 
             //Init diameter limit
-            iv.DiameterLimit = decimal.Parse(mySettings.Default.textBox22DiameterLimit);
+            iv.DiameterLimit = double.Parse(mySettings.Default.textBox22DiameterLimit);
 
             //Debug
             textBox8.Text = "SysAbbr: " + iv.SysAbbr;

@@ -22,7 +22,7 @@ namespace PCF_Functions
 
         //Execution control
         public static bool ExportAll = true;
-        public static decimal DiameterLimit = 0;
+        public static double DiameterLimit = 0;
 
         //PCF File Header (preamble) control
         public static string UNITS_BORE = "MM";
@@ -118,6 +118,31 @@ namespace PCF_Functions
             str = new FilterStringContains();
             paramFr = new FilterStringRule(pvp, str, valueQualifier, false);
             epf = new ElementParameterFilter(paramFr);
+        }
+    }
+
+    public class FilterDiameterLimit
+    {
+        private Element element;
+        private bool diameterLimitBool;
+        private double diameterLimit;
+
+        public bool FilterDL(Element passedElement)
+        {
+            element = passedElement;
+            diameterLimit = iv.DiameterLimit;
+            diameterLimitBool = true;
+            switch (element.Category.Id.IntegerValue)
+            {
+                case ((int)BuiltInCategory.OST_PipeCurves):
+                    if (iv.UNITS_BORE_MM)
+                    {
+                        double pipeDiameter = double.Parse(Conversion.PipeSizeToMm(((MEPCurve) element).Diameter));
+                        if (pipeDiameter <= diameterLimit) diameterLimitBool = false;
+                    }
+                    break;
+            }
+            return diameterLimitBool;
         }
     }
 
