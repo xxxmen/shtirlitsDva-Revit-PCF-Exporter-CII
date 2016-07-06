@@ -24,10 +24,10 @@ namespace PCF_Pipes
 
             foreach (Element element in pipeList)
             {
-                sbPipes.Append(element.LookupParameter(pd.PCF_ELEM_TYPE).AsString());
+                sbPipes.Append(element.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString());
                 sbPipes.AppendLine();
                 sbPipes.Append("    COMPONENT-IDENTIFIER ");
-                sbPipes.Append(element.LookupParameter(pd.PCF_ELEM_COMPID).AsInteger());
+                sbPipes.Append(element.get_Parameter(new pdef().PCF_ELEM_COMPID.Guid).AsInteger());
                 sbPipes.AppendLine();
                
                 Pipe pipe = (Pipe)element;

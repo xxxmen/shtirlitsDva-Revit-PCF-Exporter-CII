@@ -24,19 +24,19 @@ namespace PCF_Accessories
             key = pipeLineAbbreviation;
             //The list of fittings, sorted by TYPE then SKEY
             accessoriesList = elements.
-                OrderBy(e => e.LookupParameter(pd.PCF_ELEM_TYPE).AsString()).
-                ThenBy(e => e.LookupParameter(pd.PCF_ELEM_SKEY).AsString());
+                OrderBy(e => e.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString()).
+                ThenBy(e => e.get_Parameter(new pdef().PCF_ELEM_SKEY.Guid).AsString());
 
             sbAccessories = new StringBuilder();
             foreach (Element element in accessoriesList)
             {
                 //If the Element Type field is empty -> ignore the component
-                if (string.IsNullOrEmpty(element.LookupParameter(pd.PCF_ELEM_TYPE).AsString())) continue;
+                if (string.IsNullOrEmpty(element.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString())) continue;
 
-                sbAccessories.Append(element.LookupParameter(pd.PCF_ELEM_TYPE).AsString());
+                sbAccessories.Append(element.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString());
                 sbAccessories.AppendLine();
                 sbAccessories.Append("    COMPONENT-IDENTIFIER ");
-                sbAccessories.Append(element.LookupParameter(pd.PCF_ELEM_COMPID).AsInteger());
+                sbAccessories.Append(element.LookupParameter("PCF_ELEM_COMPID").AsInteger());
                 sbAccessories.AppendLine();
 
                 //Cast the elements gathered by the collector to FamilyInstances
@@ -48,7 +48,7 @@ namespace PCF_Accessories
                 ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
 
                 //Switch to different element type configurations
-                switch (element.LookupParameter(pd.PCF_ELEM_TYPE).AsString())
+                switch (element.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString())
                 {
                     case ("FILTER"):
                         //Process endpoints of the component
@@ -225,19 +225,19 @@ namespace PCF_Accessories
                 sbAccessories.AppendLine();
 
                 //Process tap entries of the element if any
-                if (string.IsNullOrEmpty(element.LookupParameter(pd.PCF_ELEM_TAP1).AsString()) == false)
+                if (string.IsNullOrEmpty(element.LookupParameter("PCF_ELEM_TAP1").AsString()) == false)
                 {
-                    TapsWriter tapsWriter = new TapsWriter(element, pd.PCF_ELEM_TAP1, doc);
+                    TapsWriter tapsWriter = new TapsWriter(element, "PCF_ELEM_TAP1", doc);
                     sbAccessories.Append(tapsWriter.tapsWriter);
                 }
-                if (string.IsNullOrEmpty(element.LookupParameter(pd.PCF_ELEM_TAP2).AsString()) == false)
+                if (string.IsNullOrEmpty(element.LookupParameter("PCF_ELEM_TAP2").AsString()) == false)
                 {
-                    TapsWriter tapsWriter = new TapsWriter(element, pd.PCF_ELEM_TAP2, doc);
+                    TapsWriter tapsWriter = new TapsWriter(element, "PCF_ELEM_TAP2", doc);
                     sbAccessories.Append(tapsWriter.tapsWriter);
                 }
-                if (string.IsNullOrEmpty(element.LookupParameter(pd.PCF_ELEM_TAP3).AsString()) == false)
+                if (string.IsNullOrEmpty(element.LookupParameter("PCF_ELEM_TAP3").AsString()) == false)
                 {
-                    TapsWriter tapsWriter = new TapsWriter(element, pd.PCF_ELEM_TAP3, doc);
+                    TapsWriter tapsWriter = new TapsWriter(element, "PCF_ELEM_TAP3", doc);
                     sbAccessories.Append(tapsWriter.tapsWriter);
                 }
             }
