@@ -10,6 +10,7 @@ using Autodesk.Revit.UI;
 using BuildingCoder;
 using iv = PCF_Functions.InputVars;
 using pdef = PCF_Functions.ParameterDefinition;
+using plst = PCF_Functions.ParameterList;
 
 namespace PCF_Functions
 {
@@ -402,7 +403,7 @@ namespace PCF_Functions
 
                 string curUsage = "U";
                 string curDomain = "ELEM";
-                var query = from p in new pdef().ListParametersAll where p.Usage == curUsage && p.Domain == curDomain select p;
+                var query = from p in new plst().ListParametersAll where p.Usage == curUsage && p.Domain == curDomain select p;
                 
                 foreach (pdef pDef in query.ToList())
                 {

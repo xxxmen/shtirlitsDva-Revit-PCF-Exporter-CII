@@ -7,8 +7,8 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using PCF_Functions;
 using iv = PCF_Functions.InputVars;
-using pd = PCF_Functions.ParameterData;
 using pdef = PCF_Functions.ParameterDefinition;
+using plst = PCF_Functions.ParameterList;
 
 namespace PCF_Fittings
 {
@@ -25,16 +25,16 @@ namespace PCF_Fittings
             key = pipeLineAbbreviation;
             //The list of fittings, sorted by TYPE then SKEY
             fittingsList = elements.
-                OrderBy(e => e.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString()).
-                ThenBy(e => e.get_Parameter(new pdef().PCF_ELEM_SKEY.Guid).AsString());
+                OrderBy(e => e.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString()).
+                ThenBy(e => e.get_Parameter(new plst().PCF_ELEM_SKEY.Guid).AsString());
 
             sbFittings = new StringBuilder();
             foreach (Element element in fittingsList)
             {
                 //If the Element Type field is empty -> ignore the component
-                if (string.IsNullOrEmpty(element.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString())) continue;
+                if (string.IsNullOrEmpty(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString())) continue;
 
-                sbFittings.Append(element.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString());
+                sbFittings.Append(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString());
                 sbFittings.AppendLine();
                 sbFittings.Append("    COMPONENT-IDENTIFIER ");
                 sbFittings.Append(element.LookupParameter("PCF_ELEM_COMPID").AsInteger());
@@ -49,7 +49,7 @@ namespace PCF_Fittings
                 ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
                 
                 //Switch to different element type configurations
-                switch (element.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString())
+                switch (element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString())
                 {
                     case ("ELBOW"):
                         Connector primaryConnector = null; Connector secondaryConnector = null;
@@ -295,7 +295,7 @@ namespace PCF_Fittings
                         break;
                 }
 
-                var pQuery = from p in new pdef().ListParametersAll where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM") select p;
+                var pQuery = from p in new plst().ListParametersAll where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM") select p;
 
                 foreach (pdef p in pQuery)
                 {
@@ -330,7 +330,7 @@ namespace PCF_Fittings
                                            where string.Equals(st.Abbreviation, key)
                                            select st).FirstOrDefault();
 
-                var query = from p in new pdef().ListParametersAll
+                var query = from p in new plst().ListParametersAll
                             where string.Equals(p.Domain, "PIPL") && string.Equals(p.ExportingTo, "CII")
                             select p;
 

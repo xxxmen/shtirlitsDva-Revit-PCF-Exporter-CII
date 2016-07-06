@@ -16,6 +16,7 @@ using BuildingCoder;
 using PCF_Exporter;
 using pd = PCF_Functions.ParameterData;
 using pdef = PCF_Functions.ParameterDefinition;
+using plst = PCF_Functions.ParameterList;
 
 namespace PCF_Parameters
 {
@@ -56,7 +57,7 @@ namespace PCF_Parameters
             //Change domain for query
             string curDomain = "PIPL", curUsage = "U";
 
-            var query = from p in new pdef().ListParametersAll
+            var query = from p in new plst().ListParametersAll
                         where p.Domain == curDomain && p.Usage == curUsage
                         select p;
 
@@ -182,7 +183,7 @@ namespace PCF_Parameters
                         where value.Field<string>(0) == eFamilyType
                         select value.Field<string>(columnName);
 
-            var pQuery = from p in new pdef().ListParametersAll
+            var pQuery = from p in new plst().ListParametersAll
                         where p.Domain == "ELEM"
                         select p;
 
@@ -297,7 +298,7 @@ namespace PCF_Parameters
                                                     select value.Field<string>(columnName);
 
             //Get a query for pipeline parameters
-            var pQuery = from p in new pdef().ListParametersAll
+            var pQuery = from p in new plst().ListParametersAll
                          where p.Domain == "PIPL"
                          select p;
 
@@ -394,7 +395,7 @@ namespace PCF_Parameters
             
             StringBuilder sbFeedback = new StringBuilder();
             //Parameter query
-            var query = from p in new pdef().ListParametersAll where p.Domain == "ELEM" select p;
+            var query = from p in new plst().ListParametersAll where p.Domain == "ELEM" select p;
             //Create parameter bindings
             try
             {
@@ -457,7 +458,7 @@ namespace PCF_Parameters
             StringBuilder sbFeedback = new StringBuilder();
 
             //Parameter query
-            var query = from p in new pdef().ListParametersAll where p.Domain == "PIPL" select p;
+            var query = from p in new plst().ListParametersAll where p.Domain == "PIPL" select p;
 
             //Create parameter bindings
             try
@@ -501,7 +502,6 @@ namespace PCF_Parameters
             return Result.Succeeded;
 
         }
-
     }
 
     public class DeleteParameters //: IExternalCommand
@@ -522,7 +522,7 @@ namespace PCF_Parameters
             {
                 Transaction trans = new Transaction(doc, "Delete PCF parameters");
                 trans.Start();
-                foreach (pdef parameter in new pdef().ListParametersAll.ToList())
+                foreach (pdef parameter in new plst().ListParametersAll.ToList())
                     RemoveSharedParameterBinding(doc.Application, parameter.Name, parameter.Type);
                 trans.Commit();
                 Util.InfoMsg(sbFeedback.ToString());

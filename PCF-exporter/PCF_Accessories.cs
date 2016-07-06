@@ -6,8 +6,9 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using PCF_Functions;
 using PCF_Taps;
-using pd = PCF_Functions.ParameterData;
+
 using pdef = PCF_Functions.ParameterDefinition;
+using plst = PCF_Functions.ParameterList;
 
 namespace PCF_Accessories
 {
@@ -24,16 +25,16 @@ namespace PCF_Accessories
             key = pipeLineAbbreviation;
             //The list of fittings, sorted by TYPE then SKEY
             accessoriesList = elements.
-                OrderBy(e => e.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString()).
-                ThenBy(e => e.get_Parameter(new pdef().PCF_ELEM_SKEY.Guid).AsString());
+                OrderBy(e => e.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString()).
+                ThenBy(e => e.get_Parameter(new plst().PCF_ELEM_SKEY.Guid).AsString());
 
             sbAccessories = new StringBuilder();
             foreach (Element element in accessoriesList)
             {
                 //If the Element Type field is empty -> ignore the component
-                if (string.IsNullOrEmpty(element.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString())) continue;
+                if (string.IsNullOrEmpty(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString())) continue;
 
-                sbAccessories.Append(element.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString());
+                sbAccessories.Append(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString());
                 sbAccessories.AppendLine();
                 sbAccessories.Append("    COMPONENT-IDENTIFIER ");
                 sbAccessories.Append(element.LookupParameter("PCF_ELEM_COMPID").AsInteger());
@@ -48,7 +49,7 @@ namespace PCF_Accessories
                 ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
 
                 //Switch to different element type configurations
-                switch (element.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString())
+                switch (element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString())
                 {
                     case ("FILTER"):
                         //Process endpoints of the component
@@ -160,17 +161,15 @@ namespace PCF_Accessories
                                     intersection = results.get_Item(0).XYZPoint;
                                     if (intersection.IsAlmostEqualTo(primConOrigin) == false) endPointAnalyzed = intersection;
                                 }
-                                
                             }
                         }
 
                         sbAccessories.Append(EndWriter.WriteCO(endPointAnalyzed));
 
                         break;
-
                 }
 
-                var pQuery = from p in new pdef().ListParametersAll where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM") select p;
+                var pQuery = from p in new plst().ListParametersAll where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM") select p;
 
                 foreach (pdef p in pQuery)
                 {
@@ -205,7 +204,7 @@ namespace PCF_Accessories
                                            where string.Equals(st.Abbreviation, key)
                                            select st).FirstOrDefault();
 
-                var query = from p in new pdef().ListParametersAll
+                var query = from p in new plst().ListParametersAll
                             where string.Equals(p.Domain, "PIPL") && string.Equals(p.ExportingTo, "CII")
                             select p;
 

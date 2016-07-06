@@ -9,8 +9,41 @@ namespace PCF_Functions
 {
     public class ParameterDefinition
     {
+        public ParameterDefinition(string pName, string pDomain, string pUsage, ParameterType pType, Guid pGuid, string pKeyword)
+        {
+            Name = pName;
+            Domain = pDomain;
+            Usage = pUsage; //U = user, P = programmatic
+            Type = pType;
+            Guid = pGuid;
+            Keyword = pKeyword;
+        }
+
+        public ParameterDefinition(string pName, string pDomain, string pUsage, ParameterType pType, Guid pGuid, string pKeyword, string pExportingTo)
+        {
+            Name = pName;
+            Domain = pDomain;
+            Usage = pUsage; //U = user, P = programmatic
+            Type = pType;
+            Guid = pGuid;
+            Keyword = pKeyword;
+            ExportingTo = pExportingTo;
+        }
+
+        public string Name { get; }
+        public string Domain { get; } //PIPL = Pipeline, ELEM = Element, SUPP = Support.
+        public string Usage { get; } //U = user defined values, P = programatically defined values.
+        public ParameterType Type { get; }
+        public Guid Guid { get; }
+        public string Keyword { get; } //The keyword as defined in the PCF reference guide.
+        public string ExportingTo { get; } = null; //Currently used with CII export to distinguish CII parameters from other PIPL parameters.
+    }
+
+    public class ParameterList
+    {
         public readonly IList<pdef> ListParametersAll = new List<pdef>();
 
+        #region Parameter Definition
         //Element parameters user defined
         public readonly pdef PCF_ELEM_TYPE = new pdef("PCF_ELEM_TYPE", "ELEM", "U", pd.Text, new Guid("bfc7b779-786d-47cd-9194-8574a5059ec8"), "");
         public readonly pdef PCF_ELEM_SKEY = new pdef("PCF_ELEM_SKEY", "ELEM", "U", pd.Text, new Guid("3feebd29-054c-4ce8-bc64-3cff75ed6121"), "SKEY");
@@ -72,8 +105,13 @@ namespace PCF_Functions
         public readonly pdef PCF_PIPL_CII_FLUIDDST = new pdef("PCF_PIPL_CII_FLUIDDST", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01768"), "COMPONENT-ATTRIBUTE9", "CII"); //Fluid density
         public readonly pdef PCF_PIPL_CII_HYDROPD = new pdef("PCF_PIPL_CII_HYDROPD", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01769"), "COMPONENT-ATTRIBUTE10", "CII"); //Hydro test pressure
 
-        public ParameterDefinition()
+        //Pipe Support parameters
+        public readonly pdef PCF_ELEM_SUPPORT_NAME = new pdef("PCF_ELEM_SUPPORT_NAME", "ELEM", "U", pd.Text, new Guid("25F67960-3134-4288-B8A1-C1854CF266C5"), "NAME");
+        #endregion
+
+        public ParameterList()
         {
+            #region ListParametersAll
             //Populate the list with element parameters
             ListParametersAll.Add(PCF_ELEM_TYPE);
             ListParametersAll.Add(PCF_ELEM_SKEY);
@@ -91,7 +129,7 @@ namespace PCF_Functions
             ListParametersAll.Add(PCF_ELEM_MISC3);
             ListParametersAll.Add(PCF_ELEM_MISC4);
             ListParametersAll.Add(PCF_ELEM_MISC5);
-            
+
             ListParametersAll.Add(PCF_MAT_DESCR);
 
             ListParametersAll.Add(PCF_ELEM_TAP1);
@@ -120,7 +158,7 @@ namespace PCF_Functions
             ListParametersAll.Add(PCF_PIPL_TEMP);
             ListParametersAll.Add(PCF_PIPL_TRACING);
             ListParametersAll.Add(PCF_PIPL_TYPE);
-           
+
             ListParametersAll.Add(PCF_PIPL_CII_PD);
             ListParametersAll.Add(PCF_PIPL_CII_TD);
             ListParametersAll.Add(PCF_PIPL_CII_MATNAME);
@@ -131,36 +169,11 @@ namespace PCF_Functions
             ListParametersAll.Add(PCF_PIPL_CII_COMPWEIGHT);
             ListParametersAll.Add(PCF_PIPL_CII_FLUIDDST);
             ListParametersAll.Add(PCF_PIPL_CII_HYDROPD);
-        }
 
-        public ParameterDefinition(string pName, string pDomain, string pUsage, ParameterType pType, Guid pGuid, string pKeyword)
-        {
-            Name = pName;
-            Domain = pDomain;
-            Usage = pUsage; //U = user, P = programmatic
-            Type = pType;
-            Guid = pGuid;
-            Keyword = pKeyword;
-        }
+            ListParametersAll.Add(PCF_ELEM_SUPPORT_NAME);
 
-        public ParameterDefinition(string pName, string pDomain, string pUsage, ParameterType pType, Guid pGuid, string pKeyword, string pExportingTo)
-        {
-            Name = pName;
-            Domain = pDomain;
-            Usage = pUsage; //U = user, P = programmatic
-            Type = pType;
-            Guid = pGuid;
-            Keyword = pKeyword;
-            ExportingTo = pExportingTo;
+            #endregion
         }
-
-        public string Name { get; }
-        public string Domain { get; } //PIPL = Pipeline, ELEM = Element, SUPP = Support.
-        public string Usage { get; } //U = user defined values, P = programatically defined values.
-        public ParameterType Type { get; }
-        public Guid Guid { get; }
-        public string Keyword { get; } //The keyword as defined in the PCF reference guide.
-        public string ExportingTo { get; } = null; //Currently used with CII export to distinguish CII parameters from other PIPL parameters.
     }
 
     public static class ParameterData
