@@ -5,8 +5,8 @@ using System.Text;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using PCF_Functions;
-using pd = PCF_Functions.ParameterData;
 using pdef = PCF_Functions.ParameterDefinition;
+using plst = PCF_Functions.ParameterList;
 
 namespace PCF_Pipes
 {
@@ -24,10 +24,10 @@ namespace PCF_Pipes
 
             foreach (Element element in pipeList)
             {
-                sbPipes.Append(element.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString());
+                sbPipes.Append(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString());
                 sbPipes.AppendLine();
                 sbPipes.Append("    COMPONENT-IDENTIFIER ");
-                sbPipes.Append(element.get_Parameter(new pdef().PCF_ELEM_COMPID.Guid).AsInteger());
+                sbPipes.Append(element.get_Parameter(new plst().PCF_ELEM_COMPID.Guid).AsInteger());
                 sbPipes.AppendLine();
                
                 Pipe pipe = (Pipe)element;
@@ -41,7 +41,7 @@ namespace PCF_Pipes
                 sbPipes.Append(EndWriter.WriteEP1(element, connectorEnd.First()));
                 sbPipes.Append(EndWriter.WriteEP2(element, connectorEnd.Last()));
 
-                var pQuery = from p in new pdef().ListParametersAll where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM") select p;
+                var pQuery = from p in new plst().ListParametersAll where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM") select p;
 
                 foreach (pdef p in pQuery)
                 {
@@ -76,7 +76,7 @@ namespace PCF_Pipes
                                            where string.Equals(st.Abbreviation, key)
                                            select st).FirstOrDefault();
 
-                var query = from p in new pdef().ListParametersAll
+                var query = from p in new plst().ListParametersAll
                             where string.Equals(p.Domain, "PIPL") && string.Equals(p.ExportingTo, "CII")
                             select p;
 

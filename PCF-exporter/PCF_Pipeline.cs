@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -6,6 +7,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using BuildingCoder;
 using pdef = PCF_Functions.ParameterDefinition;
+using plst = PCF_Functions.ParameterList;
 
 namespace PCF_Pipeline
 {
@@ -32,7 +34,7 @@ namespace PCF_Pipeline
             
                 sbPipeline = new StringBuilder();
 
-                var query = from p in new pdef().ListParametersAll
+                IEnumerable<pdef> query = from p in new plst().ListParametersAll
                     where string.Equals(p.Domain, "PIPL") && !string.Equals(p.ExportingTo, "CII")
                     select p;
 
