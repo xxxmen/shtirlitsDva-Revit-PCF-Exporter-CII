@@ -25,19 +25,19 @@ namespace PCF_Fittings
             key = pipeLineAbbreviation;
             //The list of fittings, sorted by TYPE then SKEY
             fittingsList = elements.
-                OrderBy(e => e.LookupParameter(pd.PCF_ELEM_TYPE).AsString()).
-                ThenBy(e => e.LookupParameter(pd.PCF_ELEM_SKEY).AsString());
+                OrderBy(e => e.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString()).
+                ThenBy(e => e.get_Parameter(new pdef().PCF_ELEM_SKEY.Guid).AsString());
 
             sbFittings = new StringBuilder();
             foreach (Element element in fittingsList)
             {
                 //If the Element Type field is empty -> ignore the component
-                if (string.IsNullOrEmpty(element.LookupParameter(pd.PCF_ELEM_TYPE).AsString())) continue;
+                if (string.IsNullOrEmpty(element.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString())) continue;
 
-                sbFittings.Append(element.LookupParameter(pd.PCF_ELEM_TYPE).AsString());
+                sbFittings.Append(element.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString());
                 sbFittings.AppendLine();
                 sbFittings.Append("    COMPONENT-IDENTIFIER ");
-                sbFittings.Append(element.LookupParameter(pd.PCF_ELEM_COMPID).AsInteger());
+                sbFittings.Append(element.LookupParameter("PCF_ELEM_COMPID").AsInteger());
                 sbFittings.AppendLine();
 
                 //Cast the elements gathered by the collector to FamilyInstances
@@ -49,7 +49,7 @@ namespace PCF_Fittings
                 ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
                 
                 //Switch to different element type configurations
-                switch (element.LookupParameter(pd.PCF_ELEM_TYPE).AsString())
+                switch (element.get_Parameter(new pdef().PCF_ELEM_TYPE.Guid).AsString())
                 {
                     case ("ELBOW"):
                         Connector primaryConnector = null; Connector secondaryConnector = null;

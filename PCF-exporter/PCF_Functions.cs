@@ -240,10 +240,10 @@ namespace PCF_Functions
             sbEndWriter.Append(" ");
             if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
             if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
-            if (string.IsNullOrEmpty(element.LookupParameter(ParameterData.PCF_ELEM_END1).AsString()) == false)
+            if (string.IsNullOrEmpty(element.LookupParameter("PCF_ELEM_END1").AsString()) == false)
             {
                 sbEndWriter.Append(" ");
-                sbEndWriter.Append(element.LookupParameter(ParameterData.PCF_ELEM_END1).AsString());
+                sbEndWriter.Append(element.LookupParameter("PCF_ELEM_END1").AsString());
             }
             sbEndWriter.AppendLine();
             return sbEndWriter;
@@ -260,10 +260,10 @@ namespace PCF_Functions
             sbEndWriter.Append(" ");
             if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
             if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
-            if (string.IsNullOrEmpty(element.LookupParameter(ParameterData.PCF_ELEM_END2).AsString()) == false)
+            if (string.IsNullOrEmpty(element.LookupParameter("PCF_ELEM_END2").AsString()) == false)
             {
                 sbEndWriter.Append(" ");
-                sbEndWriter.Append(element.LookupParameter(ParameterData.PCF_ELEM_END2).AsString());
+                sbEndWriter.Append(element.LookupParameter("PCF_ELEM_END2").AsString());
             }
             sbEndWriter.AppendLine();
             return sbEndWriter;
@@ -280,10 +280,10 @@ namespace PCF_Functions
             sbEndWriter.Append(" ");
             if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
             if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
-            if (string.IsNullOrEmpty(element.LookupParameter(ParameterData.PCF_ELEM_END2).AsString()) == false)
+            if (string.IsNullOrEmpty(element.LookupParameter("PCF_ELEM_END2").AsString()) == false)
             {
                 sbEndWriter.Append(" ");
-                sbEndWriter.Append(element.LookupParameter(ParameterData.PCF_ELEM_END2).AsString());
+                sbEndWriter.Append(element.LookupParameter("PCF_ELEM_END2").AsString());
             }
             sbEndWriter.AppendLine();
             return sbEndWriter;
@@ -300,10 +300,10 @@ namespace PCF_Functions
             sbEndWriter.Append(" ");
             if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
             if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
-            if (string.IsNullOrEmpty(element.LookupParameter(ParameterData.PCF_ELEM_BP1).AsString()) == false)
+            if (string.IsNullOrEmpty(element.LookupParameter("PCF_ELEM_BP1").AsString()) == false)
             {
                 sbEndWriter.Append(" ");
-                sbEndWriter.Append(element.LookupParameter(ParameterData.PCF_ELEM_BP1).AsString());
+                sbEndWriter.Append(element.LookupParameter("PCF_ELEM_BP1").AsString());
             }
             sbEndWriter.AppendLine();
             return sbEndWriter;
