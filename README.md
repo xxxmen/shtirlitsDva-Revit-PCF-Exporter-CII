@@ -18,5 +18,10 @@ See the [Wiki] (https://github.com/shtirlitsDva/pcf-exporter/wiki) for documenta
 
 - Open an issue in the [issue tracker] (https://github.com/shtirlitsDva/pcf-exporter/issues) to get in touch with the project.
 - Send me an email: app at mgtek dot dk.
+ 
+## Disclaimer
+
+- Beware, this application was made by a Civil Engineer and not a programmer. Use at your own risk.
+- The application has not been tested on an Imperial project.
 
 \#Revit \#PCF
