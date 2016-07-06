@@ -7,35 +7,37 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using PCF_Functions;
 using iv = PCF_Functions.InputVars;
-using pd = PCF_Functions.ParameterData;
 using pdef = PCF_Functions.ParameterDefinition;
+using plst = PCF_Functions.ParameterList;
 
 namespace PCF_Fittings
 {
-    public static class PCF_Fittings_Export
+    public class PCF_Fittings_Export
     {
-        static IEnumerable<Element> fittingsList;
-        public static StringBuilder sbFittings;
-        static Document doc;
+        private IEnumerable<Element> fittingsList;
+        public StringBuilder sbFittings;
+        private Document doc;
+        private string key;
 
-        public static StringBuilder Export(IEnumerable<Element> elements, Document document)
+        public StringBuilder Export(string pipeLineAbbreviation, IEnumerable<Element> elements, Document document)
         {
             doc = document;
+            key = pipeLineAbbreviation;
             //The list of fittings, sorted by TYPE then SKEY
             fittingsList = elements.
-                OrderBy(e => e.LookupParameter(pd.PCF_ELEM_TYPE).AsString()).
-                ThenBy(e => e.LookupParameter(pd.PCF_ELEM_SKEY).AsString());
+                OrderBy(e => e.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString()).
+                ThenBy(e => e.get_Parameter(new plst().PCF_ELEM_SKEY.Guid).AsString());
 
             sbFittings = new StringBuilder();
             foreach (Element element in fittingsList)
             {
                 //If the Element Type field is empty -> ignore the component
-                if (string.IsNullOrEmpty(element.LookupParameter(pd.PCF_ELEM_TYPE).AsString())) continue;
+                if (string.IsNullOrEmpty(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString())) continue;
 
-                sbFittings.Append(element.LookupParameter(pd.PCF_ELEM_TYPE).AsString());
+                sbFittings.Append(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString());
                 sbFittings.AppendLine();
                 sbFittings.Append("    COMPONENT-IDENTIFIER ");
-                sbFittings.Append(element.LookupParameter(pd.PCF_ELEM_COMPID).AsInteger());
+                sbFittings.Append(element.LookupParameter("PCF_ELEM_COMPID").AsInteger());
                 sbFittings.AppendLine();
 
                 //Cast the elements gathered by the collector to FamilyInstances
@@ -47,7 +49,7 @@ namespace PCF_Fittings
                 ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
                 
                 //Switch to different element type configurations
-                switch (element.LookupParameter(pd.PCF_ELEM_TYPE).AsString())
+                switch (element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString())
                 {
                     case ("ELBOW"):
                         Connector primaryConnector = null; Connector secondaryConnector = null;
@@ -293,7 +295,7 @@ namespace PCF_Fittings
                         break;
                 }
 
-                var pQuery = from p in new pdef().ListParametersAll where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM") select p;
+                var pQuery = from p in new plst().ListParametersAll where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM") select p;
 
                 foreach (pdef p in pQuery)
                 {
@@ -316,6 +318,32 @@ namespace PCF_Fittings
                     }
                     sbFittings.AppendLine();
                 }
+
+                #region CII export
+                //Handle CII export parameters
+                //Instantiate collector
+                FilteredElementCollector collector = new FilteredElementCollector(doc);
+                //Get the elements
+                collector.OfClass(typeof(PipingSystemType));
+                //Select correct systemType
+                PipingSystemType sQuery = (from PipingSystemType st in collector
+                                           where string.Equals(st.Abbreviation, key)
+                                           select st).FirstOrDefault();
+
+                var query = from p in new plst().ListParametersAll
+                            where string.Equals(p.Domain, "PIPL") && string.Equals(p.ExportingTo, "CII")
+                            select p;
+
+                foreach (pdef p in query.ToList())
+                {
+                    if (string.IsNullOrEmpty(sQuery.get_Parameter(p.Guid).AsString())) continue;
+                    sbFittings.Append("    ");
+                    sbFittings.Append(p.Keyword);
+                    sbFittings.Append(" ");
+                    sbFittings.Append(sQuery.get_Parameter(p.Guid).AsString());
+                    sbFittings.AppendLine();
+                }
+                #endregion
 
                 sbFittings.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
                 sbFittings.Append(element.UniqueId);

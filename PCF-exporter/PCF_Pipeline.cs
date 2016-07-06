@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -6,16 +7,17 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using BuildingCoder;
 using pdef = PCF_Functions.ParameterDefinition;
+using plst = PCF_Functions.ParameterList;
 
 namespace PCF_Pipeline
 {
-    public static class PCF_Pipeline_Export
+    public class PCF_Pipeline_Export
     {
         //static IList<Element> pipeList;
-        private static StringBuilder sbPipeline;
-        private static string key;
+        private StringBuilder sbPipeline;
+        private string key;
 
-        public static StringBuilder Export(string pipeLineGroupingKey, Document doc)
+        public StringBuilder Export(string pipeLineGroupingKey, Document doc)
         {
             key = pipeLineGroupingKey;
 
@@ -32,8 +34,8 @@ namespace PCF_Pipeline
             
                 sbPipeline = new StringBuilder();
 
-                var query = from p in new pdef().ListParametersAll
-                    where p.Domain == "PIPL"
+                IEnumerable<pdef> query = from p in new plst().ListParametersAll
+                    where string.Equals(p.Domain, "PIPL") && !string.Equals(p.ExportingTo, "CII")
                     select p;
 
                 sbPipeline.Append("PIPELINE-REFERENCE ");

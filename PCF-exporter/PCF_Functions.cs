@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,18 +10,21 @@ using Autodesk.Revit.UI;
 using BuildingCoder;
 using iv = PCF_Functions.InputVars;
 using pdef = PCF_Functions.ParameterDefinition;
+using plst = PCF_Functions.ParameterList;
 
 namespace PCF_Functions
 {
     public class InputVars
     {
         #region Execution
+        //Used for "global variables".
         //File I/O
         public static string OutputDirectoryFilePath;
         public static string ExcelSheet = "COMP";
 
         //Execution control
         public static bool ExportAll = true;
+        public static double DiameterLimit = 0;
 
         //PCF File Header (preamble) control
         public static string UNITS_BORE = "MM";
@@ -37,7 +41,7 @@ namespace PCF_Functions
 
         public static string UNITS_WEIGHT_LENGTH = "METER";
         public static bool UNITS_WEIGHT_LENGTH_METER = true;
-        public static bool UNITS_WEIGHT_LENGTH_INCH = false;
+        //public static bool UNITS_WEIGHT_LENGTH_INCH = false; OBSOLETE
         public static bool UNITS_WEIGHT_LENGTH_FEET = false;
         #endregion Execution
 
@@ -50,11 +54,11 @@ namespace PCF_Functions
 
         #region Element parameter definition
         //Shared parameter group
-        public const string PCF_GROUP_NAME = "PCF";
+        //public const string PCF_GROUP_NAME = "PCF"; OBSOLETE
         public const BuiltInParameterGroup PCF_BUILTIN_GROUP_NAME = BuiltInParameterGroup.PG_ANALYTICAL_MODEL;
 
-        //PCF specification
-        public static string PIPING_SPEC = "STD";
+        //PCF specification - OBSOLETE
+        //public static string PIPING_SPEC = "STD";
         #endregion
     }
 
@@ -116,6 +120,56 @@ namespace PCF_Functions
             str = new FilterStringContains();
             paramFr = new FilterStringRule(pvp, str, valueQualifier, false);
             epf = new ElementParameterFilter(paramFr);
+        }
+    }
+
+    public class FilterDiameterLimit
+    {
+        private Element element;
+        private bool diameterLimitBool;
+        private double diameterLimit;
+
+        public bool FilterDL(Element passedElement)
+        {
+            element = passedElement;
+            diameterLimit = iv.DiameterLimit;
+            diameterLimitBool = true;
+            double testedDiameter = 0;
+            switch (element.Category.Id.IntegerValue)
+            {
+                case (int)BuiltInCategory.OST_PipeCurves:
+                    if (iv.UNITS_BORE_MM) testedDiameter = double.Parse(Conversion.PipeSizeToMm(((MEPCurve) element).Diameter/2));
+                    else if (iv.UNITS_BORE_INCH) testedDiameter = double.Parse(Conversion.PipeSizeToInch(((MEPCurve)element).Diameter/2));
+
+                    if (testedDiameter <= diameterLimit) diameterLimitBool = false;
+
+                    break;
+
+                case (int)BuiltInCategory.OST_PipeFitting:
+                case (int)BuiltInCategory.OST_PipeAccessory:
+                    //Cast the element passed to method to FamilyInstance
+                    FamilyInstance familyInstance = (FamilyInstance)element;
+                    //MEPModel of the elements is accessed
+                    MEPModel mepmodel = familyInstance.MEPModel;
+                    //Get connector set for the element
+                    ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
+                    //Declare a variable for 
+                    Connector testedConnector = null;
+
+                    if (connectorSet.IsEmpty) break;
+                    if (connectorSet.Size == 1) foreach (Connector connector in connectorSet) testedConnector = connector;
+                    else testedConnector = (from Connector connector in connectorSet
+                            where connector.GetMEPConnectorInfo().IsPrimary
+                            select connector).FirstOrDefault();
+
+                    if (iv.UNITS_BORE_MM) testedDiameter = double.Parse(Conversion.PipeSizeToMm(testedConnector.Radius));
+                    else if (iv.UNITS_BORE_INCH) testedDiameter = double.Parse(Conversion.PipeSizeToInch(testedConnector.Radius));
+
+                    if (testedDiameter <= diameterLimit) diameterLimitBool = false;
+
+                    break;
+            }
+            return diameterLimitBool;
         }
     }
 
@@ -187,10 +241,10 @@ namespace PCF_Functions
             sbEndWriter.Append(" ");
             if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
             if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
-            if (string.IsNullOrEmpty(element.LookupParameter(ParameterData.PCF_ELEM_END1).AsString()) == false)
+            if (string.IsNullOrEmpty(element.LookupParameter("PCF_ELEM_END1").AsString()) == false)
             {
                 sbEndWriter.Append(" ");
-                sbEndWriter.Append(element.LookupParameter(ParameterData.PCF_ELEM_END1).AsString());
+                sbEndWriter.Append(element.LookupParameter("PCF_ELEM_END1").AsString());
             }
             sbEndWriter.AppendLine();
             return sbEndWriter;
@@ -207,10 +261,10 @@ namespace PCF_Functions
             sbEndWriter.Append(" ");
             if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
             if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
-            if (string.IsNullOrEmpty(element.LookupParameter(ParameterData.PCF_ELEM_END2).AsString()) == false)
+            if (string.IsNullOrEmpty(element.LookupParameter("PCF_ELEM_END2").AsString()) == false)
             {
                 sbEndWriter.Append(" ");
-                sbEndWriter.Append(element.LookupParameter(ParameterData.PCF_ELEM_END2).AsString());
+                sbEndWriter.Append(element.LookupParameter("PCF_ELEM_END2").AsString());
             }
             sbEndWriter.AppendLine();
             return sbEndWriter;
@@ -227,10 +281,10 @@ namespace PCF_Functions
             sbEndWriter.Append(" ");
             if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
             if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
-            if (string.IsNullOrEmpty(element.LookupParameter(ParameterData.PCF_ELEM_END2).AsString()) == false)
+            if (string.IsNullOrEmpty(element.LookupParameter("PCF_ELEM_END2").AsString()) == false)
             {
                 sbEndWriter.Append(" ");
-                sbEndWriter.Append(element.LookupParameter(ParameterData.PCF_ELEM_END2).AsString());
+                sbEndWriter.Append(element.LookupParameter("PCF_ELEM_END2").AsString());
             }
             sbEndWriter.AppendLine();
             return sbEndWriter;
@@ -247,10 +301,10 @@ namespace PCF_Functions
             sbEndWriter.Append(" ");
             if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
             if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
-            if (string.IsNullOrEmpty(element.LookupParameter(ParameterData.PCF_ELEM_BP1).AsString()) == false)
+            if (string.IsNullOrEmpty(element.LookupParameter("PCF_ELEM_BP1").AsString()) == false)
             {
                 sbEndWriter.Append(" ");
-                sbEndWriter.Append(element.LookupParameter(ParameterData.PCF_ELEM_BP1).AsString());
+                sbEndWriter.Append(element.LookupParameter("PCF_ELEM_BP1").AsString());
             }
             sbEndWriter.AppendLine();
             return sbEndWriter;
@@ -349,7 +403,7 @@ namespace PCF_Functions
 
                 string curUsage = "U";
                 string curDomain = "ELEM";
-                var query = from p in new pdef().ListParametersAll where p.Usage == curUsage && p.Domain == curDomain select p;
+                var query = from p in new plst().ListParametersAll where p.Usage == curUsage && p.Domain == curDomain select p;
                 
                 foreach (pdef pDef in query.ToList())
                 {

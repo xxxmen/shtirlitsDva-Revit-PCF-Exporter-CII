@@ -178,5 +178,17 @@ namespace PCF_Functions.Properties {
                 this["excelPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string textBox22DiameterLimit {
+            get {
+                return ((string)(this["textBox22DiameterLimit"]));
+            }
+            set {
+                this["textBox22DiameterLimit"] = value;
+            }
+        }
     }
 }

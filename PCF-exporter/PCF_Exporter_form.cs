@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing.Configuration;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -104,6 +106,9 @@ namespace PCF_Exporter
             //Init output path
             iv.OutputDirectoryFilePath = mySettings.Default.textBox5OutputPath;
             textBox5.Text = iv.OutputDirectoryFilePath;
+
+            //Init diameter limit
+            iv.DiameterLimit = double.Parse(mySettings.Default.textBox22DiameterLimit);
 
             //Debug
             textBox8.Text = "SysAbbr: " + iv.SysAbbr;
@@ -348,6 +353,16 @@ namespace PCF_Exporter
             var output = EP.ExecuteMyCommand(_uiapp);
             if (output == Result.Succeeded) Util.InfoMsg("Elements exported to EXCEL successfully!");
             else if (output == Result.Failed) Util.InfoMsg("Element export to EXCEL failed for some reason.");
+        }
+
+        private void richTextBox1_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            Process.Start(e.LinkText);
+        }
+
+        private void textBox22_TextChanged(object sender, EventArgs e)
+        {
+            iv.DiameterLimit = double.Parse(textBox22.Text);
         }
     }
 }
