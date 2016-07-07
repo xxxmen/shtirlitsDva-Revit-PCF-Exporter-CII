@@ -106,4 +106,17 @@ namespace PCF_Exporter
             else return Result.Cancelled;
         }
     }
+
+    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
+    class SupportsCaller : IExternalCommand
+    {
+        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        {
+            DefineTapConnection dtc = new DefineTapConnection();
+            Result result = dtc.defineTapConnection(commandData, ref message, elements);
+            if (result == Result.Failed) return Result.Failed;
+            else if (result == Result.Succeeded) return Result.Succeeded;
+            else return Result.Cancelled;
+        }
+    }
 }

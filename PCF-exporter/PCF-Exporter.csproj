@@ -87,6 +87,7 @@
     <Compile Include="App.cs" />
     <Compile Include="ParameterData.cs" />
     <Compile Include="PCF_Pipeline.cs" />
+    <Compile Include="PCF_Supports.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PCF_Exporter_form.cs">
       <SubType>Form</SubType>

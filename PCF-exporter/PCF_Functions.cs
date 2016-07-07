@@ -341,6 +341,17 @@ namespace PCF_Functions
             return sbEndWriter;
         }
 
+        public static StringBuilder WriteCO(FamilyInstance familyInstance)
+        {
+            StringBuilder sbEndWriter = new StringBuilder();
+            XYZ elementLocation = ((LocationPoint)familyInstance.Location).Point;
+            sbEndWriter.Append("    CO-ORDS ");
+            if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(elementLocation));
+            if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(elementLocation));
+            sbEndWriter.AppendLine();
+            return sbEndWriter;
+        }
+
     }
 
     public class ScheduleCreator
