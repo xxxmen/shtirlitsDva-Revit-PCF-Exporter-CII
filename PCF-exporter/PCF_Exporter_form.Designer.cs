@@ -737,14 +737,14 @@ namespace PCF_Exporter
             this.groupBox5.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox5.Location = new System.Drawing.Point(3, 110);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(369, 114);
+            this.groupBox5.Size = new System.Drawing.Size(369, 84);
             this.groupBox5.TabIndex = 1;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Export PCF data";
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(103, 57);
+            this.button6.Location = new System.Drawing.Point(103, 19);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(162, 47);
             this.button6.TabIndex = 0;
