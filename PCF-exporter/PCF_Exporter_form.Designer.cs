@@ -86,6 +86,10 @@ namespace PCF_Exporter
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.groupBox3 = new PCF_Functions.RadioBox();
+            this.textBox22 = new System.Windows.Forms.TextBox();
+            this.textBox23 = new System.Windows.Forms.TextBox();
+            this.textBox24 = new System.Windows.Forms.TextBox();
+            this.textBox21 = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
@@ -103,10 +107,6 @@ namespace PCF_Exporter
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
-            this.textBox22 = new System.Windows.Forms.TextBox();
-            this.textBox23 = new System.Windows.Forms.TextBox();
-            this.textBox24 = new System.Windows.Forms.TextBox();
-            this.textBox21 = new System.Windows.Forms.TextBox();
             this.Tabs.SuspendLayout();
             this.TabSetup.SuspendLayout();
             this.radioBox1.SuspendLayout();
@@ -604,6 +604,49 @@ namespace PCF_Exporter
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Scope";
             // 
+            // textBox22
+            // 
+            this.textBox22.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::PCF_Functions.Properties.Settings.Default, "textBox22DiameterLimit", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBox22.Location = new System.Drawing.Point(84, 114);
+            this.textBox22.Name = "textBox22";
+            this.textBox22.Size = new System.Drawing.Size(57, 20);
+            this.textBox22.TabIndex = 10;
+            this.textBox22.Text = global::PCF_Functions.Properties.Settings.Default.textBox22DiameterLimit;
+            this.textBox22.TextChanged += new System.EventHandler(this.textBox22_TextChanged);
+            // 
+            // textBox23
+            // 
+            this.textBox23.BackColor = System.Drawing.SystemColors.Window;
+            this.textBox23.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox23.Location = new System.Drawing.Point(3, 136);
+            this.textBox23.Name = "textBox23";
+            this.textBox23.ReadOnly = true;
+            this.textBox23.Size = new System.Drawing.Size(345, 13);
+            this.textBox23.TabIndex = 7;
+            this.textBox23.Text = "Elements below or equal to specified nominal size will not be exported.";
+            // 
+            // textBox24
+            // 
+            this.textBox24.BackColor = System.Drawing.SystemColors.Window;
+            this.textBox24.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox24.Location = new System.Drawing.Point(158, 117);
+            this.textBox24.Name = "textBox24";
+            this.textBox24.ReadOnly = true;
+            this.textBox24.Size = new System.Drawing.Size(91, 13);
+            this.textBox24.TabIndex = 8;
+            this.textBox24.Text = "Nominal";
+            // 
+            // textBox21
+            // 
+            this.textBox21.BackColor = System.Drawing.SystemColors.Window;
+            this.textBox21.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox21.Location = new System.Drawing.Point(3, 117);
+            this.textBox21.Name = "textBox21";
+            this.textBox21.ReadOnly = true;
+            this.textBox21.Size = new System.Drawing.Size(75, 13);
+            this.textBox21.TabIndex = 9;
+            this.textBox21.Text = "Diameter limit:";
+            // 
             // textBox3
             // 
             this.textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::PCF_Functions.Properties.Settings.Default, "textBox3SpecificPipeline", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -783,48 +826,6 @@ namespace PCF_Exporter
             // openFileDialog2
             // 
             this.openFileDialog2.FileName = "openFileDialog1";
-            // 
-            // textBox22
-            // 
-            this.textBox22.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::PCF_Functions.Properties.Settings.Default, "textBox22DiameterLimit", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox22.Location = new System.Drawing.Point(84, 114);
-            this.textBox22.Name = "textBox22";
-            this.textBox22.Size = new System.Drawing.Size(57, 20);
-            this.textBox22.TabIndex = 10;
-            this.textBox22.Text = global::PCF_Functions.Properties.Settings.Default.textBox22DiameterLimit;
-            // 
-            // textBox23
-            // 
-            this.textBox23.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox23.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox23.Location = new System.Drawing.Point(3, 136);
-            this.textBox23.Name = "textBox23";
-            this.textBox23.ReadOnly = true;
-            this.textBox23.Size = new System.Drawing.Size(345, 13);
-            this.textBox23.TabIndex = 7;
-            this.textBox23.Text = "Elements below or equal to specified nominal size will not be exported.";
-            // 
-            // textBox24
-            // 
-            this.textBox24.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox24.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox24.Location = new System.Drawing.Point(158, 117);
-            this.textBox24.Name = "textBox24";
-            this.textBox24.ReadOnly = true;
-            this.textBox24.Size = new System.Drawing.Size(91, 13);
-            this.textBox24.TabIndex = 8;
-            this.textBox24.Text = "Nominal";
-            // 
-            // textBox21
-            // 
-            this.textBox21.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox21.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox21.Location = new System.Drawing.Point(3, 117);
-            this.textBox21.Name = "textBox21";
-            this.textBox21.ReadOnly = true;
-            this.textBox21.Size = new System.Drawing.Size(75, 13);
-            this.textBox21.TabIndex = 9;
-            this.textBox21.Text = "Diameter limit:";
             // 
             // PCF_Exporter_form
             // 
