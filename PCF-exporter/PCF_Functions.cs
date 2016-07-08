@@ -6,6 +6,7 @@ using System.Text;
 using System.Globalization;
 
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.UI;
 using BuildingCoder;
 using iv = PCF_Functions.InputVars;
@@ -106,7 +107,45 @@ namespace PCF_Functions
             return sbMaterials;
         }
         #endregion
-    }
+
+        #region CII export writer
+        StringBuilder sbCII = new StringBuilder();
+        private Document doc;
+        private string key;
+
+        public StringBuilder CIIWriter(Document document, string systemAbbreviation)
+        {
+            doc = document;
+            key = systemAbbreviation;
+            //Handle CII export parameters
+            //Instantiate collector
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            //Get the elements
+            collector.OfClass(typeof (PipingSystemType));
+            //Select correct systemType
+            PipingSystemType sQuery = (from PipingSystemType st in collector
+                where string.Equals(st.Abbreviation, key)
+                select st).FirstOrDefault();
+
+            var query = from p in new plst().ListParametersAll
+                where string.Equals(p.Domain, "PIPL") && string.Equals(p.ExportingTo, "CII")
+                select p;
+
+            foreach (pdef p in query.ToList())
+            {
+                if (string.IsNullOrEmpty(sQuery.get_Parameter(p.Guid).AsString())) continue;
+                sbCII.Append("    ");
+                sbCII.Append(p.Keyword);
+                sbCII.Append(" ");
+                sbCII.Append(sQuery.get_Parameter(p.Guid).AsString());
+                sbCII.AppendLine();
+            }
+
+            return sbCII;
+        }
+
+        #endregion
+}
 
     public class Filter
     {

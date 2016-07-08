@@ -201,29 +201,8 @@ namespace PCF_Accessories
                 }
 
                 #region CII export
-                //Handle CII export parameters
-                //Instantiate collector
-                FilteredElementCollector collector = new FilteredElementCollector(doc);
-                //Get the elements
-                collector.OfClass(typeof(PipingSystemType));
-                //Select correct systemType
-                PipingSystemType sQuery = (from PipingSystemType st in collector
-                                           where string.Equals(st.Abbreviation, key)
-                                           select st).FirstOrDefault();
-
-                var query = from p in pList.ListParametersAll
-                            where string.Equals(p.Domain, "PIPL") && string.Equals(p.ExportingTo, "CII")
-                            select p;
-
-                foreach (pdef p in query.ToList())
-                {
-                    if (string.IsNullOrEmpty(sQuery.get_Parameter(p.Guid).AsString())) continue;
-                    sbAccessories.Append("    ");
-                    sbAccessories.Append(p.Keyword);
-                    sbAccessories.Append(" ");
-                    sbAccessories.Append(sQuery.get_Parameter(p.Guid).AsString());
-                    sbAccessories.AppendLine();
-                }
+                Composer composer = new Composer();
+                if (element.get_Parameter(pList.PCF_ELEM_TYPE.Guid)) sbAccessories.Append(composer.CIIWriter(doc, key));
                 #endregion
 
                 sbAccessories.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
