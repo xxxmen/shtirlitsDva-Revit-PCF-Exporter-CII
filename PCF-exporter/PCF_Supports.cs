@@ -6,6 +6,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.ApplicationServices;
+//using Autodesk.Revit.Creation;
 using PCF_Functions;
 using BuildingCoder;
 using iv = PCF_Functions.InputVars;
@@ -19,21 +20,19 @@ namespace PCF_Functions
         {
             UIApplication uiApp = commandData.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
-            Application app = doc.Application;
             UIDocument uidoc = uiApp.ActiveUIDocument;
             Transaction trans = new Transaction(doc, "Set System");
-            ConnectorSet connectorSet = null;
-            FamilyInstance familyInstance = null;
             MEPModel mepModel = null;
-            Connector connectorToAdd = null;
-            Connector systemDonorConnector = null;
-            MEPSystem mepSystem = null;
 
             trans.Start();
             try
             {
                 //Select Element to provide a system
-                Element systemDonor = Util.SelectSingleElement(uidoc, "Select element in desired system.");
+                //Pipe type to restrict selection of tapping element
+                Type t = typeof(Pipe);
+
+                //Select tap element
+                Element systemDonor = Util.SelectSingleElementOfType(uidoc, t, "Select a pipe in desired system.", false);
 
                 if (systemDonor == null) throw new Exception("System assignment cancelled!");
 
@@ -42,33 +41,49 @@ namespace PCF_Functions
 
                 if (elementToAdd == null) throw new Exception("System assignment cancelled!");
 
-                switch (systemDonor.Category.Id.IntegerValue)
-                {
-                    case (int) BuiltInCategory.OST_PipeCurves:
-                        Pipe pipe = (Pipe) systemDonor;
-                        //Get connector set for the pipes
-                        connectorSet = pipe.ConnectorManager.Connectors;
-                        break;
+                //Cast the selected element to Pipe
+                Pipe pipe = (Pipe) systemDonor;
+                //Get the pipe type from pipe
+                ElementId pipeTypeId = pipe.PipeType.Id;
 
-                    case (int) BuiltInCategory.OST_PipeFitting:
-                    case (int) BuiltInCategory.OST_PipeAccessory:
-                        //Cast the element passed to method to FamilyInstance
-                        familyInstance = (FamilyInstance) systemDonor;
-                        //MEPModel of the elements is accessed
-                        mepModel = familyInstance.MEPModel;
-                        //Get connector set for the element
-                        connectorSet = mepModel.ConnectorManager.Connectors;
-                        break;
-                        
-                }
+                //Get system type from pipe
+                ConnectorSet pipeConnectors = pipe.ConnectorManager.Connectors;
+                Connector pipeConnector = (from Connector c in pipeConnectors where true select c).FirstOrDefault();
+                ElementId pipeSystemType = pipeConnector.MEPSystem.GetTypeId();
 
-                //Get the connector
-                if (connectorSet.IsEmpty) throw new Exception("No connectors in selected element. Select an element with connectors. Operation cancelled.");
-                systemDonorConnector = (from Connector c in connectorSet where true select c).FirstOrDefault();
-                mepSystem = systemDonorConnector.MEPSystem;
+                //Collect levels and select one level
+                FilteredElementCollector collector = new FilteredElementCollector(doc);
+                ElementClassFilter levelFilter = new ElementClassFilter(typeof(Level));
+                ElementId levelId = collector.WherePasses(levelFilter).FirstElementId();
 
-                Util.ErrorMsg("All tapping slots are taken. Manually delete unwanted values og increase number of tapping slots.");
+                //Get the connector from the support
+                FamilyInstance familyInstanceToAdd = (FamilyInstance) elementToAdd;
+                ConnectorSet connectorSetToAdd = new ConnectorSet();
+                mepModel = familyInstanceToAdd.MEPModel;
+                connectorSetToAdd = mepModel.ConnectorManager.Connectors;
+                if (connectorSetToAdd.IsEmpty)
+                    throw new Exception(
+                        "The support family lacks a connector. Please read the documentation for correct procedure of setting up a support element.");
+                Connector connectorToConnect =
+                    (from Connector c in connectorSetToAdd where true select c).FirstOrDefault();
+
+                //Create a point in space to connect the pipe
+                XYZ direction = connectorToConnect.CoordinateSystem.BasisZ.Multiply(2);
+                XYZ origin = connectorToConnect.Origin;
+                XYZ pointInSpace = origin.Add(direction);
                 
+                //Create the pipe
+                Pipe newPipe = Pipe.Create(doc, pipeTypeId, levelId, connectorToConnect, pointInSpace);
+
+                //Change the pipe system type to match the picked pipe (it is not always matching)
+                newPipe.SetSystemType(pipeSystemType);
+
+                trans.Commit();
+
+                trans.Start("Delete the pipe");
+                
+                //Delete the pipe
+                doc.Delete(newPipe.Id);
 
                 trans.Commit();
 
@@ -110,3 +125,4 @@ namespace PCF_Functions
             return Result.Succeeded;
         }
     }
+}

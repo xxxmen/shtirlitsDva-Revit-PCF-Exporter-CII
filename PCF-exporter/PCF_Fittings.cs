@@ -212,7 +212,7 @@ namespace PCF_Fittings
                                                               where connector.ConnectorType.ToString() == "End"
                                                               select connector;
 
-                        //Following code is ported from my python solution in Dynamo, hence the reassigning of variables and other nonC#-ness to get over the porting asap.
+                        //Following code is ported from my python solution in Dynamo.
                         //The olet geometry is analyzed with congruent rectangles to find the connection point on the pipe even for angled olets.
                         XYZ B = endPointOriginOletPrimary; XYZ D = endPointOriginOletSecondary; XYZ pipeEnd1 = connectorEnd.First().Origin; XYZ pipeEnd2 = connectorEnd.Last().Origin;
                         XYZ BDvector = D - B; XYZ ABvector = pipeEnd1 - pipeEnd2;
