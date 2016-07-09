@@ -295,29 +295,8 @@ namespace PCF_Fittings
                         break;
                 }
 
-                var pQuery = from p in new plst().ListParametersAll where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM") select p;
-
-                foreach (pdef p in pQuery)
-                {
-                    //Check for parameter's storage type (can be Int for select few parameters)
-                    int sT = (int)element.get_Parameter(p.Guid).StorageType;
-
-                    if (sT == 1)
-                    {
-                        //Check if the parameter contains anything
-                        if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsInteger().ToString())) continue;
-                        sbFittings.Append("    " + p.Keyword + " ");
-                        sbFittings.Append(element.get_Parameter(p.Guid).AsInteger());
-                    }
-                    else if (sT == 3)
-                    {
-                        //Check if the parameter contains anything
-                        if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsString())) continue;
-                        sbFittings.Append("    " + p.Keyword + " ");
-                        sbFittings.Append(element.get_Parameter(p.Guid).AsString());
-                    }
-                    sbFittings.AppendLine();
-                }
+                Composer elemParameterComposer = new Composer();
+                sbFittings.Append(elemParameterComposer.ElemParameterWriter(element));
 
                 #region CII export
                 Composer composer = new Composer();

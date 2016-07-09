@@ -41,29 +41,8 @@ namespace PCF_Pipes
                 sbPipes.Append(EndWriter.WriteEP1(element, connectorEnd.First()));
                 sbPipes.Append(EndWriter.WriteEP2(element, connectorEnd.Last()));
 
-                var pQuery = from p in new plst().ListParametersAll where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM") select p;
-
-                foreach (pdef p in pQuery)
-                {
-                    //Check for parameter's storage type (can be Int for select few parameters)
-                    int sT = (int)element.get_Parameter(p.Guid).StorageType;
-
-                    if (sT == 1) //Integer
-                    {
-                        //Check if the parameter contains anything
-                        if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsInteger().ToString())) continue;
-                        sbPipes.Append("    " + p.Keyword + " ");
-                        sbPipes.Append(element.get_Parameter(p.Guid).AsInteger());
-                    }
-                    else if (sT == 3) //String
-                    {
-                        //Check if the parameter contains anything
-                        if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsString())) continue;
-                        sbPipes.Append("    " + p.Keyword + " ");
-                        sbPipes.Append(element.get_Parameter(p.Guid).AsString());
-                    }
-                    sbPipes.AppendLine();
-                }
+                Composer elemParameterComposer = new Composer();
+                sbPipes.Append(elemParameterComposer.ElemParameterWriter(element));
 
                 #region CII export
                 Composer composer = new Composer();

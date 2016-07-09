@@ -146,7 +146,44 @@ namespace PCF_Functions
         }
 
         #endregion
-}
+
+        #region ELEM parameter writer
+        private StringBuilder sbElemParameters;
+        private Element element;
+
+        public StringBuilder ElemParameterWriter(Element passedElement)
+        {
+            sbElemParameters = new StringBuilder();
+            element = passedElement;
+            var pQuery = from p in new plst().ListParametersAll
+                where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM")
+                select p;
+
+            foreach (pdef p in pQuery)
+            {
+                //Check for parameter's storage type (can be Int for select few parameters)
+                int sT = (int) element.get_Parameter(p.Guid).StorageType;
+
+                if (sT == 1)
+                {
+                    //Check if the parameter contains anything
+                    if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsInteger().ToString())) continue;
+                    sbElemParameters.Append("    " + p.Keyword + " ");
+                    sbElemParameters.Append(element.get_Parameter(p.Guid).AsInteger());
+                }
+                else if (sT == 3)
+                {
+                    //Check if the parameter contains anything
+                    if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsString())) continue;
+                    sbElemParameters.Append("    " + p.Keyword + " ");
+                    sbElemParameters.Append(element.get_Parameter(p.Guid).AsString());
+                }
+                sbElemParameters.AppendLine();
+            }
+            return sbElemParameters;
+        }
+        #endregion
+    }
 
     public class Filter
     {
@@ -168,7 +205,11 @@ namespace PCF_Functions
         private Element element;
         private bool diameterLimitBool;
         private double diameterLimit;
-
+        /// <summary>
+        /// Returns true if diameter is larger than limit and false if smaller.
+        /// </summary>
+        /// <param name="passedElement"></param>
+        /// <returns></returns>
         public bool FilterDL(Element passedElement)
         {
             element = passedElement;
