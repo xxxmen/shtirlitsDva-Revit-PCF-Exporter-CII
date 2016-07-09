@@ -122,6 +122,8 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="ImgSupports16.png" />
+    <EmbeddedResource Include="ImgSupports32.png" />
     <Content Include="PCF_DEVELOPEMENT_01.xlsx" />
     <None Include="Properties\DataSources\PCF_Functions.Properties.Resources.datasource" />
     <None Include="Properties\DataSources\PCF_Functions.Properties.Settings.datasource" />

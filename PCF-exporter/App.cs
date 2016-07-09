@@ -21,6 +21,7 @@ namespace PCF_Exporter
     {
         public const string pcfExporterButtonToolTip = "Export piping data to PCF";
         public const string tapConnectionButtonToolTip = "Define a tap connection";
+        public const string supportSystemTypeToolTip = "Set system type for pipe support";
 
         //Method to get the button image
         BitmapImage NewBitmapImage(Assembly a, string imageName)
@@ -67,6 +68,12 @@ namespace PCF_Exporter
             data.ToolTip = tapConnectionButtonToolTip;
             data.Image = NewBitmapImage(exe, "PCF_Functions.ImgTapCon16.png");
             data.LargeImage = NewBitmapImage(exe, "PCF_Functions.ImgTapCon32.png");
+            pushButton = rvtRibbonPanel.AddItem(data) as PushButton;
+
+            data = new PushButtonData("SupportSystemType","Support System Type",ExecutingAssemblyPath, "PCF_Exporter.SupportsCaller");
+            data.ToolTip = supportSystemTypeToolTip;
+            data.Image = NewBitmapImage(exe, "PCF_Functions.ImgSupports16.png");
+            data.LargeImage = NewBitmapImage(exe, "PCF_Functions.ImgSupports32.png");
             pushButton = rvtRibbonPanel.AddItem(data) as PushButton;
         }
     }
