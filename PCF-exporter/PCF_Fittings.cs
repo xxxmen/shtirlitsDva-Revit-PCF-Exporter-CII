@@ -212,7 +212,7 @@ namespace PCF_Fittings
                                                               where connector.ConnectorType.ToString() == "End"
                                                               select connector;
 
-                        //Following code is ported from my python solution in Dynamo, hence the reassigning of variables and other nonC#-ness to get over the porting asap.
+                        //Following code is ported from my python solution in Dynamo.
                         //The olet geometry is analyzed with congruent rectangles to find the connection point on the pipe even for angled olets.
                         XYZ B = endPointOriginOletPrimary; XYZ D = endPointOriginOletSecondary; XYZ pipeEnd1 = connectorEnd.First().Origin; XYZ pipeEnd2 = connectorEnd.Last().Origin;
                         XYZ BDvector = D - B; XYZ ABvector = pipeEnd1 - pipeEnd2;
@@ -295,54 +295,12 @@ namespace PCF_Fittings
                         break;
                 }
 
-                var pQuery = from p in new plst().ListParametersAll where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM") select p;
-
-                foreach (pdef p in pQuery)
-                {
-                    //Check for parameter's storage type (can be Int for select few parameters)
-                    int sT = (int)element.get_Parameter(p.Guid).StorageType;
-
-                    if (sT == 1)
-                    {
-                        //Check if the parameter contains anything
-                        if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsInteger().ToString())) continue;
-                        sbFittings.Append("    " + p.Keyword + " ");
-                        sbFittings.Append(element.get_Parameter(p.Guid).AsInteger());
-                    }
-                    else if (sT == 3)
-                    {
-                        //Check if the parameter contains anything
-                        if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsString())) continue;
-                        sbFittings.Append("    " + p.Keyword + " ");
-                        sbFittings.Append(element.get_Parameter(p.Guid).AsString());
-                    }
-                    sbFittings.AppendLine();
-                }
+                Composer elemParameterComposer = new Composer();
+                sbFittings.Append(elemParameterComposer.ElemParameterWriter(element));
 
                 #region CII export
-                //Handle CII export parameters
-                //Instantiate collector
-                FilteredElementCollector collector = new FilteredElementCollector(doc);
-                //Get the elements
-                collector.OfClass(typeof(PipingSystemType));
-                //Select correct systemType
-                PipingSystemType sQuery = (from PipingSystemType st in collector
-                                           where string.Equals(st.Abbreviation, key)
-                                           select st).FirstOrDefault();
-
-                var query = from p in new plst().ListParametersAll
-                            where string.Equals(p.Domain, "PIPL") && string.Equals(p.ExportingTo, "CII")
-                            select p;
-
-                foreach (pdef p in query.ToList())
-                {
-                    if (string.IsNullOrEmpty(sQuery.get_Parameter(p.Guid).AsString())) continue;
-                    sbFittings.Append("    ");
-                    sbFittings.Append(p.Keyword);
-                    sbFittings.Append(" ");
-                    sbFittings.Append(sQuery.get_Parameter(p.Guid).AsString());
-                    sbFittings.AppendLine();
-                }
+                Composer composer = new Composer();
+                sbFittings.Append(composer.CIIWriter(doc, key));
                 #endregion
 
                 sbFittings.Append("    UNIQUE-COMPONENT-IDENTIFIER ");

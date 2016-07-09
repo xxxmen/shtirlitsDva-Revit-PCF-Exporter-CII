@@ -6,6 +6,7 @@ using System.Text;
 using System.Globalization;
 
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.UI;
 using BuildingCoder;
 using iv = PCF_Functions.InputVars;
@@ -106,6 +107,82 @@ namespace PCF_Functions
             return sbMaterials;
         }
         #endregion
+
+        #region CII export writer
+        StringBuilder sbCII;
+        private Document doc;
+        private string key;
+
+        public StringBuilder CIIWriter(Document document, string systemAbbreviation)
+        {
+            doc = document;
+            key = systemAbbreviation;
+            sbCII = new StringBuilder();
+            //Handle CII export parameters
+            //Instantiate collector
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            //Get the elements
+            collector.OfClass(typeof (PipingSystemType));
+            //Select correct systemType
+            PipingSystemType sQuery = (from PipingSystemType st in collector
+                where string.Equals(st.Abbreviation, key)
+                select st).FirstOrDefault();
+
+            var query = from p in new plst().ListParametersAll
+                where string.Equals(p.Domain, "PIPL") && string.Equals(p.ExportingTo, "CII")
+                select p;
+
+            foreach (pdef p in query.ToList())
+            {
+                if (string.IsNullOrEmpty(sQuery.get_Parameter(p.Guid).AsString())) continue;
+                sbCII.Append("    ");
+                sbCII.Append(p.Keyword);
+                sbCII.Append(" ");
+                sbCII.Append(sQuery.get_Parameter(p.Guid).AsString());
+                sbCII.AppendLine();
+            }
+
+            return sbCII;
+        }
+
+        #endregion
+
+        #region ELEM parameter writer
+        private StringBuilder sbElemParameters;
+        private Element element;
+
+        public StringBuilder ElemParameterWriter(Element passedElement)
+        {
+            sbElemParameters = new StringBuilder();
+            element = passedElement;
+            var pQuery = from p in new plst().ListParametersAll
+                where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM")
+                select p;
+
+            foreach (pdef p in pQuery)
+            {
+                //Check for parameter's storage type (can be Int for select few parameters)
+                int sT = (int) element.get_Parameter(p.Guid).StorageType;
+
+                if (sT == 1)
+                {
+                    //Check if the parameter contains anything
+                    if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsInteger().ToString())) continue;
+                    sbElemParameters.Append("    " + p.Keyword + " ");
+                    sbElemParameters.Append(element.get_Parameter(p.Guid).AsInteger());
+                }
+                else if (sT == 3)
+                {
+                    //Check if the parameter contains anything
+                    if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsString())) continue;
+                    sbElemParameters.Append("    " + p.Keyword + " ");
+                    sbElemParameters.Append(element.get_Parameter(p.Guid).AsString());
+                }
+                sbElemParameters.AppendLine();
+            }
+            return sbElemParameters;
+        }
+        #endregion
     }
 
     public class Filter
@@ -128,7 +205,11 @@ namespace PCF_Functions
         private Element element;
         private bool diameterLimitBool;
         private double diameterLimit;
-
+        /// <summary>
+        /// Returns true if diameter is larger than limit and false if smaller.
+        /// </summary>
+        /// <param name="passedElement"></param>
+        /// <returns></returns>
         public bool FilterDL(Element passedElement)
         {
             element = passedElement;
@@ -337,6 +418,21 @@ namespace PCF_Functions
             sbEndWriter.Append("    CO-ORDS ");
             if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(point));
             if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(point));
+            sbEndWriter.AppendLine();
+            return sbEndWriter;
+        }
+
+        public static StringBuilder WriteCO(FamilyInstance familyInstance, Connector passedConnector)
+        {
+            StringBuilder sbEndWriter = new StringBuilder();
+            XYZ elementLocation = ((LocationPoint)familyInstance.Location).Point;
+            sbEndWriter.Append("    CO-ORDS ");
+            if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(elementLocation));
+            if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(elementLocation));
+            double connectorSize = passedConnector.Radius;
+            sbEndWriter.Append(" ");
+            if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
+            if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
             sbEndWriter.AppendLine();
             return sbEndWriter;
         }

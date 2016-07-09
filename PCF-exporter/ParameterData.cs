@@ -97,11 +97,11 @@ namespace PCF_Functions
         public readonly pdef PCF_PIPL_CII_PD = new pdef("PCF_PIPL_CII_PD", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01760"), "COMPONENT-ATTRIBUTE1", "CII"); //Design pressure
         public readonly pdef PCF_PIPL_CII_TD = new pdef("PCF_PIPL_CII_TD", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01761"), "COMPONENT-ATTRIBUTE2", "CII"); //Max temperature
         public readonly pdef PCF_PIPL_CII_MATNAME = new pdef("PCF_PIPL_CII_MATNAME", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01762"), "COMPONENT-ATTRIBUTE3", "CII"); //Material name
-        public readonly pdef PCF_PIPL_CII_WALLTHK = new pdef("PCF_ELEM_CII_WALLTHK", "ELEM", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01763"), "COMPONENT-ATTRIBUTE4", "CII"); //Wall thickness
+        public readonly pdef PCF_ELEM_CII_WALLTHK = new pdef("PCF_ELEM_CII_WALLTHK", "ELEM", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01763"), "COMPONENT-ATTRIBUTE4", "CII"); //Wall thickness
         public readonly pdef PCF_PIPL_CII_INSULTHK = new pdef("PCF_PIPL_CII_INSULTHK", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01764"), "COMPONENT-ATTRIBUTE5", "CII"); //Insulation thickness
         public readonly pdef PCF_PIPL_CII_INSULDST = new pdef("PCF_PIPL_CII_INSULDST", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01765"), "COMPONENT-ATTRIBUTE6", "CII"); //Insulation density
         public readonly pdef PCF_PIPL_CII_CORRALL = new pdef("PCF_PIPL_CII_CORRALL", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01766"), "COMPONENT-ATTRIBUTE7", "CII"); //Corrosion allowance
-        public readonly pdef PCF_PIPL_CII_COMPWEIGHT = new pdef("PCF_ELEM_CII_COMPWEIGHT", "ELEM", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01767"), "COMPONENT-ATTRIBUTE8", "CII"); //Component weight
+        public readonly pdef PCF_ELEM_CII_COMPWEIGHT = new pdef("PCF_ELEM_CII_COMPWEIGHT", "ELEM", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01767"), "COMPONENT-ATTRIBUTE8", "CII"); //Component weight
         public readonly pdef PCF_PIPL_CII_FLUIDDST = new pdef("PCF_PIPL_CII_FLUIDDST", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01768"), "COMPONENT-ATTRIBUTE9", "CII"); //Fluid density
         public readonly pdef PCF_PIPL_CII_HYDROPD = new pdef("PCF_PIPL_CII_HYDROPD", "PIPL", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-daa493b01769"), "COMPONENT-ATTRIBUTE10", "CII"); //Hydro test pressure
 
@@ -162,11 +162,11 @@ namespace PCF_Functions
             ListParametersAll.Add(PCF_PIPL_CII_PD);
             ListParametersAll.Add(PCF_PIPL_CII_TD);
             ListParametersAll.Add(PCF_PIPL_CII_MATNAME);
-            ListParametersAll.Add(PCF_PIPL_CII_WALLTHK);
+            ListParametersAll.Add(PCF_ELEM_CII_WALLTHK);
             ListParametersAll.Add(PCF_PIPL_CII_INSULTHK);
             ListParametersAll.Add(PCF_PIPL_CII_INSULDST);
             ListParametersAll.Add(PCF_PIPL_CII_CORRALL);
-            ListParametersAll.Add(PCF_PIPL_CII_COMPWEIGHT);
+            ListParametersAll.Add(PCF_ELEM_CII_COMPWEIGHT);
             ListParametersAll.Add(PCF_PIPL_CII_FLUIDDST);
             ListParametersAll.Add(PCF_PIPL_CII_HYDROPD);
 
