@@ -109,7 +109,7 @@ namespace PCF_Functions
         #endregion
 
         #region CII export writer
-        StringBuilder sbCII = new StringBuilder();
+        StringBuilder sbCII;
         private Document doc;
         private string key;
 
@@ -117,6 +117,7 @@ namespace PCF_Functions
         {
             doc = document;
             key = systemAbbreviation;
+            sbCII = new StringBuilder();
             //Handle CII export parameters
             //Instantiate collector
             FilteredElementCollector collector = new FilteredElementCollector(doc);

@@ -202,7 +202,7 @@ namespace PCF_Accessories
 
                 #region CII export
                 Composer composer = new Composer();
-                if (element.get_Parameter(pList.PCF_ELEM_TYPE.Guid)) sbAccessories.Append(composer.CIIWriter(doc, key));
+                if (!string.Equals(element.get_Parameter(pList.PCF_ELEM_TYPE.Guid).AsString(), "SUPPORT")) sbAccessories.Append(composer.CIIWriter(doc, key));
                 #endregion
 
                 sbAccessories.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
