@@ -422,13 +422,17 @@ namespace PCF_Functions
             return sbEndWriter;
         }
 
-        public static StringBuilder WriteCO(FamilyInstance familyInstance)
+        public static StringBuilder WriteCO(FamilyInstance familyInstance, Connector passedConnector)
         {
             StringBuilder sbEndWriter = new StringBuilder();
             XYZ elementLocation = ((LocationPoint)familyInstance.Location).Point;
             sbEndWriter.Append("    CO-ORDS ");
             if (InputVars.UNITS_CO_ORDS_MM) sbEndWriter.Append(Conversion.PointStringMm(elementLocation));
             if (InputVars.UNITS_CO_ORDS_INCH) sbEndWriter.Append(Conversion.PointStringInch(elementLocation));
+            double connectorSize = passedConnector.Radius;
+            sbEndWriter.Append(" ");
+            if (InputVars.UNITS_BORE_MM) sbEndWriter.Append(Conversion.PipeSizeToMm(connectorSize));
+            if (InputVars.UNITS_BORE_INCH) sbEndWriter.Append(Conversion.PipeSizeToInch(connectorSize));
             sbEndWriter.AppendLine();
             return sbEndWriter;
         }

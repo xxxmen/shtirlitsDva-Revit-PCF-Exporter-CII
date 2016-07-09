@@ -6,7 +6,6 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.ApplicationServices;
-//using Autodesk.Revit.Creation;
 using PCF_Functions;
 using BuildingCoder;
 using iv = PCF_Functions.InputVars;
@@ -86,27 +85,6 @@ namespace PCF_Functions
                 doc.Delete(newPipe.Id);
 
                 trans.Commit();
-
-                //Debug
-                //sbTaps.Append(tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP1).AsString() == "");
-                //sbTaps.AppendLine();
-                //sbTaps.Append(tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP2).AsString() + " " + tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP2).AsString() == null);
-                //sbTaps.AppendLine();
-                //sbTaps.Append(tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP3).AsString() + " " + tappedElement.LookupParameter(InputVars.PCF_ELEM_TAP3).AsString() == null);
-                //sbTaps.AppendLine();
-
-
-
-                //// Debugging
-                //// Clear the output file
-                //File.WriteAllBytes(InputVars.OutputDirectoryFilePath + "Taps.pcf", new byte[0]);
-
-                //// Write to output file
-                //using (StreamWriter w = File.AppendText(InputVars.OutputDirectoryFilePath + "Taps.pcf"))
-                //{
-                //    w.Write(sbTaps);
-                //    w.Close();
-                //}
             }
 
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)

@@ -172,7 +172,8 @@ namespace PCF_Accessories
                         break;
 
                     case "SUPPORT":
-                        sbAccessories.Append(EndWriter.WriteCO(familyInstance));
+                        primaryConnector = (from Connector c in connectorSet where c.GetMEPConnectorInfo().IsPrimary select c).FirstOrDefault();
+                        sbAccessories.Append(EndWriter.WriteCO(familyInstance, primaryConnector));
                         break;
                 }
 
