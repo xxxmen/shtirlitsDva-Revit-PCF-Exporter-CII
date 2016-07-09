@@ -190,6 +190,7 @@ namespace PCF_Accessories
                 sbAccessories.AppendLine();
 
                 //Process tap entries of the element if any
+                //Diameter Limit nullifies the tapsWriter output if the tap diameter is less than the limit so it doesn't get exported
                 if (string.IsNullOrEmpty(element.LookupParameter("PCF_ELEM_TAP1").AsString()) == false)
                 {
                     TapsWriter tapsWriter = new TapsWriter(element, "PCF_ELEM_TAP1", doc);
