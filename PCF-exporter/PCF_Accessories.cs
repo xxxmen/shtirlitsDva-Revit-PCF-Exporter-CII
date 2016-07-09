@@ -15,29 +15,32 @@ namespace PCF_Accessories
     public class PCF_Accessories_Export
     {
         private IEnumerable<Element> accessoriesList;
-        public StringBuilder sbAccessories;
+        private StringBuilder sbAccessories;
         private Document doc;
         private string key;
+        private plst pList; //An experiment to use an object instead of doing new plst() all the time
 
         public StringBuilder Export(string pipeLineAbbreviation, IEnumerable<Element> elements, Document document)
         {
             doc = document;
             key = pipeLineAbbreviation;
+            pList = new plst();
+            //paramList = new plst();
             //The list of fittings, sorted by TYPE then SKEY
             accessoriesList = elements.
-                OrderBy(e => e.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString()).
-                ThenBy(e => e.get_Parameter(new plst().PCF_ELEM_SKEY.Guid).AsString());
-
+                OrderBy(e => e.get_Parameter(pList.PCF_ELEM_TYPE.Guid).AsString()).
+                ThenBy(e => e.get_Parameter(pList.PCF_ELEM_SKEY.Guid).AsString());
+            
             sbAccessories = new StringBuilder();
             foreach (Element element in accessoriesList)
             {
                 //If the Element Type field is empty -> ignore the component
-                if (string.IsNullOrEmpty(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString())) continue;
+                if (string.IsNullOrEmpty(element.get_Parameter(pList.PCF_ELEM_TYPE.Guid).AsString())) continue;
 
-                sbAccessories.Append(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString());
+                sbAccessories.Append(element.get_Parameter(pList.PCF_ELEM_TYPE.Guid).AsString());
                 sbAccessories.AppendLine();
                 sbAccessories.Append("    COMPONENT-IDENTIFIER ");
-                sbAccessories.Append(element.LookupParameter("PCF_ELEM_COMPID").AsInteger());
+                sbAccessories.Append(element.get_Parameter(pList.PCF_ELEM_COMPID.Guid).AsInteger());
                 sbAccessories.AppendLine();
 
                 //Cast the elements gathered by the collector to FamilyInstances
@@ -49,7 +52,7 @@ namespace PCF_Accessories
                 ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
 
                 //Switch to different element type configurations
-                switch (element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString())
+                switch (element.get_Parameter(pList.PCF_ELEM_TYPE.Guid).AsString())
                 {
                     case ("FILTER"):
                         //Process endpoints of the component
@@ -167,56 +170,19 @@ namespace PCF_Accessories
                         sbAccessories.Append(EndWriter.WriteCO(endPointAnalyzed));
 
                         break;
+
+                    case "SUPPORT":
+                        primaryConnector = (from Connector c in connectorSet where c.GetMEPConnectorInfo().IsPrimary select c).FirstOrDefault();
+                        sbAccessories.Append(EndWriter.WriteCO(familyInstance, primaryConnector));
+                        break;
                 }
 
-                var pQuery = from p in new plst().ListParametersAll where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM") select p;
-
-                foreach (pdef p in pQuery)
-                {
-                    //Check for parameter's storage type (can be Int for select few parameters)
-                    int sT = (int)element.get_Parameter(p.Guid).StorageType;
-
-                    if (sT == 1)
-                    {
-                        //Check if the parameter contains anything
-                        if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsInteger().ToString())) continue;
-                        sbAccessories.Append("    " + p.Keyword + " ");
-                        sbAccessories.Append(element.get_Parameter(p.Guid).AsInteger());
-                    }
-                    else if (sT == 3)
-                    {
-                        //Check if the parameter contains anything
-                        if (string.IsNullOrEmpty(element.get_Parameter(p.Guid).AsString())) continue;
-                        sbAccessories.Append("    " + p.Keyword + " ");
-                        sbAccessories.Append(element.get_Parameter(p.Guid).AsString());
-                    }
-                    sbAccessories.AppendLine();
-                }
+                Composer elemParameterComposer = new Composer();
+                sbAccessories.Append(elemParameterComposer.ElemParameterWriter(element));
 
                 #region CII export
-                //Handle CII export parameters
-                //Instantiate collector
-                FilteredElementCollector collector = new FilteredElementCollector(doc);
-                //Get the elements
-                collector.OfClass(typeof(PipingSystemType));
-                //Select correct systemType
-                PipingSystemType sQuery = (from PipingSystemType st in collector
-                                           where string.Equals(st.Abbreviation, key)
-                                           select st).FirstOrDefault();
-
-                var query = from p in new plst().ListParametersAll
-                            where string.Equals(p.Domain, "PIPL") && string.Equals(p.ExportingTo, "CII")
-                            select p;
-
-                foreach (pdef p in query.ToList())
-                {
-                    if (string.IsNullOrEmpty(sQuery.get_Parameter(p.Guid).AsString())) continue;
-                    sbAccessories.Append("    ");
-                    sbAccessories.Append(p.Keyword);
-                    sbAccessories.Append(" ");
-                    sbAccessories.Append(sQuery.get_Parameter(p.Guid).AsString());
-                    sbAccessories.AppendLine();
-                }
+                Composer composer = new Composer();
+                if (!string.Equals(element.get_Parameter(pList.PCF_ELEM_TYPE.Guid).AsString(), "SUPPORT")) sbAccessories.Append(composer.CIIWriter(doc, key));
                 #endregion
 
                 sbAccessories.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
@@ -224,6 +190,7 @@ namespace PCF_Accessories
                 sbAccessories.AppendLine();
 
                 //Process tap entries of the element if any
+                //Diameter Limit nullifies the tapsWriter output if the tap diameter is less than the limit so it doesn't get exported
                 if (string.IsNullOrEmpty(element.LookupParameter("PCF_ELEM_TAP1").AsString()) == false)
                 {
                     TapsWriter tapsWriter = new TapsWriter(element, "PCF_ELEM_TAP1", doc);
