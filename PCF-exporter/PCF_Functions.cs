@@ -206,10 +206,10 @@ namespace PCF_Functions
         private bool diameterLimitBool;
         private double diameterLimit;
         /// <summary>
-        /// Returns true if diameter is larger than limit and false if smaller.
+        /// Tests the diameter of the pipe or primary connector of element against the diameter limit set in the interface.
         /// </summary>
         /// <param name="passedElement"></param>
-        /// <returns></returns>
+        /// <returns>True if diameter is larger than limit and false if smaller.</returns>
         public bool FilterDL(Element passedElement)
         {
             element = passedElement;
@@ -220,7 +220,7 @@ namespace PCF_Functions
             {
                 case (int)BuiltInCategory.OST_PipeCurves:
                     if (iv.UNITS_BORE_MM) testedDiameter = double.Parse(Conversion.PipeSizeToMm(((MEPCurve) element).Diameter/2));
-                    else if (iv.UNITS_BORE_INCH) testedDiameter = double.Parse(Conversion.PipeSizeToInch(((MEPCurve)element).Diameter/2));
+                    else if (iv.UNITS_BORE_INCH) testedDiameter = double.Parse(Conversion.PipeSizeToInch(((MEPCurve) element).Diameter/2));
 
                     if (testedDiameter <= diameterLimit) diameterLimitBool = false;
 
