@@ -1,4 +1,4 @@
-**PCF Exporter** is an add-in for [Autodesk Revit 2016](http://www.autodesk.com/products/revit-family/overview) aimed to facilitate the export of piping data from Revit to the widely used PCF (Piping Component File) file format.
+**PCF Exporter** is an add-in for [Autodesk Revit](http://www.autodesk.com/products/revit-family/overview) aimed to facilitate the export of piping data from Revit to the widely used PCF (Piping Component File) file format.
 
 To get the most out of the program (in truth it is useless without knowledge of the format specification) it is strongly recommended to read the PCF reference guide which contains the format specifics. Please see [this](http://www.intergraph.com/assets/pressreleases/2015/05-12-2015.aspx) web page to obtain the specification of the PCF file format.
 
