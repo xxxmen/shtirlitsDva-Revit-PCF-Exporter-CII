@@ -8,6 +8,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.UI;
 using PCF_Functions;
+using PCF_Output;
 using pd = PCF_Functions.ParameterData;
 
 namespace PCF_Exporter
@@ -148,8 +149,8 @@ namespace PCF_Exporter
 
                 #region Output
                 // Output the processed data
-
-                PCF_Output.Output.OutputWriter(doc, sbCollect, InputVars.OutputDirectoryFilePath);
+                PCF_Output.Output output = new Output();
+                output.OutputWriter(doc, sbCollect, InputVars.OutputDirectoryFilePath);
                 #endregion
 
             }
