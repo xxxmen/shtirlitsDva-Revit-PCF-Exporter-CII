@@ -20,8 +20,8 @@ namespace PCF_Output
             string dateAndTime = DateTime.Now.ToString();
             dateAndTime = dateAndTime.Replace(" ", "_");
             dateAndTime = dateAndTime.Replace(":", "-");
-            //string filename = _outputDir+"\\" + docName + "_" + dateAndTime + ".pcf";
-            string filename = _outputDir+"\\" + docName + ".pcf";
+            string filename = _outputDir+"\\" + docName + "_" + dateAndTime + ".pcf";
+            //string filename = _outputDir+"\\" + docName + ".pcf";
 
             //Clear the output file
             System.IO.File.WriteAllBytes(filename, new byte[0]);
