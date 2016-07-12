@@ -3,16 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.UI;
-using BuildingCoder;
 using PCF_Functions;
 using PCF_Output;
 using pd = PCF_Functions.ParameterData;
-using plst = PCF_Functions.ParameterList;
-using pdef = PCF_Functions.ParameterDefinition;
 
 namespace PCF_Exporter
 {
@@ -101,20 +98,8 @@ namespace PCF_Exporter
                 int elementIdentificationNumber = 0;
                 int materialGroupIdentifier = 0;
 
-                //Make sure that every element has PCF_MAT_DESCR filled out.
-                foreach (Element e in elements)
-                {
-                    string eId = string.Empty;
-                    eId = e.Id.ToString();
-                    if (string.IsNullOrEmpty(e.get_Parameter(new plst().PCF_MAT_DESCR.Guid).AsString()))
-                    {
-                        Util.ErrorMsg("PCF_MAT_DESCR is empty for element " + eId + "! Please, correct this issue before exporting again.");
-                        throw new Exception();
-                    }
-                }
-
                 //Initialize material group numbers on the elements
-                IEnumerable<IGrouping<string, Element>> materialGroups = from e in elements group e by e.get_Parameter(new plst().PCF_MAT_DESCR.Guid).AsString();
+                IEnumerable<IGrouping<string, Element>> materialGroups = from e in elements group e by e.LookupParameter("PCF_MAT_DESCR").AsString();
 
                 Transaction trans = new Transaction(doc, "Set PCF_ELEM_COMPID and PCF_MAT_ID");
                 trans.Start();
