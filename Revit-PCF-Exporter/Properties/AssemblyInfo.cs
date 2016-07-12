@@ -27,11 +27,11 @@ using System.Reflection;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle( "PCF Exporter" )]
+[assembly: AssemblyTitle("Revit PCF Exporter")]
 [assembly: AssemblyDescription( "An application that exports pipes, pipe fittings and accessories information to PCF file format." )]
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "MGTek" )]
-[assembly: AssemblyProduct( "PCF Exporter" )]
+[assembly: AssemblyProduct("Revit PCF Exporter")]
 [assembly: AssemblyCopyright( "Copyright 2016 (C) MGTek /v Michail Golubjev" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
