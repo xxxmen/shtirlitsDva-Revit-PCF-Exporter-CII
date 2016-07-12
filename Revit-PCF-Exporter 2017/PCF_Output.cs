@@ -7,11 +7,11 @@ namespace PCF_Output
 {
     public class Output
     {
-        private StringBuilder _collect;
-        private string _outputDir;
-        private Document _document;
+        private static StringBuilder _collect;
+        private static string _outputDir;
+        private static Document _document;
 
-        public void OutputWriter(Document doc, StringBuilder collect, string outputDirectory)
+        public static void OutputWriter(Document doc, StringBuilder collect, string outputDirectory)
         {
             _collect = collect; _outputDir = outputDirectory;
             _document = doc;
