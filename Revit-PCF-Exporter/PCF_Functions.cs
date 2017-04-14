@@ -712,7 +712,7 @@ namespace PCF_Functions
             string connectionString =
                 string.Format(
                     "provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 12.0;HDR={1};IMEX=1\"",
-                    fileName);
+                    fileName, dataHasHeaders);
 
             DataSet data = new DataSet();
 

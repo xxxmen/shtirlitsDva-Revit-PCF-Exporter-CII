@@ -11,6 +11,7 @@ using BuildingCoder;
 using PCF_Parameters;
 using PCF_Functions;
 using mySettings = NTR_Exporter.Properties.Settings;
+using NTR_Functions;
 using iv = NTR_Functions.InputVars;
 using dh = PCF_Functions.DataHandler;
 
@@ -189,24 +190,26 @@ namespace NTR_Exporter
 
         private void button6_Click(object sender, EventArgs e)
         {
-            //PCFExport pcfExporter = new PCFExport();
-            //Result result = Result.Failed;
+            ConfigurationData cd = new ConfigurationData(_commandData);
 
-            if (iv.ExportAllOneFile || iv.ExportSpecificPipeLine || iv.ExportSelection)
-            {
-                //result = pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
-            }
-            else if (iv.ExportAllSepFiles)
-            {
-                foreach (string name in pipeLinesAbbreviations)
-                {
-                    iv.SysAbbr = name;
-                    //result = pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
-                }
-            }
+            ////PCFExport pcfExporter = new PCFExport();
+            ////Result result = Result.Failed;
 
-            //if (result == Result.Succeeded) Util.InfoMsg("PCF data exported successfully!");
-            //if (result == Result.Failed) Util.InfoMsg("PCF data export failed for some reason.");
+            //if (iv.ExportAllOneFile || iv.ExportSpecificPipeLine || iv.ExportSelection)
+            //{
+            //    //result = pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
+            //}
+            //else if (iv.ExportAllSepFiles)
+            //{
+            //    foreach (string name in pipeLinesAbbreviations)
+            //    {
+            //        iv.SysAbbr = name;
+            //        //result = pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
+            //    }
+            //}
+
+            ////if (result == Result.Succeeded) Util.InfoMsg("PCF data exported successfully!");
+            ////if (result == Result.Failed) Util.InfoMsg("PCF data export failed for some reason.");
         }
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e)
