@@ -10,14 +10,14 @@ using Autodesk.Revit.UI;
 using BuildingCoder;
 using PCF_Parameters;
 using PCF_Functions;
-using mySettings = PCF_Functions.Properties.Settings;
-using iv = PCF_Functions.InputVars;
+using mySettings = NTR_Exporter.Properties.Settings;
+using iv = NTR_Functions.InputVars;
 using dh = PCF_Functions.DataHandler;
 
-namespace PCF_Exporter
+namespace NTR_Exporter
 {
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
-    public partial class PCF_Exporter_form : System.Windows.Forms.Form
+    public partial class NTR_Exporter_form : System.Windows.Forms.Form
     {
         static ExternalCommandData _commandData;
         static UIApplication _uiapp;
@@ -28,12 +28,9 @@ namespace PCF_Exporter
         private IList<string> pipeLinesAbbreviations;
 
         private string _excelPath = null;
+        private string _outputDirectoryFilePath = null;
 
-        private IList<string> PCF_DATA_TABLE_NAMES = new List<string>();
-        private DataSet DATA_SET = null;
-        public static DataTable DATA_TABLE = null;
-
-        public PCF_Exporter_form(ExternalCommandData cData, string message)
+        public NTR_Exporter_form(ExternalCommandData cData, string message)
         {
             InitializeComponent();
             _commandData = cData;
@@ -44,10 +41,15 @@ namespace PCF_Exporter
 
             //Init excel path
             _excelPath = mySettings.Default.excelPath;
+            if (!string.IsNullOrEmpty(_excelPath)) iv.ExcelPath = _excelPath;
             //textBox20.Text = _excelPath;
 
-            //Init Scope
+            //Init output path
+            _outputDirectoryFilePath = mySettings.Default.textBox5OutputPath;
+            if (!string.IsNullOrEmpty(_outputDirectoryFilePath)) iv.OutputDirectoryFilePath = mySettings.Default.textBox5OutputPath;
+            textBox5.Text = iv.OutputDirectoryFilePath;
 
+            //Init Scope
             //Gather all physical piping systems and collect distinct abbreviations
             pipeLinesAbbreviations = MepUtils.GetDistinctPhysicalPipingSystemTypeNames(_doc);
 
@@ -63,40 +65,10 @@ namespace PCF_Exporter
                 comboBox2.Visible = false;
                 textBox4.Visible = false;
             }
-            
-            //Init Bore
-            iv.UNITS_BORE_MM = mySettings.Default.radioButton3BoreMM;
-            iv.UNITS_BORE_INCH = mySettings.Default.radioButton4BoreINCH;
-            iv.UNITS_BORE = iv.UNITS_BORE_MM ? "MM" : "INCH";
-
-            //Init cooords
-            iv.UNITS_CO_ORDS_MM = mySettings.Default.radioButton5CoordsMm;
-            iv.UNITS_CO_ORDS_INCH = mySettings.Default.radioButton6CoordsInch;
-            iv.UNITS_CO_ORDS = iv.UNITS_CO_ORDS_MM ? "MM" : "INCH";
-
-            //Init weight
-            iv.UNITS_WEIGHT_KGS = mySettings.Default.radioButton7WeightKgs;
-            iv.UNITS_WEIGHT_LBS = mySettings.Default.radioButton8WeightLbs;
-            iv.UNITS_WEIGHT = iv.UNITS_WEIGHT_KGS ? "KGS" : "LBS";
-
-            //Init weight-length
-            iv.UNITS_WEIGHT_LENGTH_METER = mySettings.Default.radioButton9WeightLengthM;
-            iv.UNITS_WEIGHT_LENGTH_FEET = mySettings.Default.radioButton10WeightLengthF;
-            iv.UNITS_WEIGHT_LENGTH = iv.UNITS_WEIGHT_LENGTH_METER ? "METER" : "FEET";
-
-            //Init output path
-            iv.OutputDirectoryFilePath = mySettings.Default.textBox5OutputPath;
-            textBox5.Text = iv.OutputDirectoryFilePath;
 
             //Init diameter limit
             iv.DiameterLimit = double.Parse(mySettings.Default.textBox22DiameterLimit);
 
-            //Init write wall thickness
-            iv.WriteWallThickness = mySettings.Default.radioButton12WallThkTrue;
-
-            //Init export to section
-            iv.ExportToPlant3DIso = mySettings.Default.checkBox1Checked;
-            iv.ExportToCII = mySettings.Default.checkBox2Checked;
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -109,63 +81,57 @@ namespace PCF_Exporter
                 //Save excel file to settings
                 mySettings.Default.excelPath = _excelPath;
 
-                //Old excel reader, can be removed
-                ////Proceed to read the file
-                //FileStream stream = File.Open(_excelPath, FileMode.Open, FileAccess.Read);
-                //IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
-                ////First row is column names in dataset
-                //excelReader.IsFirstRowAsColumnNames = true;
-                //DATA_SET = excelReader.AsDataSet();
+                iv.ExcelPath = _excelPath;
 
-                DATA_SET = dh.ImportExcelToDataSet(_excelPath, "YES");
+                //DATA_SET = dh.ImportExcelToDataSet(_excelPath);
 
-                DataTableCollection PCF_DATA_TABLES = DATA_SET.Tables;
+                //DataTableCollection PCF_DATA_TABLES = DATA_SET.Tables;
 
-                PCF_DATA_TABLE_NAMES.Clear();
+                //PCF_DATA_TABLE_NAMES.Clear();
 
-                foreach (DataTable dt in PCF_DATA_TABLES)
-                {
-                    PCF_DATA_TABLE_NAMES.Add(dt.TableName);
-                }
-                //excelReader.Close();
-                comboBox1.DataSource = PCF_DATA_TABLE_NAMES;
+                //foreach (DataTable dt in PCF_DATA_TABLES)
+                //{
+                //    PCF_DATA_TABLE_NAMES.Add(dt.TableName);
+                //}
+                ////excelReader.Close();
+                //comboBox1.DataSource = PCF_DATA_TABLE_NAMES;
             }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            CreateParameterBindings CPB = new CreateParameterBindings();
-            CPB.CreateElementBindings(_uiapp, ref _message);
-            CPB.CreatePipelineBindings(_uiapp, ref _message);
+            //CreateParameterBindings CPB = new CreateParameterBindings();
+            //CPB.CreateElementBindings(_uiapp, ref _message);
+            //CPB.CreatePipelineBindings(_uiapp, ref _message);
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            DeleteParameters DP = new DeleteParameters();
-            DP.ExecuteMyCommand(_uiapp, ref _message);
+            //DeleteParameters DP = new DeleteParameters();
+            //DP.ExecuteMyCommand(_uiapp, ref _message);
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            PopulateParameters PP = new PopulateParameters();
-            PP.PopulateElementData(_uiapp, ref _message, _excelPath);
+            //PopulateParameters PP = new PopulateParameters();
+            //PP.PopulateElementData(_uiapp, ref _message, _excelPath);
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            PopulateParameters PP = new PopulateParameters();
-            PP.PopulatePipelineData(_uiapp, ref _message, _excelPath);
+            //PopulateParameters PP = new PopulateParameters();
+            //PP.PopulatePipelineData(_uiapp, ref _message, _excelPath);
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            iv.ExcelSheet = (string)comboBox1.SelectedItem;
-            //mySettings.Default.excelWorksheetSelectedName = iv.ExcelSheet;
-            DATA_TABLE = DATA_SET.Tables[iv.ExcelSheet];
-            ParameterData.parameterNames = null;
-            ParameterData.parameterNames = (from dc in DATA_TABLE.Columns.Cast<DataColumn>() select dc.ColumnName).ToList();
-            ParameterData.parameterNames.RemoveAt(0);
-            Util.InfoMsg("Following parameters will be initialized:\n" + string.Join("\n", ParameterData.parameterNames.ToArray()));
+            //iv.ExcelSheet = (string)comboBox1.SelectedItem;
+            ////mySettings.Default.excelWorksheetSelectedName = iv.ExcelSheet;
+            //DATA_TABLE = DATA_SET.Tables[iv.ExcelSheet];
+            //ParameterData.parameterNames = null;
+            //ParameterData.parameterNames = (from dc in DATA_TABLE.Columns.Cast<DataColumn>() select dc.ColumnName).ToList();
+            //ParameterData.parameterNames.RemoveAt(0);
+            //Util.InfoMsg("Following parameters will be initialized:\n" + string.Join("\n", ParameterData.parameterNames.ToArray()));
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
@@ -215,6 +181,7 @@ namespace PCF_Exporter
             if (result == DialogResult.OK)
             {
                 iv.OutputDirectoryFilePath = fbd.SelectedPath;
+                _outputDirectoryFilePath = iv.OutputDirectoryFilePath;
                 textBox5.Text = iv.OutputDirectoryFilePath;
                 mySettings.Default.textBox5OutputPath = iv.OutputDirectoryFilePath;
             }
@@ -222,33 +189,30 @@ namespace PCF_Exporter
 
         private void button6_Click(object sender, EventArgs e)
         {
-            PCFExport pcfExporter = new PCFExport();
-            Result result = Result.Failed;
+            //PCFExport pcfExporter = new PCFExport();
+            //Result result = Result.Failed;
 
             if (iv.ExportAllOneFile || iv.ExportSpecificPipeLine || iv.ExportSelection)
             {
-                result = pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
+                //result = pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
             }
             else if (iv.ExportAllSepFiles)
             {
                 foreach (string name in pipeLinesAbbreviations)
                 {
                     iv.SysAbbr = name;
-                    result = pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
+                    //result = pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
                 }
             }
 
-            if (result == Result.Succeeded) Util.InfoMsg("PCF data exported successfully!");
-            if (result == Result.Failed) Util.InfoMsg("PCF data export failed for some reason.");
+            //if (result == Result.Succeeded) Util.InfoMsg("PCF data exported successfully!");
+            //if (result == Result.Failed) Util.InfoMsg("PCF data export failed for some reason.");
         }
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton3.Checked)
             {
-                iv.UNITS_BORE_MM = true;
-                iv.UNITS_BORE_INCH = false;
-                iv.UNITS_BORE = "MM";
             }
         }
 
@@ -256,9 +220,6 @@ namespace PCF_Exporter
         {
             if (radioButton4.Checked)
             {
-                iv.UNITS_BORE_MM = false;
-                iv.UNITS_BORE_INCH = true;
-                iv.UNITS_BORE = "INCH";
             }
         }
 
@@ -266,9 +227,6 @@ namespace PCF_Exporter
         {
             if (radioButton5.Checked)
             {
-                iv.UNITS_CO_ORDS_MM = true;
-                iv.UNITS_CO_ORDS_INCH = false;
-                iv.UNITS_CO_ORDS = "MM";
             }
         }
 
@@ -276,9 +234,6 @@ namespace PCF_Exporter
         {
             if (radioButton6.Checked)
             {
-                iv.UNITS_CO_ORDS_MM = false;
-                iv.UNITS_CO_ORDS_INCH = true;
-                iv.UNITS_CO_ORDS = "INCH";
             }
         }
 
@@ -286,9 +241,6 @@ namespace PCF_Exporter
         {
             if (radioButton7.Checked)
             {
-                iv.UNITS_WEIGHT_KGS = true;
-                iv.UNITS_WEIGHT_LBS = false;
-                iv.UNITS_WEIGHT = "KGS";
             }
         }
 
@@ -296,9 +248,6 @@ namespace PCF_Exporter
         {
             if (radioButton8.Checked)
             {
-                iv.UNITS_WEIGHT_KGS = false;
-                iv.UNITS_WEIGHT_LBS = true;
-                iv.UNITS_WEIGHT = "LBS";
             }
         }
 
@@ -306,9 +255,6 @@ namespace PCF_Exporter
         {
             if (radioButton9.Checked)
             {
-                iv.UNITS_WEIGHT_LENGTH_METER = true;
-                iv.UNITS_WEIGHT_LENGTH_FEET = false;
-                iv.UNITS_WEIGHT_LENGTH = "METER";
             }
         }
 
@@ -316,9 +262,6 @@ namespace PCF_Exporter
         {
             if (radioButton10.Checked)
             {
-                iv.UNITS_WEIGHT_LENGTH_METER = false;
-                iv.UNITS_WEIGHT_LENGTH_FEET = true;
-                iv.UNITS_WEIGHT_LENGTH = "FEET";
             }
         }
 
@@ -333,10 +276,10 @@ namespace PCF_Exporter
 
         private void button9_Click(object sender, EventArgs e)
         {
-            ExportParameters EP = new ExportParameters();
-            var output = EP.ExecuteMyCommand(_uiapp);
-            if (output == Result.Succeeded) Util.InfoMsg("Elements exported to EXCEL successfully!");
-            else if (output == Result.Failed) Util.InfoMsg("Element export to EXCEL failed for some reason.");
+            //ExportParameters EP = new ExportParameters();
+            //var output = EP.ExecuteMyCommand(_uiapp);
+            //if (output == Result.Succeeded) Util.InfoMsg("Elements exported to EXCEL successfully!");
+            //else if (output == Result.Failed) Util.InfoMsg("Element export to EXCEL failed for some reason.");
         }
 
         private void richTextBox1_LinkClicked(object sender, LinkClickedEventArgs e)
@@ -351,29 +294,27 @@ namespace PCF_Exporter
 
         private void radioButton12_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton12.Checked) iv.WriteWallThickness = true;
+            //if (radioButton12.Checked) iv.WriteWallThickness = true;
         }
 
         private void radioButton11_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton12.Checked) iv.WriteWallThickness = false;
+            //if (radioButton12.Checked) iv.WriteWallThickness = false;
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            iv.ExportToPlant3DIso = checkBox1.Checked;
+            //iv.ExportToPlant3DIso = checkBox1.Checked;
         }
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
-            iv.ExportToCII = checkBox2.Checked;
+            //iv.ExportToCII = checkBox2.Checked;
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             iv.SysAbbr = comboBox2.SelectedItem.ToString();
         }
-
-        
     }
 }

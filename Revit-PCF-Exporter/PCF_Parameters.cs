@@ -85,21 +85,7 @@ namespace PCF_Parameters
 
             //Define a collector (Pipe OR FamInst) AND (Fitting OR Accessory OR Pipe).
             //This is to eliminate FamilySymbols from collector which would throw an exception later on.
-            collector = new FilteredElementCollector(doc);
-            collector.WherePasses(new LogicalAndFilter(new List<ElementFilter>
-            {
-                new LogicalOrFilter(new List<ElementFilter>
-                {
-                    new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
-                    new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
-                    new ElementClassFilter(typeof (Pipe))
-                }),
-                new LogicalOrFilter(new List<ElementFilter>
-                {
-                    new ElementClassFilter(typeof (Pipe)),
-                    new ElementClassFilter(typeof (FamilyInstance))
-                })
-            }));
+            collector = Filter.GetElementsWithConnectors(doc);
 
             //Group all elements by their Family and Type
             orderedCollector =
@@ -127,7 +113,7 @@ namespace PCF_Parameters
             foreach (IGrouping<string, Element> gp in elementGroups)
             {
                 worksheet.Cells[row, 1] = gp.Key;
-                foreach (var p in query.ToList())
+                foreach (var p in query)
                 {
                     if (row == 2) worksheet.Cells[1, col] = p.Name; //Fill out top row only in the first iteration
                     worksheet.Cells[row, col] = gp.First().get_Parameter(p.Guid).AsString();
@@ -159,22 +145,8 @@ namespace PCF_Parameters
             string filename = path;
             StringBuilder sbFeedback = new StringBuilder();
 
-            FilteredElementCollector collector = new FilteredElementCollector(doc);
-            collector.WherePasses(new LogicalAndFilter(new List<ElementFilter>
-            {
-                new LogicalOrFilter(new List<ElementFilter>
-                {
-                    new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
-                    new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
-                    new ElementClassFilter(typeof (Pipe))
-                }),
-                new LogicalOrFilter(new List<ElementFilter>
-                {
-                    new ElementClassFilter(typeof (Pipe)),
-                    new ElementClassFilter(typeof (FamilyInstance))
-                })
-            }));
-
+            FilteredElementCollector collector = Filter.GetElementsWithConnectors(doc);
+           
             //prepare input variables which are initialized when looping the elements
             string eFamilyType = null; string columnName = null;
 
@@ -405,8 +377,10 @@ namespace PCF_Parameters
                 {
                     using (File.Create(tempFile)) { }
                     app.SharedParametersFilename = tempFile;
-                    ExternalDefinitionCreationOptions options = new ExternalDefinitionCreationOptions(parameter.Name, parameter.Type);
-                    options.GUID = parameter.Guid;
+                    ExternalDefinitionCreationOptions options = new ExternalDefinitionCreationOptions(parameter.Name, parameter.Type)
+                    {
+                        GUID = parameter.Guid
+                    };
                     ExternalDefinition def = app.OpenSharedParameterFile().Groups.Create("TemporaryDefinitionGroup").Definitions.Create(options) as ExternalDefinition;
 
                     BindingMap map = doc.ParameterBindings;
@@ -469,8 +443,10 @@ namespace PCF_Parameters
                 {
                     using (File.Create(tempFile)) { }
                     app.SharedParametersFilename = tempFile;
-                    ExternalDefinitionCreationOptions options = new ExternalDefinitionCreationOptions(parameter.Name, parameter.Type);
-                    options.GUID = parameter.Guid;
+                    ExternalDefinitionCreationOptions options = new ExternalDefinitionCreationOptions(parameter.Name, parameter.Type)
+                    {
+                        GUID = parameter.Guid
+                    };
                     ExternalDefinition def = app.OpenSharedParameterFile().Groups.Create("TemporaryDefinitionGroup").Definitions.Create(options) as ExternalDefinition;
 
                     BindingMap map = doc.ParameterBindings;

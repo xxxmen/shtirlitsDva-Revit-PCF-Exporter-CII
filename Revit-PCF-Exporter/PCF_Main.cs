@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using MoreLinq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.UI;
@@ -31,10 +31,13 @@ namespace PCF_Exporter
                 //FilteredElementCollector pipeTypeCollector = new FilteredElementCollector(doc); //Obsolete???
 
                 // Define a Filter instance to filter by System Abbreviation
-                ElementParameterFilter sysAbbr = new Filter(InputVars.SysAbbr, InputVars.SysAbbrParam).epf;
+                ElementParameterFilter sysAbbr = Filter.ParameterValueFilter(InputVars.SysAbbr, InputVars.SysAbbrParam);
 
                 // Declare pipeline grouping object
                 IEnumerable<IGrouping<string, Element>> pipelineGroups;
+
+                //Declare an object to hold collected elements from collector
+                HashSet<Element> colElements = new HashSet<Element>();
 
                 // Instance a collecting stringbuilder
                 StringBuilder sbCollect = new StringBuilder();
@@ -43,9 +46,9 @@ namespace PCF_Exporter
                 #region Compose preamble
                 //Compose preamble
                 Composer composer = new Composer();
-                
+
                 StringBuilder sbPreamble = composer.PreambleComposer();
-                
+
                 //Append preamble
                 sbCollect.Append(sbPreamble);
                 #endregion
@@ -53,26 +56,13 @@ namespace PCF_Exporter
                 #region Element collectors
                 //If user chooses to export a single pipeline get only elements in that pipeline and create grouping.
                 //Grouping is necessary even tho theres only one group to be able to process by the same code as the all pipelines case
-                switch (InputVars.ExportAll)
-                {
-                    case false:
-                        //Define a collector with multiple filters to collect PipeFittings OR PipeAccessories OR Pipes + filter by System Abbreviation
-                        //System Abbreviation filter also filters FamilySymbols out.
-                        collector.WherePasses(
-                            new LogicalOrFilter(
-                                new List<ElementFilter>
-                                {
-                                    new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
-                                    new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
-                                    new ElementClassFilter(typeof (Pipe))
-                                })).WherePasses(sysAbbr);
-                        break;
 
-                    //If user chooses to export all pipelines get all elements and create grouping
-                    case true:
-                        //Define a collector (Pipe OR FamInst) AND (Fitting OR Accessory OR Pipe).
-                        //This is to eliminate FamilySymbols from collector which would throw an exception later on.
-                        collector.WherePasses(new LogicalAndFilter(new List<ElementFilter>
+                //If user chooses to export all pipelines get all elements and create grouping
+                if (InputVars.ExportAllOneFile)
+                {
+                    //Define a collector (Pipe OR FamInst) AND (Fitting OR Accessory OR Pipe).
+                    //This is to eliminate FamilySymbols from collector which would throw an exception later on.
+                    collector.WherePasses(new LogicalAndFilter(new List<ElementFilter>
                         {new LogicalOrFilter(new List<ElementFilter>
                         {
                             new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
@@ -85,11 +75,46 @@ namespace PCF_Exporter
                                 new ElementClassFilter(typeof(FamilyInstance))
                             })
                         }));
-                        break;
+
+                    colElements = collector.ToElements().ToHashSet();
+
+                }
+                
+                if (InputVars.ExportAllSepFiles || InputVars.ExportSpecificPipeLine)
+                {
+                    //Define a collector with multiple filters to collect PipeFittings OR PipeAccessories OR Pipes + filter by System Abbreviation
+                    //System Abbreviation filter also filters FamilySymbols out.
+                    collector.WherePasses(
+                        new LogicalOrFilter(
+                            new List<ElementFilter>
+                            {
+                                new ElementCategoryFilter(BuiltInCategory.OST_PipeFitting),
+                                new ElementCategoryFilter(BuiltInCategory.OST_PipeAccessory),
+                                new ElementClassFilter(typeof (Pipe))
+                            })).WherePasses(sysAbbr);
+                    colElements = collector.ToElements().ToHashSet();
+                }
+
+                if (InputVars.ExportSelection)
+                {
+                    ICollection<ElementId> selection = uiApp.ActiveUIDocument.Selection.GetElementIds();
+                    colElements = selection.Select(s => doc.GetElement(s)).ToHashSet();
                 }
 
                 //DiameterLimit filter applied to ALL elements.
-                IList<Element> elements = (from element in collector where new FilterDiameterLimit().FilterDL(element) select element).ToList();
+                HashSet<Element> elements = (from element in colElements where new FilterDiameterLimit().FilterDL(element) select element).ToHashSet();
+
+                //If turned on, write wall thickness of all components
+                if (InputVars.WriteWallThickness)
+                {
+                    //Assign correct wall thickness to elements.
+                    using (Transaction trans1 = new Transaction(doc))
+                    {
+                        trans1.Start("Set wall thickness for pipes!");
+                        ParameterDataWriter.SetWallThicknessPipes(elements);
+                        trans1.Commit();
+                    }
+                }
 
                 //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
                 pipelineGroups = from e in elements
@@ -104,12 +129,9 @@ namespace PCF_Exporter
                 //Make sure that every element has PCF_MAT_DESCR filled out.
                 foreach (Element e in elements)
                 {
-                    string eId = string.Empty;
-                    eId = e.Id.ToString();
                     if (string.IsNullOrEmpty(e.get_Parameter(new plst().PCF_MAT_DESCR.Guid).AsString()))
                     {
-                        Util.ErrorMsg("PCF_MAT_DESCR is empty for element " + eId + "! Please, correct this issue before exporting again.");
-                        throw new Exception();
+                        throw new Exception("PCF_MAT_DESCR is empty for element " + e.Id + "! Please, correct this issue before exporting again.");
                     }
                 }
 
@@ -138,16 +160,16 @@ namespace PCF_Exporter
                 #region Pipeline management
                 foreach (IGrouping<string, Element> gp in pipelineGroups)
                 {
-                    IList<Element> pipeList = (from element in gp
-                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeCurves
-                                   select element).ToList();
-                    IList<Element> fittingList = (from element in gp
-                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeFitting
-                                   select element).ToList();
-                    IList<Element> accessoryList = (from element in gp
-                                   where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeAccessory
-                                   select element).ToList();
-                    
+                    HashSet<Element> pipeList = (from element in gp
+                                                 where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeCurves
+                                                 select element).ToHashSet();
+                    HashSet<Element> fittingList = (from element in gp
+                                                    where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeFitting
+                                                    select element).ToHashSet();
+                    HashSet<Element> accessoryList = (from element in gp
+                                                      where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeAccessory
+                                                      select element).ToHashSet();
+
                     StringBuilder sbPipeline = new PCF_Pipeline.PCF_Pipeline_Export().Export(gp.Key, doc);
                     StringBuilder sbPipes = new PCF_Pipes.PCF_Pipes_Export().Export(gp.Key, pipeList, doc);
                     StringBuilder sbFittings = new PCF_Fittings.PCF_Fittings_Export().Export(gp.Key, fittingList, doc);
