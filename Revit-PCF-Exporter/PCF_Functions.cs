@@ -127,7 +127,7 @@ namespace PCF_Functions
             FilteredElementCollector collector = new FilteredElementCollector(document);
             //Get the elements
             PipingSystemType sQuery = collector.OfClass(typeof(PipingSystemType))
-                .WherePasses(Filter.ParameterValueFilter(systemAbbreviation, BuiltInParameter.RBS_SYSTEM_ABBREVIATION_PARAM))
+                .WherePasses(Filter.ParameterValueFilterStringEquals(systemAbbreviation, BuiltInParameter.RBS_SYSTEM_ABBREVIATION_PARAM))
                 .Cast<PipingSystemType>()
                 .FirstOrDefault();
 
@@ -219,14 +219,12 @@ namespace PCF_Functions
 
     public class Filter
     {
-        public static ElementParameterFilter ParameterValueFilter(string valueQualifier, BuiltInParameter parameterName)
+        public static ElementParameterFilter ParameterValueFilterStringEquals(string valueQualifier, BuiltInParameter testParam)
         {
-            BuiltInParameter testParam = parameterName;
             ParameterValueProvider pvp = new ParameterValueProvider(new ElementId((int)testParam));
-            FilterStringRuleEvaluator str = new FilterStringContains();
+            FilterStringRuleEvaluator str = new FilterStringEquals();
             FilterStringRule paramFr = new FilterStringRule(pvp, str, valueQualifier, false);
-            ElementParameterFilter epf = new ElementParameterFilter(paramFr);
-            return epf;
+            return new ElementParameterFilter(paramFr);
         }
 
         public static FilteredElementCollector GetElementsWithConnectors(Document doc)
