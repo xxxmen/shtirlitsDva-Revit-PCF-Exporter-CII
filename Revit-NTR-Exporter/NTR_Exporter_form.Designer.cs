@@ -172,7 +172,7 @@ namespace NTR_Exporter
             this.button9.TabIndex = 1;
             this.button9.Text = "Export schedule to EXCEL";
             this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
+            this.button9.Click += new System.EventHandler(this.Button9_Click);
             // 
             // button8
             // 
@@ -182,7 +182,7 @@ namespace NTR_Exporter
             this.button8.TabIndex = 0;
             this.button8.Text = "Create schedules";
             this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
+            this.button8.Click += new System.EventHandler(this.Button8_Click);
             // 
             // groupBox2
             // 
@@ -230,7 +230,7 @@ namespace NTR_Exporter
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(162, 21);
             this.comboBox1.TabIndex = 5;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.ComboBox1_SelectedIndexChanged);
             // 
             // button4
             // 
@@ -240,7 +240,7 @@ namespace NTR_Exporter
             this.button4.TabIndex = 2;
             this.button4.Text = "Select configuration file (EXCEL)";
             this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.button4.Click += new System.EventHandler(this.Button4_Click);
             // 
             // button7
             // 
@@ -250,7 +250,7 @@ namespace NTR_Exporter
             this.button7.TabIndex = 2;
             this.button7.Text = "Populate PCF parameters PIPELINE";
             this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.button7.Click += new System.EventHandler(this.Button7_Click);
             // 
             // button3
             // 
@@ -260,7 +260,7 @@ namespace NTR_Exporter
             this.button3.TabIndex = 2;
             this.button3.Text = "Populate PCF parameters ELEMENT";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button3.Click += new System.EventHandler(this.Button3_Click);
             // 
             // groupBox1
             // 
@@ -282,7 +282,7 @@ namespace NTR_Exporter
             this.button2.TabIndex = 1;
             this.button2.Text = "Delete PCF parameters";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.Button2_Click);
             // 
             // button1
             // 
@@ -292,7 +292,7 @@ namespace NTR_Exporter
             this.button1.TabIndex = 0;
             this.button1.Text = "Import PCF parameters";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // tabPage2
             // 
@@ -331,7 +331,7 @@ namespace NTR_Exporter
             this.checkBox2.TabIndex = 1;
             this.checkBox2.Text = "Caesar II";
             this.checkBox2.UseVisualStyleBackColor = true;
-            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.CheckBox2_CheckedChanged);
             // 
             // checkBox1
             // 
@@ -344,7 +344,7 @@ namespace NTR_Exporter
             this.checkBox1.TabIndex = 0;
             this.checkBox1.Text = "Plant 3D Iso";
             this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
             // 
             // radioBox2
             // 
@@ -370,7 +370,7 @@ namespace NTR_Exporter
             this.radioButton12.TabIndex = 2;
             this.radioButton12.Text = "True";
             this.radioButton12.UseVisualStyleBackColor = true;
-            this.radioButton12.CheckedChanged += new System.EventHandler(this.radioButton12_CheckedChanged);
+            this.radioButton12.CheckedChanged += new System.EventHandler(this.RadioButton12_CheckedChanged);
             // 
             // radioButton11
             // 
@@ -384,7 +384,7 @@ namespace NTR_Exporter
             this.radioButton11.TabStop = true;
             this.radioButton11.Text = "False";
             this.radioButton11.UseVisualStyleBackColor = true;
-            this.radioButton11.CheckedChanged += new System.EventHandler(this.radioButton11_CheckedChanged);
+            this.radioButton11.CheckedChanged += new System.EventHandler(this.RadioButton11_CheckedChanged);
             // 
             // textBox8
             // 
@@ -435,7 +435,7 @@ namespace NTR_Exporter
             this.radioButton10.TabIndex = 0;
             this.radioButton10.Text = "FEET";
             this.radioButton10.UseVisualStyleBackColor = true;
-            this.radioButton10.CheckedChanged += new System.EventHandler(this.radioButton10_CheckedChanged);
+            this.radioButton10.CheckedChanged += new System.EventHandler(this.RadioButton10_CheckedChanged);
             // 
             // radioButton9
             // 
@@ -449,7 +449,7 @@ namespace NTR_Exporter
             this.radioButton9.TabStop = true;
             this.radioButton9.Text = "METER";
             this.radioButton9.UseVisualStyleBackColor = true;
-            this.radioButton9.CheckedChanged += new System.EventHandler(this.radioButton9_CheckedChanged);
+            this.radioButton9.CheckedChanged += new System.EventHandler(this.RadioButton9_CheckedChanged);
             // 
             // groupBox9
             // 
@@ -475,7 +475,7 @@ namespace NTR_Exporter
             this.radioButton7.TabStop = true;
             this.radioButton7.Text = "KGS";
             this.radioButton7.UseVisualStyleBackColor = true;
-            this.radioButton7.CheckedChanged += new System.EventHandler(this.radioButton7_CheckedChanged);
+            this.radioButton7.CheckedChanged += new System.EventHandler(this.RadioButton7_CheckedChanged);
             // 
             // radioButton8
             // 
@@ -488,7 +488,7 @@ namespace NTR_Exporter
             this.radioButton8.TabIndex = 0;
             this.radioButton8.Text = "LBS";
             this.radioButton8.UseVisualStyleBackColor = true;
-            this.radioButton8.CheckedChanged += new System.EventHandler(this.radioButton8_CheckedChanged);
+            this.radioButton8.CheckedChanged += new System.EventHandler(this.RadioButton8_CheckedChanged);
             // 
             // groupBox8
             // 
@@ -514,7 +514,7 @@ namespace NTR_Exporter
             this.radioButton5.TabStop = true;
             this.radioButton5.Text = "MM";
             this.radioButton5.UseVisualStyleBackColor = true;
-            this.radioButton5.CheckedChanged += new System.EventHandler(this.radioButton5_CheckedChanged);
+            this.radioButton5.CheckedChanged += new System.EventHandler(this.RadioButton5_CheckedChanged);
             // 
             // radioButton6
             // 
@@ -527,7 +527,7 @@ namespace NTR_Exporter
             this.radioButton6.TabIndex = 0;
             this.radioButton6.Text = "INCH";
             this.radioButton6.UseVisualStyleBackColor = true;
-            this.radioButton6.CheckedChanged += new System.EventHandler(this.radioButton6_CheckedChanged);
+            this.radioButton6.CheckedChanged += new System.EventHandler(this.RadioButton6_CheckedChanged);
             // 
             // groupBox7
             // 
@@ -552,7 +552,7 @@ namespace NTR_Exporter
             this.radioButton4.TabIndex = 0;
             this.radioButton4.Text = "INCH";
             this.radioButton4.UseVisualStyleBackColor = true;
-            this.radioButton4.CheckedChanged += new System.EventHandler(this.radioButton4_CheckedChanged);
+            this.radioButton4.CheckedChanged += new System.EventHandler(this.RadioButton4_CheckedChanged);
             // 
             // radioButton3
             // 
@@ -566,7 +566,7 @@ namespace NTR_Exporter
             this.radioButton3.TabStop = true;
             this.radioButton3.Text = "MM";
             this.radioButton3.UseVisualStyleBackColor = true;
-            this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
+            this.radioButton3.CheckedChanged += new System.EventHandler(this.RadioButton3_CheckedChanged);
             // 
             // groupBox3
             // 
@@ -602,7 +602,7 @@ namespace NTR_Exporter
             this.radioButton14.Tag = "1";
             this.radioButton14.Text = "Selection";
             this.radioButton14.UseVisualStyleBackColor = true;
-            this.radioButton14.CheckedChanged += new System.EventHandler(this.radioButton14_CheckedChanged);
+            this.radioButton14.CheckedChanged += new System.EventHandler(this.RadioButton14_CheckedChanged);
             // 
             // radioButton13
             // 
@@ -616,7 +616,7 @@ namespace NTR_Exporter
             this.radioButton13.Tag = "1";
             this.radioButton13.Text = "All pipelines, separate files";
             this.radioButton13.UseVisualStyleBackColor = true;
-            this.radioButton13.CheckedChanged += new System.EventHandler(this.radioButton13_CheckedChanged);
+            this.radioButton13.CheckedChanged += new System.EventHandler(this.RadioButton13_CheckedChanged);
             // 
             // comboBox2
             // 
@@ -625,7 +625,7 @@ namespace NTR_Exporter
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(205, 21);
             this.comboBox2.TabIndex = 11;
-            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
+            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.ComboBox2_SelectedIndexChanged);
             // 
             // textBox22
             // 
@@ -635,7 +635,7 @@ namespace NTR_Exporter
             this.textBox22.Size = new System.Drawing.Size(57, 20);
             this.textBox22.TabIndex = 10;
             this.textBox22.Text = global::NTR_Exporter.Properties.Settings.Default.textBox22DiameterLimit;
-            this.textBox22.TextChanged += new System.EventHandler(this.textBox22_TextChanged);
+            this.textBox22.TextChanged += new System.EventHandler(this.TextBox22_TextChanged);
             // 
             // textBox23
             // 
@@ -682,7 +682,7 @@ namespace NTR_Exporter
             this.radioButton2.Tag = "2";
             this.radioButton2.Text = "Specific pipeline:";
             this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
+            this.radioButton2.CheckedChanged += new System.EventHandler(this.RadioButton2_CheckedChanged);
             // 
             // radioButton1
             // 
@@ -697,7 +697,7 @@ namespace NTR_Exporter
             this.radioButton1.Tag = "1";
             this.radioButton1.Text = "All pipelines, one file";
             this.radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
+            this.radioButton1.CheckedChanged += new System.EventHandler(this.RadioButton1_CheckedChanged);
             // 
             // textBox4
             // 
@@ -764,7 +764,7 @@ namespace NTR_Exporter
             this.button6.TabIndex = 0;
             this.button6.Text = "Export NTR";
             this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
+            this.button6.Click += new System.EventHandler(this.Button6_Click);
             // 
             // groupBox4
             // 
@@ -810,7 +810,7 @@ namespace NTR_Exporter
             this.button5.TabIndex = 3;
             this.button5.Text = "Select output directory";
             this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.button5.Click += new System.EventHandler(this.Button5_Click);
             // 
             // tabPage4
             // 
@@ -831,7 +831,7 @@ namespace NTR_Exporter
             this.richTextBox1.Size = new System.Drawing.Size(361, 463);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = resources.GetString("richTextBox1.Text");
-            this.richTextBox1.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.richTextBox1_LinkClicked);
+            this.richTextBox1.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.RichTextBox1_LinkClicked);
             // 
             // openFileDialog1
             // 

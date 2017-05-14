@@ -72,7 +72,7 @@ namespace NTR_Exporter
 
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void Button4_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
@@ -99,32 +99,32 @@ namespace NTR_Exporter
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
             //CreateParameterBindings CPB = new CreateParameterBindings();
             //CPB.CreateElementBindings(_uiapp, ref _message);
             //CPB.CreatePipelineBindings(_uiapp, ref _message);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void Button2_Click(object sender, EventArgs e)
         {
             //DeleteParameters DP = new DeleteParameters();
             //DP.ExecuteMyCommand(_uiapp, ref _message);
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void Button3_Click(object sender, EventArgs e)
         {
             //PopulateParameters PP = new PopulateParameters();
             //PP.PopulateElementData(_uiapp, ref _message, _excelPath);
         }
 
-        private void button7_Click(object sender, EventArgs e)
+        private void Button7_Click(object sender, EventArgs e)
         {
             //PopulateParameters PP = new PopulateParameters();
             //PP.PopulatePipelineData(_uiapp, ref _message, _excelPath);
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             //iv.ExcelSheet = (string)comboBox1.SelectedItem;
             ////mySettings.Default.excelWorksheetSelectedName = iv.ExcelSheet;
@@ -135,7 +135,7 @@ namespace NTR_Exporter
             //Util.InfoMsg("Following parameters will be initialized:\n" + string.Join("\n", ParameterData.parameterNames.ToArray()));
         }
 
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton1_CheckedChanged(object sender, EventArgs e)
         {
             if (!radioButton1.Checked) return;
             iv.ExportAllOneFile = radioButton1.Checked;
@@ -145,7 +145,7 @@ namespace NTR_Exporter
             comboBox2.Visible = false; textBox4.Visible = false;
         }
 
-        private void radioButton13_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton13_CheckedChanged(object sender, EventArgs e)
         {
             if (!radioButton13.Checked) return;
             iv.ExportAllOneFile = !radioButton13.Checked;
@@ -155,7 +155,7 @@ namespace NTR_Exporter
             comboBox2.Visible = false; textBox4.Visible = false;
         }
 
-        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton2_CheckedChanged(object sender, EventArgs e)
         {
             if (!radioButton2.Checked) return;
             iv.ExportAllOneFile = !radioButton2.Checked;
@@ -165,7 +165,7 @@ namespace NTR_Exporter
             comboBox2.Visible = true; textBox4.Visible = true;
         }
 
-        private void radioButton14_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton14_CheckedChanged(object sender, EventArgs e)
         {
             if (!radioButton14.Checked) return;
             iv.ExportAllOneFile = !radioButton14.Checked;
@@ -175,7 +175,7 @@ namespace NTR_Exporter
             comboBox2.Visible = false; textBox4.Visible = false;
         }
 
-        private void button5_Click(object sender, EventArgs e)
+        private void Button5_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             DialogResult result = fbd.ShowDialog();
@@ -188,7 +188,7 @@ namespace NTR_Exporter
             }
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private void Button6_Click(object sender, EventArgs e)
         {
             ConfigurationData cd = new ConfigurationData(_commandData);
 
@@ -212,63 +212,63 @@ namespace NTR_Exporter
             ////if (result == Result.Failed) Util.InfoMsg("PCF data export failed for some reason.");
         }
 
-        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton3_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton3.Checked)
             {
             }
         }
 
-        private void radioButton4_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton4_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton4.Checked)
             {
             }
         }
 
-        private void radioButton5_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton5_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton5.Checked)
             {
             }
         }
 
-        private void radioButton6_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton6_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton6.Checked)
             {
             }
         }
 
-        private void radioButton7_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton7_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton7.Checked)
             {
             }
         }
 
-        private void radioButton8_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton8_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton8.Checked)
             {
             }
         }
 
-        private void radioButton9_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton9_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton9.Checked)
             {
             }
         }
 
-        private void radioButton10_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton10_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton10.Checked)
             {
             }
         }
 
-        private void button8_Click(object sender, EventArgs e)
+        private void Button8_Click(object sender, EventArgs e)
         {
             ScheduleCreator SC = new ScheduleCreator();
             var output = SC.CreateAllItemsSchedule(_uidoc);
@@ -277,7 +277,7 @@ namespace NTR_Exporter
             else if (output == Result.Failed) Util.InfoMsg("Schedule creation failed for some reason.");
         }
 
-        private void button9_Click(object sender, EventArgs e)
+        private void Button9_Click(object sender, EventArgs e)
         {
             //ExportParameters EP = new ExportParameters();
             //var output = EP.ExecuteMyCommand(_uiapp);
@@ -285,37 +285,37 @@ namespace NTR_Exporter
             //else if (output == Result.Failed) Util.InfoMsg("Element export to EXCEL failed for some reason.");
         }
 
-        private void richTextBox1_LinkClicked(object sender, LinkClickedEventArgs e)
+        private void RichTextBox1_LinkClicked(object sender, LinkClickedEventArgs e)
         {
             Process.Start(e.LinkText);
         }
 
-        private void textBox22_TextChanged(object sender, EventArgs e)
+        private void TextBox22_TextChanged(object sender, EventArgs e)
         {
             iv.DiameterLimit = double.Parse(textBox22.Text);
         }
 
-        private void radioButton12_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton12_CheckedChanged(object sender, EventArgs e)
         {
             //if (radioButton12.Checked) iv.WriteWallThickness = true;
         }
 
-        private void radioButton11_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton11_CheckedChanged(object sender, EventArgs e)
         {
             //if (radioButton12.Checked) iv.WriteWallThickness = false;
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             //iv.ExportToPlant3DIso = checkBox1.Checked;
         }
 
-        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox2_CheckedChanged(object sender, EventArgs e)
         {
             //iv.ExportToCII = checkBox2.Checked;
         }
 
-        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             iv.SysAbbr = comboBox2.SelectedItem.ToString();
         }
