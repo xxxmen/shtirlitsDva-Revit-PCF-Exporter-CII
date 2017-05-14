@@ -190,8 +190,7 @@ namespace NTR_Exporter
 
         private void Button6_Click(object sender, EventArgs e)
         {
-            ConfigurationData cd = new ConfigurationData(_commandData);
-
+            NTR_Exporter exporter = new NTR_Exporter(_commandData);
             ////PCFExport pcfExporter = new PCFExport();
             ////Result result = Result.Failed;
 
