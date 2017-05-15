@@ -37,9 +37,12 @@ namespace NTR_Functions
 
     public class ConfigurationData
     {
-        public StringBuilder GEN { get; }
-        public StringBuilder AUFT { get; }
-        public StringBuilder TEXT { get; }
+        public StringBuilder _01_GEN { get; }
+        public StringBuilder _02_AUFT { get; }
+        public StringBuilder _03_TEXT { get; }
+        public StringBuilder _04_LAST { get; }
+        public StringBuilder _05_DN { get; }
+        public StringBuilder _06_ISO { get; }
 
         public ConfigurationData(ExternalCommandData cData)
         {
@@ -47,9 +50,12 @@ namespace NTR_Functions
 
             DataTableCollection dataTableCollection = dataSet.Tables;
 
-            GEN = ReadConfigurationData(dataTableCollection, "GEN", "C General settings");
-            AUFT = ReadConfigurationData(dataTableCollection, "AUFT", "C Project description");
-            TEXT = ReadConfigurationData(dataTableCollection, "TEXT", "C User text");
+            _01_GEN = ReadConfigurationData(dataTableCollection, "GEN", "C General settings");
+            _02_AUFT= ReadConfigurationData(dataTableCollection, "AUFT", "C Project description");
+            _03_TEXT = ReadConfigurationData(dataTableCollection, "TEXT", "C User text");
+            _04_LAST = ReadConfigurationData(dataTableCollection, "LAST", "C Loads definition");
+            _05_DN = ReadConfigurationData(dataTableCollection, "DN", "C Definition of pipe dimensions");
+            _06_ISO = ReadConfigurationData(dataTableCollection, "IS", "C Definition of insulation type");
 
             //http://stackoverflow.com/questions/10855/linq-query-on-a-datatable?rq=1
         }
@@ -73,24 +79,32 @@ namespace NTR_Functions
             }
 
             int numberOfRows = table.Rows.Count;
-
-
-
-            DataRow headerRow = table.Rows[0];
-            DataRow dataRow = table.Rows[1];
-            if (headerRow == null || dataRow == null) throw new NullReferenceException(tableName + " does not have two rows, check EXCEL configuration sheet!");
-
-            sb.Append(tableName);
-
-            for (int i = 0; i < table.Columns.Count; i++)
+            if (numberOfRows.IsOdd())
             {
-                sb.Append(" ");
-                sb.Append(headerRow.Field<string>(i));
-                sb.Append("=");
-                sb.Append(dataRow.Field<string>(i));
+                sb.AppendLine("C " + tableName + " is malformed, contains odd number of rows, must be even");
+                return sb;
             }
 
-            sb.AppendLine();
+            for (int i = 0; i < numberOfRows / 2; i++)
+            {
+                DataRow headerRow = table.Rows[i*2];
+                DataRow dataRow = table.Rows[i*2+1];
+                if (headerRow == null || dataRow == null)
+                    throw new NullReferenceException(
+                        tableName + " does not have two rows, check EXCEL configuration sheet!");
+
+                sb.Append(tableName);
+
+                for (int j = 0; j < headerRow.ItemArray.Length; j++)
+                {
+                    sb.Append(" ");
+                    sb.Append(headerRow.Field<string>(j));
+                    sb.Append("=");
+                    sb.Append(dataRow.Field<string>(j));
+                }
+
+                sb.AppendLine();
+            }
 
             return sb;
         }
