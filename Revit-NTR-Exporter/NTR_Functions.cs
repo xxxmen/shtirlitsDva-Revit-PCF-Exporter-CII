@@ -72,6 +72,10 @@ namespace NTR_Functions
                 return sb;
             }
 
+            int numberOfRows = table.Rows.Count;
+
+
+
             DataRow headerRow = table.Rows[0];
             DataRow dataRow = table.Rows[1];
             if (headerRow == null || dataRow == null) throw new NullReferenceException(tableName + " does not have two rows, check EXCEL configuration sheet!");

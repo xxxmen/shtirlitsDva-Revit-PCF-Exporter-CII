@@ -12,8 +12,15 @@ namespace NTR_Exporter
     {
         public NTR_Exporter(ExternalCommandData cData)
         {
+            StringBuilder outputBuilder = new StringBuilder();
+
             ConfigurationData conf = new ConfigurationData(cData);
-            
+
+            outputBuilder.Append(conf.GEN);
+            outputBuilder.Append(conf.AUFT);
+            outputBuilder.Append(conf.TEXT);
+
+
         }
     }
 }
