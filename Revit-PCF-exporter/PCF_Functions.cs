@@ -346,7 +346,7 @@ namespace PCF_Functions
         const double _foot_to_inch = 12;
 
         /// <summary>
-        /// Return a string for a real number formatted to two decimal places.
+        /// Return a string for a real number.
         /// </summary>
         private static string RealString(double a)
         {
@@ -356,7 +356,7 @@ namespace PCF_Functions
         }
 
         /// <summary>
-        /// Return a string for an XYZ point or vector with its coordinates converted from feet to millimetres and formatted to two decimal places.
+        /// Return a string for an XYZ point or vector with its coordinates converted from feet to millimetres.
         /// </summary>
         public static string PointStringMm(XYZ p)
         {
