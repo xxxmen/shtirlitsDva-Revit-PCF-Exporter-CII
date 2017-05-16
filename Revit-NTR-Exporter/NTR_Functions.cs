@@ -109,4 +109,40 @@ namespace NTR_Functions
             return sb;
         }
     }
+
+    public static class CoordsWriter
+    {
+        public static string PointCoords(string p, Connector c)
+        {
+            return " " + p + "=" + NtrConversion.PointStringMm(c.Origin);
+        }
+    }
+
+    public class NtrConversion
+    {
+        const double _inch_to_mm = 25.4;
+        const double _foot_to_mm = 12 * _inch_to_mm;
+        const double _foot_to_inch = 12;
+
+        /// <summary>
+        /// Return a string for a real number.
+        /// </summary>
+        private static string RealString(double a)
+        {
+            //return a.ToString("0.##");
+            //return (Math.Truncate(a * 100) / 100).ToString("0.00", CultureInfo.GetCultureInfo("en-GB"));
+            return Math.Round(a, 1, MidpointRounding.AwayFromZero).ToString("0", CultureInfo.GetCultureInfo("en-GB"));
+        }
+
+        /// <summary>
+        /// Return a string for an XYZ point or vector with its coordinates converted from feet to millimetres.
+        /// </summary>
+        public static string PointStringMm(XYZ p)
+        {
+            return string.Format("'{0:0}, {1:0}, {2:0}'",
+                RealString(p.X * _foot_to_mm),
+                RealString(p.Y * _foot_to_mm),
+                RealString(p.Z * _foot_to_mm));
+        }
+    }
 }

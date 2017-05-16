@@ -17,7 +17,6 @@ using dh = PCF_Functions.DataHandler;
 
 namespace NTR_Exporter
 {
-    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     public partial class NTR_Exporter_form : System.Windows.Forms.Form
     {
         static ExternalCommandData _commandData;
