@@ -9,9 +9,9 @@ using Autodesk.Revit.UI;
 using BuildingCoder;
 using MoreLinq;
 using NTR_Functions;
+using NTR_Output;
 using PCF_Functions;
-using PCF_Output;
-using InputVars = NTR_Functions.InputVars;
+using iv = NTR_Functions.InputVars;
 
 namespace NTR_Exporter
 {
@@ -60,7 +60,7 @@ namespace NTR_Exporter
                 //Grouping is necessary even tho theres only one group to be able to process by the same code as the all pipelines case
 
                 //If user chooses to export all pipelines get all elements and create grouping
-                if (InputVars.ExportAllOneFile)
+                if (iv.ExportAllOneFile)
                 {
                     //Define a collector (Pipe OR FamInst) AND (Fitting OR Accessory OR Pipe).
                     //This is to eliminate FamilySymbols from collector which would throw an exception later on.
@@ -82,7 +82,7 @@ namespace NTR_Exporter
 
                 }
 
-                if (InputVars.ExportAllSepFiles || PCF_Functions.InputVars.ExportSpecificPipeLine)
+                if (iv.ExportAllSepFiles || iv.ExportSpecificPipeLine)
                 {
                     //Define a collector with multiple filters to collect PipeFittings OR PipeAccessories OR Pipes + filter by System Abbreviation
                     //System Abbreviation filter also filters FamilySymbols out.
@@ -97,7 +97,7 @@ namespace NTR_Exporter
                     colElements = collector.ToElements().ToHashSet();
                 }
 
-                if (InputVars.ExportSelection)
+                if (iv.ExportSelection)
                 {
                     ICollection<ElementId> selection = cData.Application.ActiveUIDocument.Selection.GetElementIds();
                     colElements = selection.Select(s => doc.GetElement(s)).ToHashSet();
@@ -126,22 +126,20 @@ namespace NTR_Exporter
 
                     
                     StringBuilder sbPipes = new NTR_Pipes_Export().Export(gp.Key, pipeList, doc);
-                    StringBuilder sbFittings = new PCF_Fittings.PCF_Fittings_Export().Export(gp.Key, fittingList, doc);
-                    StringBuilder sbAccessories = new PCF_Accessories.PCF_Accessories_Export().Export(gp.Key, accessoryList, doc);
+                    //StringBuilder sbFittings = new PCF_Fittings.PCF_Fittings_Export().Export(gp.Key, fittingList, doc);
+                    //StringBuilder sbAccessories = new PCF_Accessories.PCF_Accessories_Export().Export(gp.Key, accessoryList, doc);
 
-                    sbCollect.Append(sbPipeline); sbCollect.Append(sbPipes); sbCollect.Append(sbFittings); sbCollect.Append(sbAccessories);
+                    //sbCollect.Append(sbPipeline);
+                    outputBuilder.Append(sbPipes);
+                    //sbCollect.Append(sbFittings);
+                    //sbCollect.Append(sbAccessories);
                 }
-                #endregion
-
-                #region Materials
-                StringBuilder sbMaterials = composer.MaterialsSection(materialGroups);
-                sbCollect.Append(sbMaterials);
                 #endregion
 
                 #region Output
                 // Output the processed data
                 Output output = new Output();
-                output.OutputWriter(doc, sbCollect, PCF_Functions.InputVars.OutputDirectoryFilePath);
+                output.OutputWriter(doc, outputBuilder, iv.OutputDirectoryFilePath);
                 #endregion
 
             }
@@ -153,8 +151,7 @@ namespace NTR_Exporter
 
             catch (Exception ex)
             {
-                msg = ex.Message;
-                return Result.Failed;
+                throw new Exception(ex.Message);
             }
 
             return Result.Succeeded;

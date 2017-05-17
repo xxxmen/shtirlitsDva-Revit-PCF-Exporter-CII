@@ -37,15 +37,13 @@ namespace NTR_Exporter
 
                 sbPipes.Append(cw.PointCoords("P1", connectorEnd.First()));
                 sbPipes.Append(cw.PointCoords("P2", connectorEnd.Last()));
+                
+                
                 //TODO: Continue here!
 
-                Composer elemParameterComposer = new Composer();
-                sbPipes.Append(elemParameterComposer.ElemParameterWriter(element));
+                
+                
 
-                #region CII export
-
-                if (InputVars.ExportToCII) sbPipes.Append(Composer.CIIWriter(doc, key));
-                #endregion
 
                 sbPipes.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
                 sbPipes.Append(element.UniqueId);

@@ -190,24 +190,24 @@ namespace NTR_Exporter
         private void Button6_Click(object sender, EventArgs e)
         {
             NTR_Exporter exporter = new NTR_Exporter(_commandData);
-            ////PCFExport pcfExporter = new PCFExport();
-            ////Result result = Result.Failed;
 
-            //if (iv.ExportAllOneFile || iv.ExportSpecificPipeLine || iv.ExportSelection)
-            //{
-            //    //result = pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
-            //}
-            //else if (iv.ExportAllSepFiles)
-            //{
-            //    foreach (string name in pipeLinesAbbreviations)
-            //    {
-            //        iv.SysAbbr = name;
-            //        //result = pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
-            //    }
-            //}
+            Result result = Result.Failed;
 
-            ////if (result == Result.Succeeded) Util.InfoMsg("PCF data exported successfully!");
-            ////if (result == Result.Failed) Util.InfoMsg("PCF data export failed for some reason.");
+            if (iv.ExportAllOneFile || iv.ExportSpecificPipeLine || iv.ExportSelection)
+            {
+                result = exporter.ExportNtr(_commandData);
+            }
+            else if (iv.ExportAllSepFiles)
+            {
+                foreach (string name in pipeLinesAbbreviations)
+                {
+                    iv.SysAbbr = name;
+                    result = exporter.ExportNtr(_commandData);
+                }
+            }
+
+            if (result == Result.Succeeded) Util.InfoMsg("PCF data exported successfully!");
+            if (result == Result.Failed) Util.InfoMsg("PCF data export failed for some reason.");
         }
 
         private void RadioButton3_CheckedChanged(object sender, EventArgs e)
