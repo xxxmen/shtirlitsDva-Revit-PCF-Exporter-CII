@@ -51,7 +51,7 @@ namespace NTR_Functions
             DataTableCollection dataTableCollection = dataSet.Tables;
 
             _01_GEN = ReadConfigurationData(dataTableCollection, "GEN", "C General settings");
-            _02_AUFT= ReadConfigurationData(dataTableCollection, "AUFT", "C Project description");
+            _02_AUFT = ReadConfigurationData(dataTableCollection, "AUFT", "C Project description");
             _03_TEXT = ReadConfigurationData(dataTableCollection, "TEXT", "C User text");
             _04_LAST = ReadConfigurationData(dataTableCollection, "LAST", "C Loads definition");
             _05_DN = ReadConfigurationData(dataTableCollection, "DN", "C Definition of pipe dimensions");
@@ -87,8 +87,8 @@ namespace NTR_Functions
 
             for (int i = 0; i < numberOfRows / 2; i++)
             {
-                DataRow headerRow = table.Rows[i*2];
-                DataRow dataRow = table.Rows[i*2+1];
+                DataRow headerRow = table.Rows[i * 2];
+                DataRow dataRow = table.Rows[i * 2 + 1];
                 if (headerRow == null || dataRow == null)
                     throw new NullReferenceException(
                         tableName + " does not have two rows, check EXCEL configuration sheet!");
@@ -110,11 +110,32 @@ namespace NTR_Functions
         }
     }
 
-    public static class CoordsWriter
+    public static class DataWriter
     {
         public static string PointCoords(string p, Connector c)
         {
             return " " + p + "=" + NtrConversion.PointStringMm(c.Origin);
+        }
+
+        public static string DnWriter(Element element)
+        {
+            double dia = 0;
+
+            if (element is Pipe pipe)
+            {
+                //Get connector set for the pipes
+                ConnectorSet connectorSet = pipe.ConnectorManager.Connectors;
+                //Filter out non-end types of connectors
+                Connector con = (from Connector connector in connectorSet
+                               where connector.ConnectorType.ToString().Equals("End")
+                               select connector).FirstOrDefault();
+                dia = con.Radius * 2;
+            }
+            else if (element is FamilyInstance fis)
+            {
+                return "FIX ME NTR_Functions DataWriter DnWriter FamilyInstance case";
+            }
+            return " DN=DN" + dia.FeetToMm().Round(0);
         }
     }
 
@@ -131,7 +152,7 @@ namespace NTR_Functions
         {
             //return a.ToString("0.##");
             //return (Math.Truncate(a * 100) / 100).ToString("0.00", CultureInfo.GetCultureInfo("en-GB"));
-            return Math.Round(a, 1, MidpointRounding.AwayFromZero).ToString("0", CultureInfo.GetCultureInfo("en-GB"));
+            return Math.Round(a, 1, MidpointRounding.AwayFromZero).ToString("0.0", CultureInfo.GetCultureInfo("en-GB"));
         }
 
         /// <summary>
@@ -139,7 +160,7 @@ namespace NTR_Functions
         /// </summary>
         public static string PointStringMm(XYZ p)
         {
-            return string.Format("'{0:0}, {1:0}, {2:0}'",
+            return string.Format("'{0:0.0}, {1:0.0}, {2:0.0}'",
                 RealString(p.X * _foot_to_mm),
                 RealString(p.Y * _foot_to_mm),
                 RealString(p.Z * _foot_to_mm));

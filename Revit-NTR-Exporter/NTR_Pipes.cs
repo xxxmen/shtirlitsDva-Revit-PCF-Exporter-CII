@@ -5,11 +5,12 @@ using System.Text;
 
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
+using NTR_Functions;
 using PCF_Functions;
 using pdw = PCF_Functions.ParameterDataWriter;
 using pdef = PCF_Functions.ParameterDefinition;
 using plst = PCF_Functions.ParameterList;
-using cw = NTR_Functions.CoordsWriter;
+using dw = NTR_Functions.DataWriter;
 
 namespace NTR_Exporter
 {
@@ -35,9 +36,10 @@ namespace NTR_Exporter
                                                  where connector.ConnectorType.ToString().Equals("End")
                                                  select connector).ToList();
 
-                sbPipes.Append(cw.PointCoords("P1", connectorEnd.First()));
-                sbPipes.Append(cw.PointCoords("P2", connectorEnd.Last()));
-                
+                sbPipes.Append(dw.PointCoords("P1", connectorEnd.First()));
+                sbPipes.Append(dw.PointCoords("P2", connectorEnd.Last()));
+                sbPipes.Append(dw.DnWriter(element));
+
                 
                 //TODO: Continue here!
 
@@ -45,8 +47,8 @@ namespace NTR_Exporter
                 
 
 
-                sbPipes.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
-                sbPipes.Append(element.UniqueId);
+                //sbPipes.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
+                //sbPipes.Append(element.UniqueId);
                 sbPipes.AppendLine();
 
             }

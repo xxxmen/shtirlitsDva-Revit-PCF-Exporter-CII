@@ -111,6 +111,8 @@ namespace NTR_Exporter
                                  group e by e.LookupParameter(PCF_Functions.InputVars.PipelineGroupParameterName).AsString();
                 #endregion
 
+                outputBuilder.AppendLine("C Element definitions");
+
                 #region Pipeline management
                 foreach (IGrouping<string, Element> gp in pipelineGroups)
                 {

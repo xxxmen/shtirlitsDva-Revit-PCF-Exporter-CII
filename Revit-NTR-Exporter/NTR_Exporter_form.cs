@@ -42,7 +42,7 @@ namespace NTR_Exporter
             //Init excel path
             _excelPath = mySettings.Default.excelPath;
             if (!string.IsNullOrEmpty(_excelPath)) iv.ExcelPath = _excelPath;
-            //textBox20.Text = _excelPath;
+            textBox20.Text = _excelPath;
 
             //Init output path
             _outputDirectoryFilePath = mySettings.Default.textBox5OutputPath;
@@ -206,8 +206,8 @@ namespace NTR_Exporter
                 }
             }
 
-            if (result == Result.Succeeded) Util.InfoMsg("PCF data exported successfully!");
-            if (result == Result.Failed) Util.InfoMsg("PCF data export failed for some reason.");
+            if (result == Result.Succeeded) Util.InfoMsg("NTR data exported successfully!");
+            if (result == Result.Failed) Util.InfoMsg("NTR data export failed for some reason.");
         }
 
         private void RadioButton3_CheckedChanged(object sender, EventArgs e)
