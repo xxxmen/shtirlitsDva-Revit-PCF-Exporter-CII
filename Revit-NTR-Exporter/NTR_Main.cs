@@ -103,7 +103,7 @@ namespace NTR_Exporter
                 }
 
                 //DiameterLimit filter applied to ALL elements.
-                HashSet<Element> elements = (from element in colElements where new FilterDiameterLimit().FilterDL(element) select element).ToHashSet();
+                HashSet<Element> elements = (from element in colElements where NTR_Filter.FilterDiameterLimit(element) select element).ToHashSet();
 
                 //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
                 pipelineGroups = from e in elements

@@ -195,4 +195,47 @@ namespace NTR_Functions
                 RealString(p.Z * _foot_to_mm));
         }
     }
+
+    public static class NTR_Filter
+    {
+        /// <summary>
+        /// Tests the diameter of the pipe or primary connector of element against the diameter limit set in the interface.
+        /// </summary>
+        /// <param name="passedElement"></param>
+        /// <returns>True if diameter is larger than limit and false if smaller.</returns>
+        public static bool FilterDiameterLimit(Element element)
+        {
+            double diameterLimit = iv.DiameterLimit;
+            bool diameterLimitBool = true;
+            double testedDiameter = 0;
+            switch (element)
+            {
+                case MEPCurve pipe:
+                    testedDiameter = pipe.Diameter.FeetToMm().Round(0);
+                    if (testedDiameter <= diameterLimit) diameterLimitBool = false;
+                    break;
+
+                case FamilyInstance inst:
+                    //MEPModel of the elements is accessed
+                    MEPModel mepmodel = inst.MEPModel;
+                    //Get connector set for the element
+                    ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
+                    //Declare a variable for 
+                    Connector testedConnector = null;
+
+                    if (connectorSet.IsEmpty) break;
+                    else if (connectorSet.Size == 1) foreach (Connector connector in connectorSet) testedConnector = connector;
+                    else testedConnector = (from Connector connector in connectorSet
+                                            where connector.GetMEPConnectorInfo().IsPrimary
+                                            select connector).FirstOrDefault();
+
+                    testedDiameter = (testedConnector.Radius*2).FeetToMm().Round(0);
+
+                    if (testedDiameter <= diameterLimit) diameterLimitBool = false;
+
+                    break;
+            }
+            return diameterLimitBool;
+        }
+    }
 }
