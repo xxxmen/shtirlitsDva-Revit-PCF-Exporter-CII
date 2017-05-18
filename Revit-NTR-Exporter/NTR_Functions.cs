@@ -43,19 +43,23 @@ namespace NTR_Functions
         public StringBuilder _04_LAST { get; }
         public StringBuilder _05_DN { get; }
         public StringBuilder _06_ISO { get; }
+        public DataTable Pipelines { get; }
 
-        public ConfigurationData(ExternalCommandData cData)
+        public ConfigurationData()
         {
             DataSet dataSet = DataHandler.ImportExcelToDataSet(iv.ExcelPath, "NO");
 
             DataTableCollection dataTableCollection = dataSet.Tables;
 
-            _01_GEN = ReadConfigurationData(dataTableCollection, "GEN", "C General settings");
-            _02_AUFT = ReadConfigurationData(dataTableCollection, "AUFT", "C Project description");
-            _03_TEXT = ReadConfigurationData(dataTableCollection, "TEXT", "C User text");
-            _04_LAST = ReadConfigurationData(dataTableCollection, "LAST", "C Loads definition");
-            _05_DN = ReadConfigurationData(dataTableCollection, "DN", "C Definition of pipe dimensions");
-            _06_ISO = ReadConfigurationData(dataTableCollection, "IS", "C Definition of insulation type");
+            _01_GEN = ReadNtrConfigurationData(dataTableCollection, "GEN", "C General settings");
+            _02_AUFT = ReadNtrConfigurationData(dataTableCollection, "AUFT", "C Project description");
+            _03_TEXT = ReadNtrConfigurationData(dataTableCollection, "TEXT", "C User text");
+            _04_LAST = ReadNtrConfigurationData(dataTableCollection, "LAST", "C Loads definition");
+            _05_DN = ReadNtrConfigurationData(dataTableCollection, "DN", "C Definition of pipe dimensions");
+            _06_ISO = ReadNtrConfigurationData(dataTableCollection, "IS", "C Definition of insulation type");
+
+            DataSet dataSetWithHeaders = DataHandler.ImportExcelToDataSet(iv.ExcelPath, "YES");
+            Pipelines = ReadDataTable(dataSetWithHeaders.Tables, "PIPELINES");
 
             //http://stackoverflow.com/questions/10855/linq-query-on-a-datatable?rq=1
         }
@@ -66,12 +70,12 @@ namespace NTR_Functions
         /// <param name="dataTableCollection">A collection of datatables.</param>
         /// <param name="tableName">The name of the DataTable to process.</param>
         /// <returns>StringBuilder containing the output NTR data.</returns>
-        private static StringBuilder ReadConfigurationData(DataTableCollection dataTableCollection, string tableName, string description)
+        private static StringBuilder ReadNtrConfigurationData(DataTableCollection dataTableCollection, string tableName, string description)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(description);
 
-            var table = (from DataTable dtbl in dataTableCollection where dtbl.TableName == tableName select dtbl).FirstOrDefault();
+            var table = ReadDataTable(dataTableCollection, tableName);
             if (table == null)
             {
                 sb.AppendLine("C " + tableName + " does not exist!");
@@ -108,6 +112,13 @@ namespace NTR_Functions
 
             return sb;
         }
+
+        private static DataTable ReadDataTable(DataTableCollection dataTableCollection, string tableName)
+        {
+            var table = (from DataTable dtbl in dataTableCollection where dtbl.TableName == tableName select dtbl)
+                .FirstOrDefault();
+            return table;
+        }
     }
 
     public static class DataWriter
@@ -127,15 +138,33 @@ namespace NTR_Functions
                 ConnectorSet connectorSet = pipe.ConnectorManager.Connectors;
                 //Filter out non-end types of connectors
                 Connector con = (from Connector connector in connectorSet
-                               where connector.ConnectorType.ToString().Equals("End")
-                               select connector).FirstOrDefault();
+                                 where connector.ConnectorType.ToString().Equals("End")
+                                 select connector).FirstOrDefault();
                 dia = con.Radius * 2;
             }
             else if (element is FamilyInstance fis)
             {
-                return "FIX ME NTR_Functions DataWriter DnWriter FamilyInstance case";
+                //TODO: Fix FamilyInstance case
+                return "NTR_Functions DataWriter DnWriter FamilyInstance case";
             }
             return " DN=DN" + dia.FeetToMm().Round(0);
+        }
+
+        public static string ReadParameterFromDataTable(string key, ConfigurationData conf, string parameter)
+        {
+            DataTable table = conf.Pipelines;
+            var query = from value in table.AsEnumerable()
+                        where value.Field<string>(0) == key
+                        select value.Field<string>(parameter);
+            string material = query.FirstOrDefault();
+            if (material == null)
+                throw new Exception("There was no definition for " + parameter + " parameter for pipeline " + key);
+            return " " + parameter + "=" + material;
+        }
+
+        public static string WriteElementId(Element element, string parameter)
+        {
+            return " " + parameter + "=" + element.Id.IntegerValue;
         }
     }
 

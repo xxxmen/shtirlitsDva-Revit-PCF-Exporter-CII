@@ -189,7 +189,7 @@ namespace NTR_Exporter
 
         private void Button6_Click(object sender, EventArgs e)
         {
-            NTR_Exporter exporter = new NTR_Exporter(_commandData);
+            NTR_Exporter exporter = new NTR_Exporter();
 
             Result result = Result.Failed;
 

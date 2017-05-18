@@ -16,7 +16,7 @@ namespace NTR_Exporter
 {
     public class NTR_Pipes_Export
     {
-        public StringBuilder Export(string pipeLineGroupingKey, HashSet<Element> elements, Document doc)
+        public StringBuilder Export(string pipeLineGroupingKey, HashSet<Element> elements, ConfigurationData conf, Document doc)
         {
             var pipeList = elements;
             var sbPipes = new StringBuilder();
@@ -39,13 +39,10 @@ namespace NTR_Exporter
                 sbPipes.Append(dw.PointCoords("P1", connectorEnd.First()));
                 sbPipes.Append(dw.PointCoords("P2", connectorEnd.Last()));
                 sbPipes.Append(dw.DnWriter(element));
-
-                
-                //TODO: Continue here!
-
-                
-                
-
+                sbPipes.Append(dw.ReadParameterFromDataTable(key, conf, "MAT"));
+                sbPipes.Append(dw.ReadParameterFromDataTable(key, conf, "LAST"));
+                sbPipes.Append(dw.WriteElementId(element, "REF"));
+                sbPipes.Append(" LTG=" + key);
 
                 //sbPipes.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
                 //sbPipes.Append(element.UniqueId);
