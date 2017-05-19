@@ -7,14 +7,12 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using NTR_Functions;
 using PCF_Functions;
-using pdw = PCF_Functions.ParameterDataWriter;
-using pdef = PCF_Functions.ParameterDefinition;
-using plst = PCF_Functions.ParameterList;
+
 using dw = NTR_Functions.DataWriter;
 
 namespace NTR_Exporter
 {
-    public class NTR_Pipes_Export
+    public class NTR_Pipes
     {
         public StringBuilder Export(string pipeLineGroupingKey, HashSet<Element> elements, ConfigurationData conf, Document doc)
         {
@@ -39,8 +37,8 @@ namespace NTR_Exporter
                 sbPipes.Append(dw.PointCoords("P1", connectorEnd.First()));
                 sbPipes.Append(dw.PointCoords("P2", connectorEnd.Last()));
                 sbPipes.Append(dw.DnWriter(element));
-                sbPipes.Append(dw.ReadParameterFromDataTable(key, conf, "MAT"));
-                sbPipes.Append(dw.ReadParameterFromDataTable(key, conf, "LAST"));
+                sbPipes.Append(dw.ReadParameterFromDataTable(key, conf.Pipelines, "MAT"));
+                sbPipes.Append(dw.ReadParameterFromDataTable(key, conf.Pipelines, "LAST"));
                 sbPipes.Append(dw.WriteElementId(element, "REF"));
                 sbPipes.Append(" LTG=" + key);
 

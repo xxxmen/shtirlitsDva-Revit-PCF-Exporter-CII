@@ -44,6 +44,7 @@ namespace NTR_Functions
         public StringBuilder _05_DN { get; }
         public StringBuilder _06_ISO { get; }
         public DataTable Pipelines { get; }
+        public DataTable Elements { get; }
 
         public ConfigurationData()
         {
@@ -60,6 +61,7 @@ namespace NTR_Functions
 
             DataSet dataSetWithHeaders = DataHandler.ImportExcelToDataSet(iv.ExcelPath, "YES");
             Pipelines = ReadDataTable(dataSetWithHeaders.Tables, "PIPELINES");
+            Elements = ReadDataTable(dataSetWithHeaders.Tables, "ELEMENTS");
 
             //http://stackoverflow.com/questions/10855/linq-query-on-a-datatable?rq=1
         }
@@ -150,9 +152,8 @@ namespace NTR_Functions
             return " DN=DN" + dia.FeetToMm().Round(0);
         }
 
-        public static string ReadParameterFromDataTable(string key, ConfigurationData conf, string parameter)
+        public static string ReadParameterFromDataTable(string key, DataTable table, string parameter)
         {
-            DataTable table = conf.Pipelines;
             var query = from value in table.AsEnumerable()
                         where value.Field<string>(0) == key
                         select value.Field<string>(parameter);

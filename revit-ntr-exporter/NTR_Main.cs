@@ -126,7 +126,7 @@ namespace NTR_Exporter
                                                       select element).ToHashSet();
 
                     
-                    StringBuilder sbPipes = new NTR_Pipes_Export().Export(gp.Key, pipeList, conf, doc);
+                    StringBuilder sbPipes = new NTR_Pipes().Export(gp.Key, pipeList, conf, doc);
                     //StringBuilder sbFittings = new PCF_Fittings.PCF_Fittings_Export().Export(gp.Key, fittingList, doc);
                     //StringBuilder sbAccessories = new PCF_Accessories.PCF_Accessories_Export().Export(gp.Key, accessoryList, doc);
 
