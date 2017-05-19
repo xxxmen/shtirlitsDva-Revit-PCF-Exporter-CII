@@ -10,6 +10,7 @@ using NTR_Functions;
 using PCF_Functions;
 
 using dw = NTR_Functions.DataWriter;
+using mu = PCF_Functions.MepUtils;
 
 namespace NTR_Exporter
 {
@@ -18,7 +19,6 @@ namespace NTR_Exporter
         public StringBuilder Export(string key, HashSet<Element> elements, ConfigurationData conf, Document doc)
         {
             var sbFittings = new StringBuilder();
-            NTR_Dictionary dict = new NTR_Dictionary();
 
             foreach (Element element in elements)
             {
@@ -27,31 +27,33 @@ namespace NTR_Exporter
 
                 //Read element kind
                 string kind = dw.ReadParameterFromDataTable(famAndType, conf.Elements, "KIND");
-
+                if (kind == null) continue;
                 
-
                 //Write element kind
                 sbFittings.Append(kind);
 
-                //Process P1, P2, DN
-                Pipe pipe = (Pipe)element;
-                //Get connector set for the pipes
-                ConnectorSet connectorSet = pipe.ConnectorManager.Connectors;
-                //Filter out non-end types of connectors
-                IList<Connector> connectorEnd = (from Connector connector in connectorSet
-                                                 where connector.ConnectorType.ToString().Equals("End")
-                                                 select connector).ToList();
+                switch (kind)
+                {
+                    case "TEE":
+                        var cons = NTR_Utils.GetConnectors(element);
+                        sbFittings.Append(dw.PointCoords("PH1", cons.Primary));
+                        sbFittings.Append(dw.PointCoords("PH2", cons.Secondary));
+                        sbFittings.Append(dw.PointCoords("PA1", element));
+                        sbFittings.Append(dw.PointCoords("PA2", cons.Tertiary));
+                        sbFittings.Append(dw.DnWriter("DNH", cons.Primary));
+                        sbFittings.Append(dw.DnWriter("DNA", cons.Tertiary));
+                        sbFittings.Append(dw.ReadParameterFromDataTable(kind, conf.Elements, "TYP"));
+                        sbFittings.Append(dw.ReadParameterFromDataTable(kind, conf.Elements, "NORM"));
+                        break;
+                    case "RED":
 
-                sbFittings.Append(dw.PointCoords("P1", connectorEnd.First()));
-                sbFittings.Append(dw.PointCoords("P2", connectorEnd.Last()));
-                sbFittings.Append(dw.DnWriter(element));
+                        break;
+                }
+
                 sbFittings.Append(dw.ReadParameterFromDataTable(key, conf.Pipelines, "MAT"));
                 sbFittings.Append(dw.ReadParameterFromDataTable(key, conf.Pipelines, "LAST"));
                 sbFittings.Append(dw.WriteElementId(element, "REF"));
                 sbFittings.Append(" LTG=" + key);
-
-                //sbPipes.Append("    UNIQUE-COMPONENT-IDENTIFIER ");
-                //sbPipes.Append(element.UniqueId);
                 sbFittings.AppendLine();
 
             }

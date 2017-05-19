@@ -74,7 +74,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
-    <Compile Include="NTR_Dictionary.cs" />
     <Compile Include="NTR_Fittings.cs" />
     <Compile Include="NTR_Functions.cs" />
     <Compile Include="NTR_Main.cs" />

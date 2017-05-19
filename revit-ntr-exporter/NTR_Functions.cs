@@ -130,6 +130,11 @@ namespace NTR_Functions
             return " " + p + "=" + NtrConversion.PointStringMm(c.Origin);
         }
 
+        public static string PointCoords(string p, Element element)
+        {
+            return " " + p + "=" + NtrConversion.PointStringMm(((LocationPoint)element.Location).Point);
+        }
+
         public static string DnWriter(Element element)
         {
             double dia = 0;
@@ -146,21 +151,29 @@ namespace NTR_Functions
             }
             else if (element is FamilyInstance fis)
             {
-                //TODO: Fix FamilyInstance case
+                //TODO: Fix FamilyInstance case, maybe not
                 return "NTR_Functions DataWriter DnWriter FamilyInstance case";
             }
             return " DN=DN" + dia.FeetToMm().Round(0);
         }
 
+        public static string DnWriter(string p, Connector con)
+        {
+            double dia = con.Radius * 2;
+            return " " + p + "=DN" + dia.FeetToMm().Round(0);
+        }
+
         public static string ReadParameterFromDataTable(string key, DataTable table, string parameter)
         {
-            var query = from value in table.AsEnumerable()
-                        where value.Field<string>(0) == key
-                        select value.Field<string>(parameter);
-            string material = query.FirstOrDefault();
-            if (material == null)
+            if (!(table.AsEnumerable().Any(row => row.Field<string>(0) == key))) return null;
+
+            var query = from row in table.AsEnumerable()
+                        where row.Field<string>(0) == key
+                        select row.Field<string>(parameter);
+            string value = query.FirstOrDefault();
+            if (value == null)
                 throw new Exception("There was no definition for " + parameter + " parameter for pipeline " + key);
-            return " " + parameter + "=" + material;
+            return " " + parameter + "=" + value;
         }
 
         public static string WriteElementId(Element element, string parameter)
@@ -230,13 +243,33 @@ namespace NTR_Functions
                                             where connector.GetMEPConnectorInfo().IsPrimary
                                             select connector).FirstOrDefault();
 
-                    testedDiameter = (testedConnector.Radius*2).FeetToMm().Round(0);
+                    testedDiameter = (testedConnector.Radius * 2).FeetToMm().Round(0);
 
                     if (testedDiameter <= diameterLimit) diameterLimitBool = false;
 
                     break;
             }
             return diameterLimitBool;
+        }
+    }
+
+    public static class NTR_Utils
+    {
+        public static (Connector Primary, Connector Secondary, Connector Tertiary) GetConnectors(Element element)
+        {
+            ConnectorManager cmgr = MepUtils.GetConnectorManager(element);
+            //Sort connectors to primary, secondary and none
+            Connector primCon = null; Connector secCon = null; Connector tertCon = null;
+
+            foreach (Connector connector in cmgr.Connectors)
+            {
+                if (connector.GetMEPConnectorInfo().IsPrimary) primCon = connector;
+                else if (connector.GetMEPConnectorInfo().IsSecondary) secCon = connector;
+                else if ((connector.GetMEPConnectorInfo().IsPrimary == false) && (connector.GetMEPConnectorInfo().IsSecondary == false))
+                    tertCon = connector;
+            }
+
+            return (primCon, secCon, tertCon);
         }
     }
 }
