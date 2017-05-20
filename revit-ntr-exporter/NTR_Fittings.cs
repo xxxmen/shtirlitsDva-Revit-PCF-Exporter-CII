@@ -14,9 +14,9 @@ using mu = PCF_Functions.MepUtils;
 
 namespace NTR_Exporter
 {
-    class NTR_Fittings
+    public static class NTR_Fittings
     {
-        public StringBuilder Export(string key, HashSet<Element> elements, ConfigurationData conf, Document doc)
+        public static StringBuilder Export(string key, HashSet<Element> elements, ConfigurationData conf, Document doc)
         {
             var sbFittings = new StringBuilder();
 
@@ -26,16 +26,18 @@ namespace NTR_Exporter
                 string famAndType = element.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
 
                 //Read element kind
-                string kind = dw.ReadParameterFromDataTable(famAndType, conf.Elements, "KIND");
+                string kind = dw.ReadElementTypeFromDataTable(famAndType, conf.Elements, "KIND");
                 if (kind == null) continue;
                 
                 //Write element kind
                 sbFittings.Append(kind);
 
+                //Get the connectors
+                var cons = NTR_Utils.GetConnectors(element);
+
                 switch (kind)
                 {
                     case "TEE":
-                        var cons = NTR_Utils.GetConnectors(element);
                         sbFittings.Append(dw.PointCoords("PH1", cons.Primary));
                         sbFittings.Append(dw.PointCoords("PH2", cons.Secondary));
                         sbFittings.Append(dw.PointCoords("PA1", element));
@@ -46,12 +48,36 @@ namespace NTR_Exporter
                         sbFittings.Append(dw.ReadParameterFromDataTable(kind, conf.Elements, "NORM"));
                         break;
                     case "RED":
-
+                        sbFittings.Append(dw.PointCoords("P1", cons.Primary));
+                        sbFittings.Append(dw.PointCoords("P2", cons.Secondary));
+                        sbFittings.Append(dw.DnWriter("DN1", cons.Primary));
+                        sbFittings.Append(dw.DnWriter("DN2", cons.Secondary));
+                        sbFittings.Append(dw.ReadParameterFromDataTable(kind, conf.Elements, "NORM"));
+                        break;
+                    case "FLA":
+                        sbFittings.Append(dw.PointCoords("P1", cons.Secondary));
+                        sbFittings.Append(dw.PointCoords("P2", cons.Primary));
+                        sbFittings.Append(dw.DnWriter("DN", cons.Primary));
+                        sbFittings.Append(dw.ReadParameterFromDataTable(kind, conf.Elements, "NORM"));
+                        //TODO: Implement flange weight GEW
+                        break;
+                    case "FLABL":
+                        sbFittings.Append(dw.PointCoords("PNAME", cons.Primary));
+                        sbFittings.Append(dw.DnWriter("DN", cons.Primary));
+                        sbFittings.Append(dw.ReadParameterFromDataTable(kind, conf.Elements, "NORM"));
+                        //TODO: Implement flange weight GEW
+                        break;
+                    case "BOG":
+                        sbFittings.Append(dw.PointCoords("P1", cons.Primary));
+                        sbFittings.Append(dw.PointCoords("P2", cons.Secondary));
+                        sbFittings.Append(dw.PointCoords("PT", element));
+                        sbFittings.Append(dw.DnWriter("DN", cons.Primary));
+                        sbFittings.Append(dw.ReadParameterFromDataTable(kind, conf.Elements, "NORM"));
                         break;
                 }
 
-                sbFittings.Append(dw.ReadParameterFromDataTable(key, conf.Pipelines, "MAT"));
-                sbFittings.Append(dw.ReadParameterFromDataTable(key, conf.Pipelines, "LAST"));
+                sbFittings.Append(dw.ReadParameterFromDataTable(key, conf.Pipelines, "MAT")); //Is not required for FLABL?
+                sbFittings.Append(dw.ReadParameterFromDataTable(key, conf.Pipelines, "LAST")); //Is not required for FLABL?
                 sbFittings.Append(dw.WriteElementId(element, "REF"));
                 sbFittings.Append(" LTG=" + key);
                 sbFittings.AppendLine();

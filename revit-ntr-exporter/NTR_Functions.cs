@@ -176,6 +176,19 @@ namespace NTR_Functions
             return " " + parameter + "=" + value;
         }
 
+        public static string ReadElementTypeFromDataTable(string key, DataTable table, string parameter)
+        {
+            if (!(table.AsEnumerable().Any(row => row.Field<string>(0) == key))) return null;
+
+            var query = from row in table.AsEnumerable()
+                where row.Field<string>(0) == key
+                select row.Field<string>(parameter);
+            string value = query.FirstOrDefault();
+            if (value == null)
+                throw new Exception("There was no definition for " + parameter + " parameter for pipeline " + key);
+            return value;
+        }
+
         public static string WriteElementId(Element element, string parameter)
         {
             return " " + parameter + "=" + element.Id.IntegerValue;

@@ -12,9 +12,9 @@ using dw = NTR_Functions.DataWriter;
 
 namespace NTR_Exporter
 {
-    public class NTR_Pipes
+    public static class NTR_Pipes
     {
-        public StringBuilder Export(string pipeLineGroupingKey, HashSet<Element> elements, ConfigurationData conf, Document doc)
+        public static StringBuilder Export(string pipeLineGroupingKey, HashSet<Element> elements, ConfigurationData conf, Document doc)
         {
             var pipeList = elements;
             var sbPipes = new StringBuilder();

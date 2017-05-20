@@ -126,13 +126,13 @@ namespace NTR_Exporter
                                                       select element).ToHashSet();
 
                     
-                    StringBuilder sbPipes = new NTR_Pipes().Export(gp.Key, pipeList, conf, doc);
-                    //StringBuilder sbFittings = new PCF_Fittings.PCF_Fittings_Export().Export(gp.Key, fittingList, doc);
+                    StringBuilder sbPipes = NTR_Pipes.Export(gp.Key, pipeList, conf, doc);
+                    StringBuilder sbFittings = NTR_Fittings.Export(gp.Key, fittingList, conf, doc);
                     //StringBuilder sbAccessories = new PCF_Accessories.PCF_Accessories_Export().Export(gp.Key, accessoryList, doc);
 
                     //sbCollect.Append(sbPipeline);
                     outputBuilder.Append(sbPipes);
-                    //sbCollect.Append(sbFittings);
+                    outputBuilder.Append(sbFittings);
                     //sbCollect.Append(sbAccessories);
                 }
                 #endregion
