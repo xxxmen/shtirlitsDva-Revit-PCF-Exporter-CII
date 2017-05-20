@@ -6,6 +6,7 @@ using System.Data.OleDb;
 using System.Linq;
 using System.Text;
 using System.Globalization;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms.ComponentModel.Com2Interop;
 using Autodesk.Revit.DB;
@@ -15,6 +16,7 @@ using BuildingCoder;
 using MoreLinq;
 using PCF_Functions;
 using iv = NTR_Functions.InputVars;
+using xel = Microsoft.Office.Interop.Excel;
 
 namespace NTR_Functions
 {
@@ -115,7 +117,7 @@ namespace NTR_Functions
             return sb;
         }
 
-        private static DataTable ReadDataTable(DataTableCollection dataTableCollection, string tableName)
+        public static DataTable ReadDataTable(DataTableCollection dataTableCollection, string tableName)
         {
             var table = (from DataTable dtbl in dataTableCollection where dtbl.TableName == tableName select dtbl)
                 .FirstOrDefault();
@@ -181,8 +183,8 @@ namespace NTR_Functions
             if (!(table.AsEnumerable().Any(row => row.Field<string>(0) == key))) return null;
 
             var query = from row in table.AsEnumerable()
-                where row.Field<string>(0) == key
-                select row.Field<string>(parameter);
+                        where row.Field<string>(0) == key
+                        select row.Field<string>(parameter);
             string value = query.FirstOrDefault();
             if (value == null)
                 throw new Exception("There was no definition for " + parameter + " parameter for pipeline " + key);
@@ -283,6 +285,49 @@ namespace NTR_Functions
             }
 
             return (primCon, secCon, tertCon);
+        }
+    }
+
+    public class NTR_Excel
+    {
+        public void ExportUndefinedElements(Document doc)
+        {
+            //Instantiate excel
+            xel.Application excel = new xel.Application();
+            if (null == excel) throw new Exception("Failed to start EXCEL!");
+            excel.Visible = true;
+            xel.Workbook workbook = excel.Workbooks.Add(Missing.Value);
+            xel.Worksheet worksheet;
+            worksheet = excel.ActiveSheet as xel.Worksheet;
+            worksheet.Name = "MISSING_ELEMENTS";
+            worksheet.Columns.ColumnWidth = 20;
+
+            //Collect all elements
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            collector = PCF_Functions.Filter.GetElementsWithConnectors(doc);
+
+            IOrderedEnumerable<Element> orderedCollector = collector
+                .OrderBy(e => e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM)
+                .AsValueString());
+
+            IEnumerable<IGrouping<string, Element>> elementGroups =
+                from e in orderedCollector
+                group e by e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM)
+                .AsValueString();
+
+            //Read existing values
+            DataSet dataSetWithHeaders = DataHandler.ImportExcelToDataSet(iv.ExcelPath, "YES");
+            DataTable Elements = ConfigurationData.ReadDataTable(dataSetWithHeaders.Tables, "ELEMENTS");
+
+            //Compare values and write those who are not in configuration workbook
+            int row = 1;
+            int col = 1;
+            foreach (IGrouping<string, Element> gp in elementGroups)
+            {
+                //See if record already is defined
+                if (Elements.AsEnumerable().Any(dataRow => dataRow.Field<string>(0) == gp.Key)) continue;
+                worksheet.Cells[row, col] = gp.Key;
+            }
         }
     }
 }

@@ -277,6 +277,8 @@ namespace NTR_Exporter
 
         private void Button9_Click(object sender, EventArgs e)
         {
+            NTR_Excel excel = new NTR_Excel();
+            excel.ExportUndefinedElements(_doc);
             //ExportParameters EP = new ExportParameters();
             //var output = EP.ExecuteMyCommand(_uiapp);
             //if (output == Result.Succeeded) Util.InfoMsg("Elements exported to EXCEL successfully!");
