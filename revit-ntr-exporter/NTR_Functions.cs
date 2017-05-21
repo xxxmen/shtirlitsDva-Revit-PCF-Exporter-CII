@@ -47,6 +47,7 @@ namespace NTR_Functions
         public StringBuilder _06_ISO { get; }
         public DataTable Pipelines { get; }
         public DataTable Elements { get; }
+        public DataTable Supports { get; }
 
         public ConfigurationData()
         {
@@ -64,6 +65,7 @@ namespace NTR_Functions
             DataSet dataSetWithHeaders = DataHandler.ImportExcelToDataSet(iv.ExcelPath, "YES");
             Pipelines = ReadDataTable(dataSetWithHeaders.Tables, "PIPELINES");
             Elements = ReadDataTable(dataSetWithHeaders.Tables, "ELEMENTS");
+            Supports = ReadDataTable(dataSetWithHeaders.Tables, "SUPPORTS");
 
             //http://stackoverflow.com/questions/10855/linq-query-on-a-datatable?rq=1
         }
@@ -167,14 +169,13 @@ namespace NTR_Functions
 
         public static string ReadParameterFromDataTable(string key, DataTable table, string parameter)
         {
-            if (!(table.AsEnumerable().Any(row => row.Field<string>(0) == key))) return null;
+            if (!(table.AsEnumerable().Any(row => row.Field<string>(0) == key))) return "";
 
             var query = from row in table.AsEnumerable()
                         where row.Field<string>(0) == key
                         select row.Field<string>(parameter);
             string value = query.FirstOrDefault();
-            if (value == null)
-                throw new Exception("There was no definition for " + parameter + " parameter for pipeline " + key);
+            if (string.IsNullOrEmpty(value)) return "";
             return " " + parameter + "=" + value;
         }
 
@@ -305,13 +306,17 @@ namespace NTR_Functions
             //Collect all elements
             FilteredElementCollector collector = new FilteredElementCollector(doc);
             collector = PCF_Functions.Filter.GetElementsWithConnectors(doc);
+            HashSet<Element> elements = collector.ToElements().ToHashSet();
+            HashSet<Element> filteredElements = (from Element e in elements
+                                                 where NTR_Filter.FilterDiameterLimit(e)
+                                                 select e).ToHashSet();
 
-            IOrderedEnumerable<Element> orderedCollector = collector
-                .OrderBy(e => e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM)
-                .AsValueString());
+            //IOrderedEnumerable<Element> orderedCollector = collector
+            //    .OrderBy(e => e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM)
+            //    .AsValueString());
 
             IEnumerable<IGrouping<string, Element>> elementGroups =
-                from e in orderedCollector
+                from e in filteredElements
                 group e by e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM)
                 .AsValueString();
 
@@ -327,6 +332,7 @@ namespace NTR_Functions
                 //See if record already is defined
                 if (Elements.AsEnumerable().Any(dataRow => dataRow.Field<string>(0) == gp.Key)) continue;
                 worksheet.Cells[row, col] = gp.Key;
+                row++;
             }
         }
     }

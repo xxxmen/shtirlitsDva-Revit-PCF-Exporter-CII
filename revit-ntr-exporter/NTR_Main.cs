@@ -125,15 +125,18 @@ namespace NTR_Exporter
                                                       where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeAccessory
                                                       select element).ToHashSet();
 
-                    
+                    //TODO: Change the splitting of elements to follow the worksheets
+                    //There's now a mismatch of how many worksheets define the elements (ELEMENTS and SUPPORTS) and
+                    //the division into fittings and accessories. Would be more concise to follow the excel configuration
+                    //by worksheet
+
                     StringBuilder sbPipes = NTR_Pipes.Export(gp.Key, pipeList, conf, doc);
                     StringBuilder sbFittings = NTR_Fittings.Export(gp.Key, fittingList, conf, doc);
-                    //StringBuilder sbAccessories = new PCF_Accessories.PCF_Accessories_Export().Export(gp.Key, accessoryList, doc);
+                    StringBuilder sbAccessories = NTR_Accessories.Export(gp.Key, accessoryList, conf, doc);
 
-                    //sbCollect.Append(sbPipeline);
                     outputBuilder.Append(sbPipes);
                     outputBuilder.Append(sbFittings);
-                    //sbCollect.Append(sbAccessories);
+                    outputBuilder.Append(sbAccessories);
                 }
                 #endregion
 
