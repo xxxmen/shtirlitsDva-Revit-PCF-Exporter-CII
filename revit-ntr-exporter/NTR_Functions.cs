@@ -259,6 +259,10 @@ namespace NTR_Functions
                                             where connector.GetMEPConnectorInfo().IsPrimary
                                             select connector).FirstOrDefault();
 
+                    if (testedConnector == null)
+                        throw new Exception("Element " + inst.Id.IntegerValue + " does not have a primary connector!");
+
+
                     testedDiameter = (testedConnector.Radius * 2).FeetToMm().Round(0);
 
                     if (testedDiameter <= diameterLimit) diameterLimitBool = false;
