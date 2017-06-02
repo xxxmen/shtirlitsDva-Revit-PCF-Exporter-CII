@@ -30,8 +30,8 @@ namespace NTR_Output
                 scope = "_Selection";
             }
 
-            //string filename = _outputDir + "\\" + docName + "_" + dateAndTime + scope + ".ntr";
-            string filename = _outputDir+"\\" + docName + ".ntr";
+            string filename = _outputDir + "\\" + docName + "_" + dateAndTime + scope + ".ntr";
+            //string filename = _outputDir+"\\" + docName + ".ntr";
 
             //Clear the output file
             System.IO.File.WriteAllBytes(filename, new byte[0]);
