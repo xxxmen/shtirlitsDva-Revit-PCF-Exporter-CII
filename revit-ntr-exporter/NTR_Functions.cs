@@ -311,8 +311,11 @@ namespace NTR_Functions
             FilteredElementCollector collector = new FilteredElementCollector(doc);
             collector = PCF_Functions.Filter.GetElementsWithConnectors(doc);
             HashSet<Element> elements = collector.ToElements().ToHashSet();
-            HashSet<Element> filteredElements = (from Element e in elements
-                                                 where NTR_Filter.FilterDiameterLimit(e)
+            HashSet<Element> limitedElements = (from Element e in elements
+                                                where NTR_Filter.FilterDiameterLimit(e)
+                                                select e).ToHashSet();
+            HashSet<Element> filteredElements = (from Element e in limitedElements
+                                                 where e.Category.Id.IntegerValue != (int)BuiltInCategory.OST_PipeCurves
                                                  select e).ToHashSet();
 
             //IOrderedEnumerable<Element> orderedCollector = collector
@@ -327,6 +330,7 @@ namespace NTR_Functions
             //Read existing values
             DataSet dataSetWithHeaders = DataHandler.ImportExcelToDataSet(iv.ExcelPath, "YES");
             DataTable Elements = ConfigurationData.ReadDataTable(dataSetWithHeaders.Tables, "ELEMENTS");
+            DataTable Supports = ConfigurationData.ReadDataTable(dataSetWithHeaders.Tables, "SUPPORTS");
 
             //Compare values and write those who are not in configuration workbook
             int row = 1;
@@ -335,6 +339,7 @@ namespace NTR_Functions
             {
                 //See if record already is defined
                 if (Elements.AsEnumerable().Any(dataRow => dataRow.Field<string>(0) == gp.Key)) continue;
+                if (Supports.AsEnumerable().Any(dataRow => dataRow.Field<string>(0) == gp.Key)) continue;
                 worksheet.Cells[row, col] = gp.Key;
                 row++;
             }
