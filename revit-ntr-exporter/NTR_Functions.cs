@@ -169,7 +169,8 @@ namespace NTR_Functions
 
         public static string ReadParameterFromDataTable(string key, DataTable table, string parameter)
         {
-            if (!(table.AsEnumerable().Any(row => row.Field<string>(0) == key))) return "";
+            bool yes = false;
+            if (table.AsEnumerable().Any(row => row.Field<string>(0) == key)) return ""; //<- why this??
 
             var query = from row in table.AsEnumerable()
                         where row.Field<string>(0) == key
@@ -181,7 +182,7 @@ namespace NTR_Functions
 
         public static string ReadElementTypeFromDataTable(string key, DataTable table, string parameter)
         {
-            if (!(table.AsEnumerable().Any(row => row.Field<string>(0) == key))) return null;
+            if (table.AsEnumerable().Any(row => row.Field<string>(0) != key)) return null;
 
             var query = from row in table.AsEnumerable()
                         where row.Field<string>(0) == key

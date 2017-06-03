@@ -23,10 +23,10 @@ namespace NTR_Exporter
             foreach (Element element in elements)
             {
                 //Read the family and type of the element
-                string famAndType = element.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
+                string fat = element.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
 
                 //Read element kind
-                string kind = dw.ReadElementTypeFromDataTable(famAndType, conf.Elements, "KIND");
+                string kind = dw.ReadElementTypeFromDataTable(fat, conf.Elements, "KIND");
                 if (kind == null) continue;
                 
                 //Write element kind
@@ -44,27 +44,27 @@ namespace NTR_Exporter
                         sbFittings.Append(dw.PointCoords("PA2", cons.Tertiary));
                         sbFittings.Append(dw.DnWriter("DNH", cons.Primary));
                         sbFittings.Append(dw.DnWriter("DNA", cons.Tertiary));
-                        sbFittings.Append(dw.ReadParameterFromDataTable(kind, conf.Elements, "TYP"));
-                        sbFittings.Append(dw.ReadParameterFromDataTable(kind, conf.Elements, "NORM"));
+                        sbFittings.Append(dw.ReadParameterFromDataTable(fat, conf.Elements, "TYP"));
+                        sbFittings.Append(dw.ReadParameterFromDataTable(fat, conf.Elements, "NORM"));
                         break;
                     case "RED":
                         sbFittings.Append(dw.PointCoords("P1", cons.Primary));
                         sbFittings.Append(dw.PointCoords("P2", cons.Secondary));
                         sbFittings.Append(dw.DnWriter("DN1", cons.Primary));
                         sbFittings.Append(dw.DnWriter("DN2", cons.Secondary));
-                        sbFittings.Append(dw.ReadParameterFromDataTable(kind, conf.Elements, "NORM"));
+                        sbFittings.Append(dw.ReadParameterFromDataTable(fat, conf.Elements, "NORM"));
                         break;
                     case "FLA":
                         sbFittings.Append(dw.PointCoords("P1", cons.Secondary));
                         sbFittings.Append(dw.PointCoords("P2", cons.Primary));
                         sbFittings.Append(dw.DnWriter("DN", cons.Primary));
-                        sbFittings.Append(dw.ReadParameterFromDataTable(kind, conf.Elements, "NORM"));
-                        //TODO: Implement flange weight GEW
+                        sbFittings.Append(dw.ReadParameterFromDataTable(fat, conf.Elements, "NORM"));
+                        //TODO: Implement flange weight GEW (not necessary, ROHR2 reads some default values if absent)
                         break;
                     case "FLABL":
                         sbFittings.Append(dw.PointCoords("PNAME", cons.Primary));
                         sbFittings.Append(dw.DnWriter("DN", cons.Primary));
-                        sbFittings.Append(dw.ReadParameterFromDataTable(kind, conf.Elements, "NORM"));
+                        sbFittings.Append(dw.ReadParameterFromDataTable(fat, conf.Elements, "NORM"));
                         //TODO: Implement flange weight GEW
                         break;
                     case "BOG":
@@ -72,7 +72,7 @@ namespace NTR_Exporter
                         sbFittings.Append(dw.PointCoords("P2", cons.Secondary));
                         sbFittings.Append(dw.PointCoords("PT", element));
                         sbFittings.Append(dw.DnWriter("DN", cons.Primary));
-                        sbFittings.Append(dw.ReadParameterFromDataTable(kind, conf.Elements, "NORM"));
+                        sbFittings.Append(dw.ReadParameterFromDataTable(fat, conf.Elements, "NORM"));
                         break;
                 }
 
