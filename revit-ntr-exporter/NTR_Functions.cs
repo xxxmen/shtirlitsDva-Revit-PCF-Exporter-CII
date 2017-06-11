@@ -170,30 +170,32 @@ namespace NTR_Functions
         public static string ReadParameterFromDataTable(string key, DataTable table, string parameter)
         {
             //Test if value exists
-            if (table.AsEnumerable().Any(row => row.Field<string>(0) == key)) ;
-            else return "";
-
-            var query = from row in table.AsEnumerable()
-                        where row.Field<string>(0) == key
-                        select row.Field<string>(parameter);
-            string value = query.FirstOrDefault();
-            if (string.IsNullOrEmpty(value)) return "";
-            return " " + parameter + "=" + value;
+            if (table.AsEnumerable().Any(row => row.Field<string>(0) == key))
+            {
+                var query = from row in table.AsEnumerable()
+                            where row.Field<string>(0) == key
+                            select row.Field<string>(parameter);
+                string value = query.FirstOrDefault();
+                if (string.IsNullOrEmpty(value)) return "";
+                return " " + parameter + "=" + value;
+            }
+            return "";
         }
 
         public static string ReadElementTypeFromDataTable(string key, DataTable table, string parameter)
         {
             //Test if value exists
-            if (table.AsEnumerable().Any(row => row.Field<string>(0) == key)) ;
-            else return "";
-
-            var query = from row in table.AsEnumerable()
-                        where row.Field<string>(0) == key
-                        select row.Field<string>(parameter);
-            string value = query.FirstOrDefault();
-            if (value == null)
-                throw new Exception("There was no definition for " + parameter + " parameter for pipeline " + key);
-            return value;
+            if (table.AsEnumerable().Any(row => row.Field<string>(0) == key))
+            {
+                var query = from row in table.AsEnumerable()
+                            where row.Field<string>(0) == key
+                            select row.Field<string>(parameter);
+                string value = query.FirstOrDefault();
+                if (value == null)
+                    throw new Exception("There was no definition for " + parameter + " parameter for pipeline " + key);
+                return value;
+            }
+            return "";
         }
 
         public static string WriteElementId(Element element, string parameter)
