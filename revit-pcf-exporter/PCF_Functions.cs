@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -397,9 +397,23 @@ namespace PCF_Functions
 
     public static class Extensions
     {
+        const double _inch_to_mm = 25.4;
+        const double _foot_to_mm = 12 * _inch_to_mm;
+        const double _foot_to_inch = 12;
+
         public static double Round2(this Double number)
         {
             return Math.Round(number, 2, MidpointRounding.AwayFromZero);
+        }
+
+        public static double Round(this Double number, int decimals)
+        {
+            return Math.Round(number, decimals, MidpointRounding.AwayFromZero);
+        }
+
+        public static double FeetToMm(this Double l)
+        {
+            return l * _foot_to_mm;
         }
 
         public static bool IsOdd(this int number)

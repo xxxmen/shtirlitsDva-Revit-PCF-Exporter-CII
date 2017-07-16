@@ -48,7 +48,7 @@ namespace NTR_Exporter
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NTR_Exporter_form));
             this.Tabs = new System.Windows.Forms.TabControl();
             this.TabSetup = new System.Windows.Forms.TabPage();
-            this.radioBox1 = new RadioBox();
+            this.radioBox1 = new PCF_Functions.RadioBox();
             this.button9 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -62,27 +62,27 @@ namespace NTR_Exporter
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.radioBox3 = new RadioBox();
+            this.radioBox3 = new PCF_Functions.RadioBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.radioBox2 = new RadioBox();
+            this.radioBox2 = new PCF_Functions.RadioBox();
             this.radioButton12 = new System.Windows.Forms.RadioButton();
             this.radioButton11 = new System.Windows.Forms.RadioButton();
             this.textBox8 = new System.Windows.Forms.TextBox();
-            this.groupBox6 = new RadioBox();
-            this.groupBox10 = new RadioBox();
+            this.groupBox6 = new PCF_Functions.RadioBox();
+            this.groupBox10 = new PCF_Functions.RadioBox();
             this.radioButton10 = new System.Windows.Forms.RadioButton();
             this.radioButton9 = new System.Windows.Forms.RadioButton();
-            this.groupBox9 = new RadioBox();
+            this.groupBox9 = new PCF_Functions.RadioBox();
             this.radioButton7 = new System.Windows.Forms.RadioButton();
             this.radioButton8 = new System.Windows.Forms.RadioButton();
-            this.groupBox8 = new RadioBox();
+            this.groupBox8 = new PCF_Functions.RadioBox();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
-            this.groupBox7 = new RadioBox();
+            this.groupBox7 = new PCF_Functions.RadioBox();
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.groupBox3 = new RadioBox();
+            this.groupBox3 = new PCF_Functions.RadioBox();
             this.radioButton14 = new System.Windows.Forms.RadioButton();
             this.radioButton13 = new System.Windows.Forms.RadioButton();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
@@ -170,12 +170,13 @@ namespace NTR_Exporter
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(162, 46);
             this.button9.TabIndex = 1;
-            this.button9.Text = "Export schedule to EXCEL";
+            this.button9.Text = "Export undefined ELEMENTS to EXCEL";
             this.button9.UseVisualStyleBackColor = true;
             this.button9.Click += new System.EventHandler(this.Button9_Click);
             // 
             // button8
             // 
+            this.button8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Strikeout, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button8.Location = new System.Drawing.Point(6, 20);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(162, 46);
@@ -244,6 +245,7 @@ namespace NTR_Exporter
             // 
             // button7
             // 
+            this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Strikeout, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button7.Location = new System.Drawing.Point(204, 164);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(162, 46);
@@ -254,6 +256,7 @@ namespace NTR_Exporter
             // 
             // button3
             // 
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Strikeout, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button3.Location = new System.Drawing.Point(6, 164);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(162, 46);
@@ -267,6 +270,7 @@ namespace NTR_Exporter
             this.groupBox1.Controls.Add(this.button2);
             this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Strikeout, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(369, 132);
@@ -276,6 +280,7 @@ namespace NTR_Exporter
             // 
             // button2
             // 
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Strikeout, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button2.Location = new System.Drawing.Point(99, 71);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(162, 46);
@@ -286,6 +291,7 @@ namespace NTR_Exporter
             // 
             // button1
             // 
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Strikeout, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.Location = new System.Drawing.Point(99, 19);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(162, 46);
@@ -313,6 +319,7 @@ namespace NTR_Exporter
             this.radioBox3.Controls.Add(this.checkBox2);
             this.radioBox3.Controls.Add(this.checkBox1);
             this.radioBox3.Dock = System.Windows.Forms.DockStyle.Top;
+            this.radioBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Strikeout, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.radioBox3.Location = new System.Drawing.Point(3, 466);
             this.radioBox3.Name = "radioBox3";
             this.radioBox3.Size = new System.Drawing.Size(369, 68);
@@ -352,6 +359,7 @@ namespace NTR_Exporter
             this.radioBox2.Controls.Add(this.radioButton11);
             this.radioBox2.Controls.Add(this.textBox8);
             this.radioBox2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.radioBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Strikeout, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.radioBox2.Location = new System.Drawing.Point(3, 370);
             this.radioBox2.Name = "radioBox2";
             this.radioBox2.Size = new System.Drawing.Size(369, 96);
@@ -405,6 +413,7 @@ namespace NTR_Exporter
             this.groupBox6.Controls.Add(this.groupBox8);
             this.groupBox6.Controls.Add(this.groupBox7);
             this.groupBox6.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Strikeout, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox6.Location = new System.Drawing.Point(3, 192);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(369, 178);

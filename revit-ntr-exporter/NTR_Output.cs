@@ -4,7 +4,7 @@ using System.Text;
 using Autodesk.Revit.DB;
 using iv = NTR_Functions.InputVars;
 
-namespace PCF_Output
+namespace NTR_Output
 {
     public class Output
     {
@@ -30,8 +30,8 @@ namespace PCF_Output
                 scope = "_Selection";
             }
 
-            string filename = _outputDir + "\\" + docName + "_" + dateAndTime + scope + ".pcf";
-            //string filename = _outputDir+"\\" + docName + ".pcf";
+            string filename = _outputDir + "\\" + docName + "_" + dateAndTime + scope + ".ntr";
+            //string filename = _outputDir+"\\" + docName + ".ntr";
 
             //Clear the output file
             System.IO.File.WriteAllBytes(filename, new byte[0]);

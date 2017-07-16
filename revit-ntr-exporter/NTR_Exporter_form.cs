@@ -17,7 +17,6 @@ using dh = PCF_Functions.DataHandler;
 
 namespace NTR_Exporter
 {
-    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     public partial class NTR_Exporter_form : System.Windows.Forms.Form
     {
         static ExternalCommandData _commandData;
@@ -43,7 +42,7 @@ namespace NTR_Exporter
             //Init excel path
             _excelPath = mySettings.Default.excelPath;
             if (!string.IsNullOrEmpty(_excelPath)) iv.ExcelPath = _excelPath;
-            //textBox20.Text = _excelPath;
+            textBox20.Text = _excelPath;
 
             //Init output path
             _outputDirectoryFilePath = mySettings.Default.textBox5OutputPath;
@@ -190,25 +189,25 @@ namespace NTR_Exporter
 
         private void Button6_Click(object sender, EventArgs e)
         {
-            NTR_Exporter exporter = new NTR_Exporter(_commandData);
-            ////PCFExport pcfExporter = new PCFExport();
-            ////Result result = Result.Failed;
+            NTR_Exporter exporter = new NTR_Exporter();
 
-            //if (iv.ExportAllOneFile || iv.ExportSpecificPipeLine || iv.ExportSelection)
-            //{
-            //    //result = pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
-            //}
-            //else if (iv.ExportAllSepFiles)
-            //{
-            //    foreach (string name in pipeLinesAbbreviations)
-            //    {
-            //        iv.SysAbbr = name;
-            //        //result = pcfExporter.ExecuteMyCommand(_uiapp, ref _message);
-            //    }
-            //}
+            Result result = Result.Failed;
 
-            ////if (result == Result.Succeeded) Util.InfoMsg("PCF data exported successfully!");
-            ////if (result == Result.Failed) Util.InfoMsg("PCF data export failed for some reason.");
+            if (iv.ExportAllOneFile || iv.ExportSpecificPipeLine || iv.ExportSelection)
+            {
+                result = exporter.ExportNtr(_commandData);
+            }
+            else if (iv.ExportAllSepFiles)
+            {
+                foreach (string name in pipeLinesAbbreviations)
+                {
+                    iv.SysAbbr = name;
+                    result = exporter.ExportNtr(_commandData);
+                }
+            }
+
+            if (result == Result.Succeeded) Util.InfoMsg("NTR data exported successfully!");
+            if (result == Result.Failed) Util.InfoMsg("NTR data export failed for some reason.");
         }
 
         private void RadioButton3_CheckedChanged(object sender, EventArgs e)
@@ -278,6 +277,8 @@ namespace NTR_Exporter
 
         private void Button9_Click(object sender, EventArgs e)
         {
+            NTR_Excel excel = new NTR_Excel();
+            excel.ExportUndefinedElements(_doc);
             //ExportParameters EP = new ExportParameters();
             //var output = EP.ExecuteMyCommand(_uiapp);
             //if (output == Result.Succeeded) Util.InfoMsg("Elements exported to EXCEL successfully!");
