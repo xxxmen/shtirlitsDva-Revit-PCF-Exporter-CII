@@ -920,5 +920,22 @@ namespace PCF_Functions
 
             return abbreviations.Distinct().ToList();
         }
+
+        public static (Connector Primary, Connector Secondary, Connector Tertiary) GetConnectors(Element element)
+        {
+            ConnectorManager cmgr = GetConnectorManager(element);
+            //Sort connectors to primary, secondary and none
+            Connector primCon = null; Connector secCon = null; Connector tertCon = null;
+
+            foreach (Connector connector in cmgr.Connectors)
+            {
+                if (connector.GetMEPConnectorInfo().IsPrimary) primCon = connector;
+                else if (connector.GetMEPConnectorInfo().IsSecondary) secCon = connector;
+                else if ((connector.GetMEPConnectorInfo().IsPrimary == false) && (connector.GetMEPConnectorInfo().IsSecondary == false))
+                    tertCon = connector;
+            }
+
+            return (primCon, secCon, tertCon);
+        }
     }
 }
