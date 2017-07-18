@@ -10,6 +10,7 @@ using PCF_Taps;
 
 using pdef = PCF_Functions.ParameterDefinition;
 using plst = PCF_Functions.ParameterList;
+using mp = PCF_Functions.MepUtils;
 
 namespace PCF_Accessories
 {
@@ -49,43 +50,24 @@ namespace PCF_Accessories
                     //Cast the elements gathered by the collector to FamilyInstances
                     FamilyInstance familyInstance = (FamilyInstance)element;
                     Options options = new Options();
-                    //MEPModel of the elements is accessed
-                    MEPModel mepmodel = familyInstance.MEPModel;
-                    //Get connector set for the element
-                    ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
+
+                    //Gather connectors of the element
+                    var cons = mp.GetConnectors(element);
 
                     //Switch to different element type configurations
                     switch (element.get_Parameter(pList.PCF_ELEM_TYPE.Guid).AsString())
                     {
                         case ("FILTER"):
                             //Process endpoints of the component
-                            Connector primaryConnector = null; Connector secondaryConnector = null;
-
-                            foreach (Connector connector in connectorSet)
-                            {
-                                if (connector.GetMEPConnectorInfo().IsPrimary) primaryConnector = connector;
-                                if (connector.GetMEPConnectorInfo().IsSecondary) secondaryConnector = connector;
-                            }
-
-                            //Process endpoints of the component
-                            sbAccessories.Append(EndWriter.WriteEP1(element, primaryConnector));
-                            sbAccessories.Append(EndWriter.WriteEP2(element, secondaryConnector));
+                            sbAccessories.Append(EndWriter.WriteEP1(element, cons.Primary));
+                            sbAccessories.Append(EndWriter.WriteEP2(element, cons.Secondary));
 
                             break;
 
                         case ("INSTRUMENT"):
-                            //Process endpoints of the component
-                            primaryConnector = null; secondaryConnector = null;
-
-                            foreach (Connector connector in connectorSet)
-                            {
-                                if (connector.GetMEPConnectorInfo().IsPrimary) primaryConnector = connector;
-                                if (connector.GetMEPConnectorInfo().IsSecondary) secondaryConnector = connector;
-                            }
-
-                            //Process endpoints of the component
-                            sbAccessories.Append(EndWriter.WriteEP1(element, primaryConnector));
-                            sbAccessories.Append(EndWriter.WriteEP2(element, secondaryConnector));
+                                                        //Process endpoints of the component
+                            sbAccessories.Append(EndWriter.WriteEP1(element, cons.Primary));
+                            sbAccessories.Append(EndWriter.WriteEP2(element, cons.Secondary));
                             sbAccessories.Append(EndWriter.WriteCP(familyInstance));
 
                             break;
@@ -95,54 +77,28 @@ namespace PCF_Accessories
 
                         case ("VALVE-ANGLE"):
                             //Process endpoints of the component
-                            primaryConnector = null; secondaryConnector = null;
-
-                            foreach (Connector connector in connectorSet)
-                            {
-                                if (connector.GetMEPConnectorInfo().IsPrimary) primaryConnector = connector;
-                                if (connector.GetMEPConnectorInfo().IsSecondary) secondaryConnector = connector;
-                            }
-
-                            //Process endpoints of the component
-                            sbAccessories.Append(EndWriter.WriteEP1(element, primaryConnector));
-                            sbAccessories.Append(EndWriter.WriteEP2(element, secondaryConnector));
+                            sbAccessories.Append(EndWriter.WriteEP1(element, cons.Primary));
+                            sbAccessories.Append(EndWriter.WriteEP2(element, cons.Secondary));
 
                             //The centre point is obtained by creating an unbound line from primary connector and projecting the secondary point on the line.
-                            XYZ reverseConnectorVector = -primaryConnector.CoordinateSystem.BasisZ;
-                            Line primaryLine = Line.CreateUnbound(primaryConnector.Origin, reverseConnectorVector);
-                            XYZ centrePoint = primaryLine.Project(secondaryConnector.Origin).XYZPoint;
+                            XYZ reverseConnectorVector = -cons.Primary.CoordinateSystem.BasisZ;
+                            Line primaryLine = Line.CreateUnbound(cons.Primary.Origin, reverseConnectorVector);
+                            XYZ centrePoint = primaryLine.Project(cons.Secondary.Origin).XYZPoint;
 
                             sbAccessories.Append(EndWriter.WriteCP(centrePoint));
 
                             break;
 
                         case ("INSTRUMENT-DIAL"):
-                            ////Process endpoints of the component
-                            //primaryConnector = null;
-
-                            //foreach (Connector connector in connectorSet) primaryConnector = connector;
-
-                            ////Process endpoints of the component
-                            //sbAccessories.Append(EndWriter.WriteEP1(element, primaryConnector));
-
-                            ////The co-ords point is obtained by creating an unbound line from primary connector and taking an arbitrary point a long the line.
-                            //reverseConnectorVector = -primaryConnector.CoordinateSystem.BasisZ.Multiply(0.656167979);
-                            //XYZ coOrdsPoint = primaryConnector.Origin;
-                            //Transform pointTranslation;
-                            //pointTranslation = Transform.CreateTranslation(reverseConnectorVector);
-                            //coOrdsPoint = pointTranslation.OfPoint(coOrdsPoint);
-
-                            primaryConnector = null;
-                            foreach (Connector connector in connectorSet) primaryConnector = connector;
+                            
                             //Connector information extraction
+                            sbAccessories.Append(EndWriter.WriteEP1(element, cons.Primary));
 
-                            sbAccessories.Append(EndWriter.WriteEP1(element, primaryConnector));
-
-                            XYZ primConOrigin = primaryConnector.Origin;
+                            XYZ primConOrigin = cons.Primary.Origin;
 
                             //Analyses the geometry to obtain a point opposite the main connector.
                             //Extraction of the direction of the connector and reversing it
-                            reverseConnectorVector = -primaryConnector.CoordinateSystem.BasisZ;
+                            reverseConnectorVector = -cons.Primary.CoordinateSystem.BasisZ;
                             Line detectorLine = Line.CreateUnbound(primConOrigin, reverseConnectorVector);
                             //Begin geometry analysis
                             GeometryElement geometryElement = familyInstance.get_Geometry(options);
@@ -175,26 +131,14 @@ namespace PCF_Accessories
                             break;
 
                         case "SUPPORT":
-                            primaryConnector = (from Connector c in connectorSet where c.GetMEPConnectorInfo().IsPrimary select c).FirstOrDefault();
-                            sbAccessories.Append(EndWriter.WriteCO(familyInstance, primaryConnector));
+                            sbAccessories.Append(EndWriter.WriteCO(familyInstance, cons.Primary));
                             break;
 
                         case "INSTRUMENT-3WAY":
-                            //Sort connectors to primary, secondary and none
-                            primaryConnector = null; secondaryConnector = null; Connector tertiaryConnector = null;
-
-                            foreach (Connector connector in connectorSet)
-                            {
-                                if (connector.GetMEPConnectorInfo().IsPrimary) primaryConnector = connector;
-                                if (connector.GetMEPConnectorInfo().IsSecondary) secondaryConnector = connector;
-                                if ((connector.GetMEPConnectorInfo().IsPrimary == false) && (connector.GetMEPConnectorInfo().IsSecondary == false))
-                                    tertiaryConnector = connector;
-                            }
-
                             //Process endpoints of the component
-                            sbAccessories.Append(EndWriter.WriteEP1(element, primaryConnector));
-                            sbAccessories.Append(EndWriter.WriteEP2(element, secondaryConnector));
-                            sbAccessories.Append(EndWriter.WriteEP3(element, tertiaryConnector));
+                            sbAccessories.Append(EndWriter.WriteEP1(element, cons.Primary));
+                            sbAccessories.Append(EndWriter.WriteEP2(element, cons.Secondary));
+                            sbAccessories.Append(EndWriter.WriteEP3(element, cons.Tertiary));
                             sbAccessories.Append(EndWriter.WriteCP(familyInstance));
                             break;
                     }
