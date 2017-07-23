@@ -139,22 +139,25 @@ namespace PCF_Exporter
                 //Initialize material group numbers on the elements
                 IEnumerable<IGrouping<string, Element>> materialGroups = from e in elements group e by e.get_Parameter(new plst().PCF_MAT_DESCR.Guid).AsString();
 
-                Transaction trans = new Transaction(doc, "Set PCF_ELEM_COMPID and PCF_MAT_ID");
-                trans.Start();
-
-                //Access groups
-                foreach (IEnumerable<Element> group in materialGroups)
+                using (Transaction trans = new Transaction(doc, "Set PCF_ELEM_COMPID and PCF_MAT_ID"))
                 {
-                    materialGroupIdentifier++;
-                    //Access parameters
-                    foreach (Element element in group)
+                    
+                    trans.Start();
+
+                    //Access groups
+                    foreach (IEnumerable<Element> group in materialGroups)
                     {
-                        elementIdentificationNumber++;
-                        element.LookupParameter("PCF_ELEM_COMPID").Set(elementIdentificationNumber);
-                        element.LookupParameter("PCF_MAT_ID").Set(materialGroupIdentifier);
+                        materialGroupIdentifier++;
+                        //Access parameters
+                        foreach (Element element in group)
+                        {
+                            elementIdentificationNumber++;
+                            element.LookupParameter("PCF_ELEM_COMPID").Set(elementIdentificationNumber);
+                            element.LookupParameter("PCF_MAT_ID").Set(materialGroupIdentifier);
+                        }
                     }
+                    trans.Commit();
                 }
-                trans.Commit();
 
                 #endregion
 
