@@ -9,6 +9,7 @@ using PCF_Functions;
 using iv = PCF_Functions.InputVars;
 using pdef = PCF_Functions.ParameterDefinition;
 using plst = PCF_Functions.ParameterList;
+using mp = PCF_Functions.MepUtils;
 
 namespace PCF_Fittings
 {
@@ -38,26 +39,16 @@ namespace PCF_Fittings
                 //Cast the elements gathered by the collector to FamilyInstances
                 FamilyInstance familyInstance = (FamilyInstance)element;
                 Options options = new Options();
-                //MEPModel of the elements is accessed
-                MEPModel mepmodel = familyInstance.MEPModel;
-                //Get connector set for the element
-                ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
+
+                //Gather connectors of the element
+                var cons = mp.GetConnectors(element);
 
                 //Switch to different element type configurations
                 switch (element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString())
                 {
                     case ("ELBOW"):
-                        Connector primaryConnector = null; Connector secondaryConnector = null;
-
-                        //Process endpoints of the component
-                        foreach (Connector connector in connectorSet)
-                        {
-                            if (connector.GetMEPConnectorInfo().IsPrimary) primaryConnector = connector;
-                            if (connector.GetMEPConnectorInfo().IsSecondary) secondaryConnector = connector;
-                        }
-
-                        sbFittings.Append(EndWriter.WriteEP1(element, primaryConnector));
-                        sbFittings.Append(EndWriter.WriteEP2(element, secondaryConnector));
+                        sbFittings.Append(EndWriter.WriteEP1(element, cons.Primary));
+                        sbFittings.Append(EndWriter.WriteEP2(element, cons.Secondary));
                         sbFittings.Append(EndWriter.WriteCP(familyInstance));
 
                         sbFittings.Append("    ANGLE ");
@@ -67,46 +58,17 @@ namespace PCF_Fittings
                         break;
 
                     case ("TEE"):
-                        //Sort connectors to primary, secondary and none
-                        primaryConnector = null; secondaryConnector = null; Connector tertiaryConnector = null;
-
-                        foreach (Connector connector in connectorSet)
-                        {
-                            #region Debug
-                            //Debug
-                            //sbFittings.Append(connector.GetMEPConnectorInfo().IsPrimary);
-                            //sbFittings.Append(connector.GetMEPConnectorInfo().IsSecondary);
-                            //sbFittings.Append((connector.GetMEPConnectorInfo().IsPrimary == false) & (connector.GetMEPConnectorInfo().IsSecondary == false));
-                            //sbFittings.AppendLine();
-                            #endregion
-
-                            if (connector.GetMEPConnectorInfo().IsPrimary) primaryConnector = connector;
-                            if (connector.GetMEPConnectorInfo().IsSecondary) secondaryConnector = connector;
-                            if ((connector.GetMEPConnectorInfo().IsPrimary == false) && (connector.GetMEPConnectorInfo().IsSecondary == false))
-                                tertiaryConnector = connector;
-                        }
-
                         //Process endpoints of the component
-                        sbFittings.Append(EndWriter.WriteEP1(element, primaryConnector));
-                        sbFittings.Append(EndWriter.WriteEP2(element, secondaryConnector));
+                        sbFittings.Append(EndWriter.WriteEP1(element, cons.Primary));
+                        sbFittings.Append(EndWriter.WriteEP2(element, cons.Secondary));
                         sbFittings.Append(EndWriter.WriteCP(familyInstance));
-                        sbFittings.Append(EndWriter.WriteBP1(element, tertiaryConnector));
+                        sbFittings.Append(EndWriter.WriteBP1(element, cons.Tertiary));
 
                         break;
 
                     case ("REDUCER-CONCENTRIC"):
-                        //Process endpoints of the component
-                        primaryConnector = null; secondaryConnector = null;
-
-                        //Process endpoints of the component
-                        foreach (Connector connector in connectorSet)
-                        {
-                            if (connector.GetMEPConnectorInfo().IsPrimary) primaryConnector = connector;
-                            if (connector.GetMEPConnectorInfo().IsSecondary) secondaryConnector = connector;
-                        }
-
-                        sbFittings.Append(EndWriter.WriteEP1(element, primaryConnector));
-                        sbFittings.Append(EndWriter.WriteEP2(element, secondaryConnector));
+                        sbFittings.Append(EndWriter.WriteEP1(element, cons.Primary));
+                        sbFittings.Append(EndWriter.WriteEP2(element, cons.Secondary));
 
                         break;
 
@@ -114,36 +76,24 @@ namespace PCF_Fittings
                         goto case ("REDUCER-CONCENTRIC");
 
                     case ("FLANGE"):
-                        primaryConnector = null; secondaryConnector = null; tertiaryConnector = null;
-
-                        foreach (Connector connector in connectorSet)
-                        {
-                            if (connector.GetMEPConnectorInfo().IsPrimary) primaryConnector = connector;
-                            if (connector.GetMEPConnectorInfo().IsSecondary) secondaryConnector = connector;
-                        }
-
                         //Process endpoints of the component
                         //Secondary goes first because it is the weld neck point and the primary second because it is the flanged end
-                        //(dunno if it is significant);
+                        //(dunno if it is significant); It is not, it should be specified the type of end, BW, PL, FL etc. to work correctly.
 
-                        sbFittings.Append(EndWriter.WriteEP1(element, secondaryConnector));
-                        sbFittings.Append(EndWriter.WriteEP2(element, primaryConnector));
+                        sbFittings.Append(EndWriter.WriteEP1(element, cons.Secondary));
+                        sbFittings.Append(EndWriter.WriteEP2(element, cons.Primary));
 
                         break;
 
                     case ("FLANGE-BLIND"):
-                        primaryConnector = null;
-                        foreach (Connector connector in connectorSet) primaryConnector = connector;
-                        //Connector information extraction
+                        sbFittings.Append(EndWriter.WriteEP1(element, cons.Primary));
 
-                        sbFittings.Append(EndWriter.WriteEP1(element, primaryConnector));
-
-                        XYZ endPointOriginFlangeBlind = primaryConnector.Origin;
-                        double connectorSizeFlangeBlind = primaryConnector.Radius;
+                        XYZ endPointOriginFlangeBlind = cons.Primary.Origin;
+                        double connectorSizeFlangeBlind = cons.Primary.Radius;
 
                         //Analyses the geometry to obtain a point opposite the main connector.
                         //Extraction of the direction of the connector and reversing it
-                        XYZ reverseConnectorVector = -primaryConnector.CoordinateSystem.BasisZ;
+                        XYZ reverseConnectorVector = -cons.Primary.CoordinateSystem.BasisZ;
                         Line detectorLine = Line.CreateUnbound(endPointOriginFlangeBlind, reverseConnectorVector);
                         //Begin geometry analysis
                         GeometryElement geometryElement = familyInstance.get_Geometry(options);
@@ -184,19 +134,11 @@ namespace PCF_Fittings
                         goto case ("FLANGE-BLIND");
 
                     case ("OLET"):
-                        primaryConnector = null; secondaryConnector = null;
-
-                        foreach (Connector connector in connectorSet)
-                        {
-                            if (connector.GetMEPConnectorInfo().IsPrimary) primaryConnector = connector;
-                            if (connector.GetMEPConnectorInfo().IsSecondary) secondaryConnector = connector;
-                        }
-
-                        XYZ endPointOriginOletPrimary = primaryConnector.Origin;
-                        XYZ endPointOriginOletSecondary = secondaryConnector.Origin;
+                        XYZ endPointOriginOletPrimary = cons.Primary.Origin;
+                        XYZ endPointOriginOletSecondary = cons.Secondary.Origin;
 
                         //get reference elements
-                        ConnectorSet refConnectors = primaryConnector.AllRefs;
+                        ConnectorSet refConnectors = cons.Primary.AllRefs;
                         Element refElement = null;
                         foreach (Connector c in refConnectors) refElement = c.Owner;
                         Pipe refPipe = (Pipe)refElement;
@@ -281,7 +223,7 @@ namespace PCF_Fittings
 
                         sbFittings.Append(EndWriter.WriteCP(A));
 
-                        sbFittings.Append(EndWriter.WriteBP1(element, secondaryConnector));
+                        sbFittings.Append(EndWriter.WriteBP1(element, cons.Secondary));
 
                         sbFittings.Append("    ANGLE ");
                         sbFittings.Append(Conversion.AngleToPCF(angle));
