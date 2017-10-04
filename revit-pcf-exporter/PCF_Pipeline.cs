@@ -13,13 +13,9 @@ namespace PCF_Pipeline
 {
     public class PCF_Pipeline_Export
     {
-        //static IList<Element> pipeList;
-        private StringBuilder sbPipeline;
-        private string key;
-
-        public StringBuilder Export(string pipeLineGroupingKey, Document doc)
+        public StringBuilder Export(string key, Document doc)
         {
-            key = pipeLineGroupingKey;
+            StringBuilder sbPipeline = new StringBuilder();
 
             try
             {
@@ -32,8 +28,6 @@ namespace PCF_Pipeline
                     where string.Equals(st.Abbreviation, key)
                     select st).FirstOrDefault();
             
-                sbPipeline = new StringBuilder();
-
                 IEnumerable<pdef> query = from p in new plst().ListParametersAll
                     where string.Equals(p.Domain, "PIPL") && !string.Equals(p.ExportingTo, "CII")
                     select p;
