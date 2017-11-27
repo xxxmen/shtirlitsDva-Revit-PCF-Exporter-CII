@@ -127,13 +127,27 @@ namespace PCF_Exporter
                 int materialGroupIdentifier = 0;
 
                 //Make sure that every element has PCF_MAT_DESCR filled out.
+                //Validate input
+
+                int elementsIgnored = 0;
+
                 foreach (Element e in elements)
                 {
+                    //If the Element Type field is empty -> ignore the component
+                    if (string.IsNullOrEmpty(e.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString()))
+                    {
+                        elementsIgnored++;
+                        continue;
+                    }
+
                     if (string.IsNullOrEmpty(e.get_Parameter(new plst().PCF_MAT_DESCR.Guid).AsString()))
                     {
                         Util.ErrorMsg("PCF_MAT_DESCR is empty for element " + e.Id + "! Please, correct this issue before exporting again.");
                         throw new Exception("PCF_MAT_DESCR is empty for element " + e.Id + "! Please, correct this issue before exporting again.");
                     }
+
+                    //Inform user on how many elements were ignored
+                    Util.InfoMsg2("Validation results:", $"{elementsIgnored} element(s) were ignored (PCF_ELEM_TYPE empty).");
                 }
 
                 //Initialize material group numbers on the elements
