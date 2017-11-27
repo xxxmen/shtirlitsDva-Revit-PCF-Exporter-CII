@@ -58,19 +58,19 @@ namespace PCF_Exporter
             //Assembly exe = Assembly.GetExecutingAssembly();
 
             RibbonPanel rvtRibbonPanel = application.CreateRibbonPanel("PCF Tools");
-            PushButtonData data = new PushButtonData("PCFExporter","PCF Exporter",ExecutingAssemblyPath,"PCF_Exporter.FormCaller");
+            PushButtonData data = new PushButtonData("PCFExporter","PCF",ExecutingAssemblyPath,"PCF_Exporter.FormCaller");
             data.ToolTip = pcfExporterButtonToolTip;
             data.Image = NewBitmapImage(exe, "PCF_Functions.ImgPcfExport16.png");
             data.LargeImage = NewBitmapImage(exe, "PCF_Functions.ImgPcfExport32.png");
             PushButton pushButton = rvtRibbonPanel.AddItem(data) as PushButton;
 
-            data = new PushButtonData("TAPConnection", "Tap Connection", ExecutingAssemblyPath, "PCF_Exporter.TapsCaller");
+            data = new PushButtonData("TAPConnection", "Taps", ExecutingAssemblyPath, "PCF_Exporter.TapsCaller");
             data.ToolTip = tapConnectionButtonToolTip;
             data.Image = NewBitmapImage(exe, "PCF_Functions.ImgTapCon16.png");
             data.LargeImage = NewBitmapImage(exe, "PCF_Functions.ImgTapCon32.png");
             pushButton = rvtRibbonPanel.AddItem(data) as PushButton;
 
-            data = new PushButtonData("SupportSystemType","Support System Type",ExecutingAssemblyPath, "PCF_Exporter.SupportsCaller");
+            data = new PushButtonData("SupportSystemType","SST",ExecutingAssemblyPath, "PCF_Exporter.SupportsCaller");
             data.ToolTip = supportSystemTypeToolTip;
             data.Image = NewBitmapImage(exe, "PCF_Functions.ImgSupports16.png");
             data.LargeImage = NewBitmapImage(exe, "PCF_Functions.ImgSupports32.png");
