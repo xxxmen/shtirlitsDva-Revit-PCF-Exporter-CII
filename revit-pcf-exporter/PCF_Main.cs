@@ -80,7 +80,7 @@ namespace PCF_Exporter
 
                 }
                 
-                if (InputVars.ExportAllSepFiles || InputVars.ExportSpecificPipeLine)
+                else if (InputVars.ExportAllSepFiles || InputVars.ExportSpecificPipeLine)
                 {
                     //Define a collector with multiple filters to collect PipeFittings OR PipeAccessories OR Pipes + filter by System Abbreviation
                     //System Abbreviation filter also filters FamilySymbols out.
@@ -95,7 +95,7 @@ namespace PCF_Exporter
                     colElements = collector.ToElements().ToHashSet();
                 }
 
-                if (InputVars.ExportSelection)
+                else if (InputVars.ExportSelection)
                 {
                     ICollection<ElementId> selection = uiApp.ActiveUIDocument.Selection.GetElementIds();
                     colElements = selection.Select(s => doc.GetElement(s)).ToHashSet();
