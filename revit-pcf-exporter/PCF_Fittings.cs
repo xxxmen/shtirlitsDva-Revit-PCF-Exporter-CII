@@ -103,8 +103,7 @@ namespace PCF_Fittings
 
                         foreach (GeometryObject geometry in geometryElement)
                         {
-                            GeometryInstance instance = geometry as GeometryInstance;
-                            if (null != instance)
+                            if (geometry is GeometryInstance instance)
                             {
                                 foreach (GeometryObject instObj in instance.GetInstanceGeometry())
                                 {

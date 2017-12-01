@@ -16,6 +16,7 @@ using MoreLinq;
 using iv = PCF_Functions.InputVars;
 using pdef = PCF_Functions.ParameterDefinition;
 using plst = PCF_Functions.ParameterList;
+using Autodesk.Revit.DB.Mechanical;
 
 namespace PCF_Functions
 {
@@ -319,8 +320,8 @@ namespace PCF_Functions
                     //MEPModel mepmodel = familyInstance.MEPModel;
                     ////Get connector set for the element
                     //ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
-                    ////Declare a variable for 
-                    //Connector testedConnector = null;
+                    //Declare a variable for 
+                    Connector testedConnector = null;
 
                     //if (connectorSet.IsEmpty) break;
                     //if (connectorSet.Size == 1) foreach (Connector connector in connectorSet) testedConnector = connector;
@@ -331,7 +332,10 @@ namespace PCF_Functions
                     //Gather connectors of the element
                     var cons = MepUtils.GetConnectors(element);
 
-                    if (cons.Primary != null && (cons.Secondary != null || ))
+                    if (cons.Primary == null) break;
+
+                    if (cons.Count == 0) break;
+                    if (cons.Count == 1) testedConnector = cons.Primary;
 
                     if (iv.UNITS_BORE_MM) testedDiameter = double.Parse(Conversion.PipeSizeToMm(testedConnector.Radius));
                     else if (iv.UNITS_BORE_INCH) testedDiameter = double.Parse(Conversion.PipeSizeToInch(testedConnector.Radius));
@@ -411,7 +415,7 @@ namespace PCF_Functions
             return Math.Round(number, 2, MidpointRounding.AwayFromZero);
         }
 
-        public static double Round(this Double number, int decimals)
+        public static double Round(this Double number, int decimals = 0)
         {
             return Math.Round(number, decimals, MidpointRounding.AwayFromZero);
         }
@@ -926,24 +930,54 @@ namespace PCF_Functions
             return abbreviations.Distinct().ToList();
         }
 
-        public static (Connector Primary, Connector Secondary, Connector Tertiary, int Count) GetConnectors(Element element)
+        public static Cons GetConnectors(Element element)
         {
-            ConnectorManager cmgr = GetConnectorManager(element);
-            //Sort connectors to primary, secondary and none
-            Connector primCon = null; Connector secCon = null; Connector tertCon = null;
+            return new Cons(element);
+        }
+    }
 
-            int count = 0;
+    public class Cons
+    {
+        public Connector Primary { get; } = null;
+        public Connector Secondary { get; } = null;
+        public Connector Tertiary { get; } = null;
+        public int Count { get; } = 0;
+        public Connector Largest { get; } = null;
+        public Connector Smallest { get; } = null;
+
+        public Cons(Element element)
+        {
+            ConnectorManager cmgr = MepUtils.GetConnectorManager(element);
 
             foreach (Connector connector in cmgr.Connectors)
             {
-                count++;
-                if (connector.GetMEPConnectorInfo().IsPrimary) primCon = connector;
-                else if (connector.GetMEPConnectorInfo().IsSecondary) secCon = connector;
+                Count++;
+                if (connector.GetMEPConnectorInfo().IsPrimary) Primary = connector;
+                else if (connector.GetMEPConnectorInfo().IsSecondary) Secondary = connector;
                 else if ((connector.GetMEPConnectorInfo().IsPrimary == false) && (connector.GetMEPConnectorInfo().IsSecondary == false))
-                    tertCon = connector;
+                    Tertiary = connector;
+            }
+            
+            if (Count > 1 && Secondary == null)
+                throw new Exception($"Element {element.Id.ToString()} has {Count} connectors and no secondary!");
+
+            if (element is FamilyInstance)
+            {
+                if (element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeFitting)
+                {
+                    var mf = ((FamilyInstance)element).MEPModel as MechanicalFitting;
+
+                    if (mf.PartType.ToString() == "Transition")
+                    {
+                        double primDia = (Primary.Radius * 2).Round(3);
+                        double secDia = (Secondary.Radius * 2).Round(3);
+
+                        Largest = primDia > secDia ? Primary : Secondary;
+                        Smallest = primDia < secDia ? Primary : Secondary;
+                    }
+                }
             }
 
-            return (primCon, secCon, tertCon, count);
         }
     }
 }
