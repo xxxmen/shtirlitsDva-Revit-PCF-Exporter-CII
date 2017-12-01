@@ -102,7 +102,17 @@ namespace PCF_Exporter
                 }
 
                 //DiameterLimit filter applied to ALL elements.
-                HashSet<Element> elements = (from element in colElements where new FilterDiameterLimit().FilterDL(element) select element).ToHashSet();
+                HashSet<Element> elements = (from element in colElements
+                                             where
+                                             //Diameter limit filter
+                                             new FilterDiameterLimit().FilterDL(element) ||
+                                             //Filter out elements with empty PCF_ELEM_TYPE field (remember to !negate)
+                                             !element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString().IsNullOrEmpty()
+                                             select element).ToHashSet();
+
+                //Inform user on how many elements were ignored
+                int elementsIgnored = colElements.Count - elements.Count;
+                Util.InfoMsg2("Validation results:", $"{elementsIgnored} element(s) were ignored (PCF_ELEM_TYPE empty).");
 
                 //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
                 pipelineGroups = from e in elements
@@ -115,41 +125,15 @@ namespace PCF_Exporter
                 int materialGroupIdentifier = 0;
 
                 //Make sure that every element has PCF_MAT_DESCR filled out.
-                //Validate input
-
-                int elementsIgnored = 0;
-
                 foreach (Element e in elements)
                 {
-                    //If the Element Type field is empty -> ignore the component
-                    if (string.IsNullOrEmpty(e.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString()))
-                    {
-                        elementsIgnored++;
-                        continue;
-                    }
-
                     if (string.IsNullOrEmpty(e.get_Parameter(new plst().PCF_MAT_DESCR.Guid).AsString()))
                     {
                         Util.ErrorMsg("PCF_MAT_DESCR is empty for element " + e.Id + "! Please, correct this issue before exporting again.");
                         throw new Exception("PCF_MAT_DESCR is empty for element " + e.Id + "! Please, correct this issue before exporting again.");
                     }
-
-                    //Inform user on how many elements were ignored
-                    Util.InfoMsg2("Validation results:", $"{elementsIgnored} element(s) were ignored (PCF_ELEM_TYPE empty).");
                 }
-
-                //If turned on, write wall thickness of all components
-                if (InputVars.WriteWallThickness)
-                {
-                    //Assign correct wall thickness to elements.
-                    using (Transaction trans1 = new Transaction(doc))
-                    {
-                        trans1.Start("Set wall thickness for pipes!");
-                        ParameterDataWriter.SetWallThicknessPipes(elements);
-                        trans1.Commit();
-                    }
-                }
-
+                
                 //Initialize material group numbers on the elements
                 IEnumerable<IGrouping<string, Element>> materialGroups = from e in elements group e by e.get_Parameter(new plst().PCF_MAT_DESCR.Guid).AsString();
 
@@ -171,6 +155,18 @@ namespace PCF_Exporter
                         }
                     }
                     trans.Commit();
+                }
+
+                //If turned on, write wall thickness of all components
+                if (InputVars.WriteWallThickness)
+                {
+                    //Assign correct wall thickness to elements.
+                    using (Transaction trans1 = new Transaction(doc))
+                    {
+                        trans1.Start("Set wall thickness for pipes!");
+                        ParameterDataWriter.SetWallThicknessPipes(elements);
+                        trans1.Commit();
+                    }
                 }
 
                 #endregion
