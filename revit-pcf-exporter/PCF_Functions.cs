@@ -313,20 +313,25 @@ namespace PCF_Functions
 
                 case (int)BuiltInCategory.OST_PipeFitting:
                 case (int)BuiltInCategory.OST_PipeAccessory:
-                    //Cast the element passed to method to FamilyInstance
-                    FamilyInstance familyInstance = (FamilyInstance)element;
-                    //MEPModel of the elements is accessed
-                    MEPModel mepmodel = familyInstance.MEPModel;
-                    //Get connector set for the element
-                    ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
-                    //Declare a variable for 
-                    Connector testedConnector = null;
+                    ////Cast the element passed to method to FamilyInstance
+                    //FamilyInstance familyInstance = (FamilyInstance)element;
+                    ////MEPModel of the elements is accessed
+                    //MEPModel mepmodel = familyInstance.MEPModel;
+                    ////Get connector set for the element
+                    //ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
+                    ////Declare a variable for 
+                    //Connector testedConnector = null;
 
-                    if (connectorSet.IsEmpty) break;
-                    if (connectorSet.Size == 1) foreach (Connector connector in connectorSet) testedConnector = connector;
-                    else testedConnector = (from Connector connector in connectorSet
-                                            where connector.GetMEPConnectorInfo().IsPrimary
-                                            select connector).FirstOrDefault();
+                    //if (connectorSet.IsEmpty) break;
+                    //if (connectorSet.Size == 1) foreach (Connector connector in connectorSet) testedConnector = connector;
+                    //else testedConnector = (from Connector connector in connectorSet
+                    //                        where connector.GetMEPConnectorInfo().IsPrimary
+                    //                        select connector).FirstOrDefault();
+
+                    //Gather connectors of the element
+                    var cons = MepUtils.GetConnectors(element);
+
+                    if (cons.Primary != null && (cons.Secondary != null || ))
 
                     if (iv.UNITS_BORE_MM) testedDiameter = double.Parse(Conversion.PipeSizeToMm(testedConnector.Radius));
                     else if (iv.UNITS_BORE_INCH) testedDiameter = double.Parse(Conversion.PipeSizeToInch(testedConnector.Radius));
@@ -921,21 +926,24 @@ namespace PCF_Functions
             return abbreviations.Distinct().ToList();
         }
 
-        public static (Connector Primary, Connector Secondary, Connector Tertiary) GetConnectors(Element element)
+        public static (Connector Primary, Connector Secondary, Connector Tertiary, int Count) GetConnectors(Element element)
         {
             ConnectorManager cmgr = GetConnectorManager(element);
             //Sort connectors to primary, secondary and none
             Connector primCon = null; Connector secCon = null; Connector tertCon = null;
 
+            int count = 0;
+
             foreach (Connector connector in cmgr.Connectors)
             {
+                count++;
                 if (connector.GetMEPConnectorInfo().IsPrimary) primCon = connector;
                 else if (connector.GetMEPConnectorInfo().IsSecondary) secCon = connector;
                 else if ((connector.GetMEPConnectorInfo().IsPrimary == false) && (connector.GetMEPConnectorInfo().IsSecondary == false))
                     tertCon = connector;
             }
 
-            return (primCon, secCon, tertCon);
+            return (primCon, secCon, tertCon, count);
         }
     }
 }
