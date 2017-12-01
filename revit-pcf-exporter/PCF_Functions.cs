@@ -314,31 +314,20 @@ namespace PCF_Functions
 
                 case (int)BuiltInCategory.OST_PipeFitting:
                 case (int)BuiltInCategory.OST_PipeAccessory:
-                    ////Cast the element passed to method to FamilyInstance
-                    //FamilyInstance familyInstance = (FamilyInstance)element;
-                    ////MEPModel of the elements is accessed
-                    //MEPModel mepmodel = familyInstance.MEPModel;
-                    ////Get connector set for the element
-                    //ConnectorSet connectorSet = mepmodel.ConnectorManager.Connectors;
+                   
                     //Declare a variable for 
                     Connector testedConnector = null;
-
-                    //if (connectorSet.IsEmpty) break;
-                    //if (connectorSet.Size == 1) foreach (Connector connector in connectorSet) testedConnector = connector;
-                    //else testedConnector = (from Connector connector in connectorSet
-                    //                        where connector.GetMEPConnectorInfo().IsPrimary
-                    //                        select connector).FirstOrDefault();
 
                     //Gather connectors of the element
                     var cons = MepUtils.GetConnectors(element);
 
                     if (cons.Primary == null) break;
+                    else if (cons.Count == 0) break;
+                    else if (cons.Count == 1 || cons.Count > 2) testedConnector = cons.Primary;
+                    else if (cons.Count == 2) testedConnector = cons.Largest ?? cons.Primary; //Largest is only defined for reducers
 
-                    if (cons.Count == 0) break;
-                    if (cons.Count == 1) testedConnector = cons.Primary;
-
-                    if (iv.UNITS_BORE_MM) testedDiameter = double.Parse(Conversion.PipeSizeToMm(testedConnector.Radius));
-                    else if (iv.UNITS_BORE_INCH) testedDiameter = double.Parse(Conversion.PipeSizeToInch(testedConnector.Radius));
+                    if (iv.UNITS_BORE_MM) testedDiameter = (testedConnector.Radius * 2).FtToMm().Round();
+                    else if (iv.UNITS_BORE_INCH) testedDiameter = (testedConnector.Radius * 2).FtToInch().Round(3);
 
                     if (testedDiameter <= diameterLimit) diameterLimitBool = false;
 
@@ -420,10 +409,9 @@ namespace PCF_Functions
             return Math.Round(number, decimals, MidpointRounding.AwayFromZero);
         }
 
-        public static double FeetToMm(this Double l)
-        {
-            return l * _foot_to_mm;
-        }
+        public static double FtToMm(this Double l) => l * _foot_to_mm;
+
+        public static double FtToInch(this Double l) => l * _foot_to_inch;
 
         public static bool IsOdd(this int number)
         {
@@ -930,10 +918,7 @@ namespace PCF_Functions
             return abbreviations.Distinct().ToList();
         }
 
-        public static Cons GetConnectors(Element element)
-        {
-            return new Cons(element);
-        }
+        public static Cons GetConnectors(Element element) => new Cons(element);
     }
 
     public class Cons
@@ -957,7 +942,7 @@ namespace PCF_Functions
                 else if ((connector.GetMEPConnectorInfo().IsPrimary == false) && (connector.GetMEPConnectorInfo().IsSecondary == false))
                     Tertiary = connector;
             }
-            
+
             if (Count > 1 && Secondary == null)
                 throw new Exception($"Element {element.Id.ToString()} has {Count} connectors and no secondary!");
 

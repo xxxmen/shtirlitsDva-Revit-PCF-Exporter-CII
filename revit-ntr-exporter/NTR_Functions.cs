@@ -158,13 +158,13 @@ namespace NTR_Functions
                 //TODO: Fix FamilyInstance case, maybe not
                 return "NTR_Functions DataWriter DnWriter FamilyInstance case";
             }
-            return " DN=DN" + dia.FeetToMm().Round(0);
+            return " DN=DN" + dia.FtToMm().Round(0);
         }
 
         public static string DnWriter(string p, Connector con)
         {
             double dia = con.Radius * 2;
-            return " " + p + "=DN" + dia.FeetToMm().Round(0);
+            return " " + p + "=DN" + dia.FtToMm().Round(0);
         }
 
         public static string ReadParameterFromDataTable(string key, DataTable table, string parameter)
@@ -247,7 +247,7 @@ namespace NTR_Functions
             switch (element)
             {
                 case MEPCurve pipe:
-                    testedDiameter = pipe.Diameter.FeetToMm().Round(0);
+                    testedDiameter = pipe.Diameter.FtToMm().Round(0);
                     if (testedDiameter <= diameterLimit) diameterLimitBool = false;
                     break;
 
@@ -269,7 +269,7 @@ namespace NTR_Functions
                         throw new Exception("Element " + inst.Id.IntegerValue + " does not have a primary connector!");
 
 
-                    testedDiameter = (testedConnector.Radius * 2).FeetToMm().Round(0);
+                    testedDiameter = (testedConnector.Radius * 2).FtToMm().Round(0);
 
                     if (testedDiameter <= diameterLimit) diameterLimitBool = false;
 
