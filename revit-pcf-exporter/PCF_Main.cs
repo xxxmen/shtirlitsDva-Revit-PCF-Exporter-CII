@@ -104,18 +104,6 @@ namespace PCF_Exporter
                 //DiameterLimit filter applied to ALL elements.
                 HashSet<Element> elements = (from element in colElements where new FilterDiameterLimit().FilterDL(element) select element).ToHashSet();
 
-                //If turned on, write wall thickness of all components
-                if (InputVars.WriteWallThickness)
-                {
-                    //Assign correct wall thickness to elements.
-                    using (Transaction trans1 = new Transaction(doc))
-                    {
-                        trans1.Start("Set wall thickness for pipes!");
-                        ParameterDataWriter.SetWallThicknessPipes(elements);
-                        trans1.Commit();
-                    }
-                }
-
                 //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
                 pipelineGroups = from e in elements
                                  group e by e.LookupParameter(InputVars.PipelineGroupParameterName).AsString();
@@ -148,6 +136,18 @@ namespace PCF_Exporter
 
                     //Inform user on how many elements were ignored
                     Util.InfoMsg2("Validation results:", $"{elementsIgnored} element(s) were ignored (PCF_ELEM_TYPE empty).");
+                }
+
+                //If turned on, write wall thickness of all components
+                if (InputVars.WriteWallThickness)
+                {
+                    //Assign correct wall thickness to elements.
+                    using (Transaction trans1 = new Transaction(doc))
+                    {
+                        trans1.Start("Set wall thickness for pipes!");
+                        ParameterDataWriter.SetWallThicknessPipes(elements);
+                        trans1.Commit();
+                    }
                 }
 
                 //Initialize material group numbers on the elements
