@@ -110,10 +110,6 @@ namespace PCF_Exporter
                                              !element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString().IsNullOrEmpty()
                                              select element).ToHashSet();
 
-                //Inform user on how many elements were ignored
-                int elementsIgnored = colElements.Count - elements.Count;
-                Util.InfoMsg2("Validation results:", $"{elementsIgnored} element(s) were ignored (PCF_ELEM_TYPE empty).");
-
                 //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
                 pipelineGroups = from e in elements
                                  group e by e.LookupParameter(InputVars.PipelineGroupParameterName).AsString();
