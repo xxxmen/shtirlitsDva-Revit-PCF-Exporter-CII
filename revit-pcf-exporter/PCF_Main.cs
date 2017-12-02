@@ -105,9 +105,9 @@ namespace PCF_Exporter
                 HashSet<Element> elements = (from element in colElements
                                              where
                                              //Diameter limit filter
-                                             new FilterDiameterLimit().FilterDL(element) ||
+                                             new FilterDiameterLimit().FilterDL(element) &&
                                              //Filter out elements with empty PCF_ELEM_TYPE field (remember to !negate)
-                                             !element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString().IsNullOrEmpty()
+                                             !string.IsNullOrEmpty(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString())
                                              select element).ToHashSet();
 
                 //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
