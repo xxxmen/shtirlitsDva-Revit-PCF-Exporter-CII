@@ -96,8 +96,7 @@ namespace PCF_Exporter
 
             catch (Exception ex)
             {
-                message = ex.Message;
-                return Result.Failed;
+                throw new Exception(ex.Message);
             }
         }
     }

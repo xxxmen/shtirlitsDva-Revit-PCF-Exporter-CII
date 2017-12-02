@@ -209,8 +209,7 @@ namespace PCF_Exporter
 
             catch (Exception ex)
             {
-                msg = ex.Message;
-                return Result.Failed;
+                throw new Exception(ex.Message);
             }
 
             return Result.Succeeded;
