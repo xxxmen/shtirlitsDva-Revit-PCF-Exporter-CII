@@ -137,7 +137,7 @@ namespace PCF_Functions
             //                           where string.Equals(st.Abbreviation, systemAbbreviation)
             //                           select st).FirstOrDefault();
 
-            var query = from p in new plst().ListParametersAll
+            var query = from p in new plst().LPAll
                         where string.Equals(p.Domain, "PIPL") && string.Equals(p.ExportingTo, "CII")
                         select p;
 
@@ -188,7 +188,7 @@ namespace PCF_Functions
         {
             StringBuilder sbElemParameters = new StringBuilder();
 
-            var pQuery = from p in new plst().ListParametersAll
+            var pQuery = from p in new plst().LPAll
                          where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM")
                          select p;
 
@@ -628,7 +628,7 @@ namespace PCF_Functions
 
                 string curUsage = "U";
                 string curDomain = "ELEM";
-                var query = from p in new plst().ListParametersAll where p.Usage == curUsage && p.Domain == curDomain select p;
+                var query = from p in new plst().LPAll where p.Usage == curUsage && p.Domain == curDomain select p;
 
                 foreach (pdef pDef in query.ToList())
                 {

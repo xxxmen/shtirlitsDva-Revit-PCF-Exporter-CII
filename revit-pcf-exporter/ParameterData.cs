@@ -9,7 +9,7 @@ namespace PCF_Functions
 {
     public class ParameterDefinition
     {
-        public ParameterDefinition(string pName, string pDomain, string pUsage, ParameterType pType, Guid pGuid, string pKeyword)
+        public ParameterDefinition(string pName, string pDomain, string pUsage, ParameterType pType, Guid pGuid, string pKeyword = "")
         {
             Name = pName;
             Domain = pDomain;
@@ -31,7 +31,7 @@ namespace PCF_Functions
         }
 
         public string Name { get; }
-        public string Domain { get; } //PIPL = Pipeline, ELEM = Element, SUPP = Support.
+        public string Domain { get; } //PIPL = Pipeline, ELEM = Element, SUPP = Support, CTRL = Execution control.
         public string Usage { get; } //U = user defined values, P = programatically defined values.
         public ParameterType Type { get; }
         public Guid Guid { get; }
@@ -41,18 +41,18 @@ namespace PCF_Functions
 
     public class ParameterList
     {
-        public readonly HashSet<pdef> ListParametersAll = new HashSet<ParameterDefinition>();
+        public readonly HashSet<pdef> LPAll = new HashSet<ParameterDefinition>();
 
         #region Parameter Definition
         //Element parameters user defined
-        public readonly pdef PCF_ELEM_TYPE = new pdef("PCF_ELEM_TYPE", "ELEM", "U", pd.Text, new Guid("bfc7b779-786d-47cd-9194-8574a5059ec8"), "");
+        public readonly pdef PCF_ELEM_TYPE = new pdef("PCF_ELEM_TYPE", "ELEM", "U", pd.Text, new Guid("bfc7b779-786d-47cd-9194-8574a5059ec8"));
         public readonly pdef PCF_ELEM_SKEY = new pdef("PCF_ELEM_SKEY", "ELEM", "U", pd.Text, new Guid("3feebd29-054c-4ce8-bc64-3cff75ed6121"), "SKEY");
         public readonly pdef PCF_ELEM_SPEC = new pdef("PCF_ELEM_SPEC", "ELEM", "U", pd.Text, new Guid("90be8246-25f7-487d-b352-554f810fcaa7"), "PIPING-SPEC");
         //public readonly pdef PCF_ELEM_CATEGORY = new pdef("PCF_ELEM_CATEGORY", "ELEM", "U", pd.Text, new Guid("35efc6ed-2f20-4aca-bf05-d81d3b79dce2"), "CATEGORY");
-        public readonly pdef PCF_ELEM_END1 = new pdef("PCF_ELEM_END1", "ELEM", "U", pd.Text, new Guid("cbc10825-c0a1-471e-9902-075a41533738"), "");
-        public readonly pdef PCF_ELEM_END2 = new pdef("PCF_ELEM_END2", "ELEM", "U", pd.Text, new Guid("ecaf3f8a-c28b-4a89-8496-728af3863b09"), "");
-        public readonly pdef PCF_ELEM_END3 = new pdef("PCF_ELEM_END3", "ELEM", "U", pd.Text, new Guid("501E24A0-C23A-43EE-94A0-F6D17960CB78"), "");
-        public readonly pdef PCF_ELEM_BP1 = new pdef("PCF_ELEM_BP1", "ELEM", "U", pd.Text, new Guid("89b1e62e-f9b8-48c3-ab3a-1861a772bda8"), "");
+        public readonly pdef PCF_ELEM_END1 = new pdef("PCF_ELEM_END1", "ELEM", "U", pd.Text, new Guid("cbc10825-c0a1-471e-9902-075a41533738"));
+        public readonly pdef PCF_ELEM_END2 = new pdef("PCF_ELEM_END2", "ELEM", "U", pd.Text, new Guid("ecaf3f8a-c28b-4a89-8496-728af3863b09"));
+        public readonly pdef PCF_ELEM_END3 = new pdef("PCF_ELEM_END3", "ELEM", "U", pd.Text, new Guid("501E24A0-C23A-43EE-94A0-F6D17960CB78"));
+        public readonly pdef PCF_ELEM_BP1 = new pdef("PCF_ELEM_BP1", "ELEM", "U", pd.Text, new Guid("89b1e62e-f9b8-48c3-ab3a-1861a772bda8"));
         //public readonly pdef PCF_ELEM_STATUS = new pdef("PCF_ELEM_STATUS", "ELEM", "U", pd.Text, new Guid("c16e4db2-15e8-41ac-9b8f-134e133df8a4"), "STATUS");
         //public readonly pdef PCF_ELEM_TRACING_SPEC = new pdef("PCF_ELEM_TRACING_SPEC", "ELEM", "U", pd.Text, new Guid("8e1d43fb-9cd2-4591-a1f5-ba392f0a8708"), "TRACING-SPEC");
         //public readonly pdef PCF_ELEM_INSUL_SPEC = new pdef("PCF_ELEM_INSUL_SPEC", "ELEM", "U", pd.Text, new Guid("d628605e-c0bf-43dc-9f05-e22dbae2022e"), "INSULATION-SPEC");
@@ -64,13 +64,13 @@ namespace PCF_Functions
         //public readonly pdef PCF_ELEM_MISC5 = new pdef("PCF_ELEM_MISC5", "ELEM", "U", pd.Text, new Guid("692e2e97-3b9c-4616-8a03-dfd493b01762"), "MISC-SPEC5");
 
         //Material
-        public readonly pdef PCF_MAT_DESCR = new pdef("PCF_MAT_DESCR", "ELEM", "U", pd.Text, new Guid("d39418f2-fcb3-4dd1-b0be-3d647486ebe6"), "");
+        public readonly pdef PCF_MAT_DESCR = new pdef("PCF_MAT_DESCR", "ELEM", "U", pd.Text, new Guid("d39418f2-fcb3-4dd1-b0be-3d647486ebe6"));
 
         //Programattically defined
-        public readonly pdef PCF_ELEM_TAP1 = new pdef("PCF_ELEM_TAP1", "ELEM", "P", pd.Text, new Guid("5fda303c-5536-429b-9fcc-afb40d14c7b3"), "");
-        public readonly pdef PCF_ELEM_TAP2 = new pdef("PCF_ELEM_TAP2", "ELEM", "P", pd.Text, new Guid("e1e9bc3b-ce75-4f3a-ae43-c270f4fde937"), "");
-        public readonly pdef PCF_ELEM_TAP3 = new pdef("PCF_ELEM_TAP3", "ELEM", "P", pd.Text, new Guid("12693653-8029-4743-be6a-310b1fbc0620"), "");
-        public readonly pdef PCF_ELEM_COMPID = new pdef("PCF_ELEM_COMPID", "ELEM", "P", pd.Integer, new Guid("876d2334-f860-4b5a-8c24-507e2c545fc0"), "");
+        public readonly pdef PCF_ELEM_TAP1 = new pdef("PCF_ELEM_TAP1", "ELEM", "P", pd.Text, new Guid("5fda303c-5536-429b-9fcc-afb40d14c7b3"));
+        public readonly pdef PCF_ELEM_TAP2 = new pdef("PCF_ELEM_TAP2", "ELEM", "P", pd.Text, new Guid("e1e9bc3b-ce75-4f3a-ae43-c270f4fde937"));
+        public readonly pdef PCF_ELEM_TAP3 = new pdef("PCF_ELEM_TAP3", "ELEM", "P", pd.Text, new Guid("12693653-8029-4743-be6a-310b1fbc0620"));
+        public readonly pdef PCF_ELEM_COMPID = new pdef("PCF_ELEM_COMPID", "ELEM", "P", pd.Integer, new Guid("876d2334-f860-4b5a-8c24-507e2c545fc0"));
         public readonly pdef PCF_MAT_ID = new pdef("PCF_MAT_ID", "ELEM", "P", pd.Integer, new Guid("fc5d3b19-af5b-47f6-a269-149b701c9364"), "MATERIAL-IDENTIFIER");
 
         //Pipeline parameters
@@ -118,20 +118,24 @@ namespace PCF_Functions
 
         //Pipe Support parameters
         public readonly pdef PCF_ELEM_SUPPORT_NAME = new pdef("PCF_ELEM_SUPPORT_NAME", "ELEM", "U", pd.Text, new Guid("25F67960-3134-4288-B8A1-C1854CF266C5"), "NAME");
+
+        //Usability parameters
+        public readonly pdef PCF_ELEM_EXCL = new pdef("PCF_ELEM_EXCL", "CTRL", "U", pd.YesNo, new Guid("CC8EC292-226C-4677-A32D-10B9736BFC1A"));
+        public readonly pdef PCF_PIPL_EXCL = new pdef("PCF_PIPL_EXCL", "CTRL", "U", pd.YesNo, new Guid("C1C2C9FE-2634-42BA-89D0-5AF699F54D4C"));
         #endregion
 
         public ParameterList()
         {
             #region ListParametersAll
             //Populate the list with element parameters
-            ListParametersAll.Add(PCF_ELEM_TYPE);
-            ListParametersAll.Add(PCF_ELEM_SKEY);
-            ListParametersAll.Add(PCF_ELEM_SPEC);
+            LPAll.Add(PCF_ELEM_TYPE);
+            LPAll.Add(PCF_ELEM_SKEY);
+            LPAll.Add(PCF_ELEM_SPEC);
             //ListParametersAll.Add(PCF_ELEM_CATEGORY);
-            ListParametersAll.Add(PCF_ELEM_END1);
-            ListParametersAll.Add(PCF_ELEM_END2);
-            ListParametersAll.Add(PCF_ELEM_END3);
-            ListParametersAll.Add(PCF_ELEM_BP1);
+            LPAll.Add(PCF_ELEM_END1);
+            LPAll.Add(PCF_ELEM_END2);
+            LPAll.Add(PCF_ELEM_END3);
+            LPAll.Add(PCF_ELEM_BP1);
             //ListParametersAll.Add(PCF_ELEM_STATUS);
             //ListParametersAll.Add(PCF_ELEM_TRACING_SPEC);
             //ListParametersAll.Add(PCF_ELEM_INSUL_SPEC);
@@ -142,17 +146,17 @@ namespace PCF_Functions
             //ListParametersAll.Add(PCF_ELEM_MISC4);
             //ListParametersAll.Add(PCF_ELEM_MISC5);
 
-            ListParametersAll.Add(PCF_MAT_DESCR);
+            LPAll.Add(PCF_MAT_DESCR);
 
-            ListParametersAll.Add(PCF_ELEM_TAP1);
-            ListParametersAll.Add(PCF_ELEM_TAP2);
-            ListParametersAll.Add(PCF_ELEM_TAP3);
-            ListParametersAll.Add(PCF_ELEM_COMPID);
-            ListParametersAll.Add(PCF_MAT_ID);
+            LPAll.Add(PCF_ELEM_TAP1);
+            LPAll.Add(PCF_ELEM_TAP2);
+            LPAll.Add(PCF_ELEM_TAP3);
+            LPAll.Add(PCF_ELEM_COMPID);
+            LPAll.Add(PCF_MAT_ID);
 
             //Populate the list with pipeline parameters
-            ListParametersAll.Add(PCF_PIPL_AREA);
-            ListParametersAll.Add(PCF_PIPL_DATE);
+            LPAll.Add(PCF_PIPL_AREA);
+            LPAll.Add(PCF_PIPL_DATE);
             //ListParametersAll.Add(PCF_PIPL_GRAV);
             //ListParametersAll.Add(PCF_PIPL_INSUL);
             //ListParametersAll.Add(PCF_PIPL_JACKET);
@@ -164,13 +168,13 @@ namespace PCF_Functions
             //ListParametersAll.Add(PCF_PIPL_NOMCLASS);
             //ListParametersAll.Add(PCF_PIPL_PAINT);
             //ListParametersAll.Add(PCF_PIPL_PREFIX);
-            ListParametersAll.Add(PCF_PIPL_PROJID);
-            ListParametersAll.Add(PCF_PIPL_REV);
-            ListParametersAll.Add(PCF_PIPL_SPEC);
+            LPAll.Add(PCF_PIPL_PROJID);
+            LPAll.Add(PCF_PIPL_REV);
+            LPAll.Add(PCF_PIPL_SPEC);
             //ListParametersAll.Add(PCF_PIPL_TEMP);
             //ListParametersAll.Add(PCF_PIPL_TRACING);
             //ListParametersAll.Add(PCF_PIPL_TYPE);
-            ListParametersAll.Add(PCF_PIPL_DWGNAME);
+            LPAll.Add(PCF_PIPL_DWGNAME);
             //ListParametersAll.Add(PCF_PIPL_AT01);
             //ListParametersAll.Add(PCF_PIPL_AT02);
             //ListParametersAll.Add(PCF_PIPL_AT03);
@@ -181,19 +185,21 @@ namespace PCF_Functions
             //ListParametersAll.Add(PCF_PIPL_AT08);
             //ListParametersAll.Add(PCF_PIPL_AT09);
 
-            ListParametersAll.Add(PCF_PIPL_CII_PD);
-            ListParametersAll.Add(PCF_PIPL_CII_TD);
-            ListParametersAll.Add(PCF_PIPL_CII_MATNAME);
-            ListParametersAll.Add(PCF_ELEM_CII_WALLTHK);
-            ListParametersAll.Add(PCF_PIPL_CII_INSULTHK);
-            ListParametersAll.Add(PCF_PIPL_CII_INSULDST);
-            ListParametersAll.Add(PCF_PIPL_CII_CORRALL);
-            ListParametersAll.Add(PCF_ELEM_CII_COMPWEIGHT);
-            ListParametersAll.Add(PCF_PIPL_CII_FLUIDDST);
-            ListParametersAll.Add(PCF_PIPL_CII_HYDROPD);
+            LPAll.Add(PCF_PIPL_CII_PD);
+            LPAll.Add(PCF_PIPL_CII_TD);
+            LPAll.Add(PCF_PIPL_CII_MATNAME);
+            LPAll.Add(PCF_ELEM_CII_WALLTHK);
+            LPAll.Add(PCF_PIPL_CII_INSULTHK);
+            LPAll.Add(PCF_PIPL_CII_INSULDST);
+            LPAll.Add(PCF_PIPL_CII_CORRALL);
+            LPAll.Add(PCF_ELEM_CII_COMPWEIGHT);
+            LPAll.Add(PCF_PIPL_CII_FLUIDDST);
+            LPAll.Add(PCF_PIPL_CII_HYDROPD);
 
-            ListParametersAll.Add(PCF_ELEM_SUPPORT_NAME);
+            LPAll.Add(PCF_ELEM_SUPPORT_NAME);
 
+            LPAll.Add(PCF_ELEM_EXCL);
+            LPAll.Add(PCF_PIPL_EXCL);
             #endregion
         }
     }
@@ -205,6 +211,7 @@ namespace PCF_Functions
         //general values
         public const ParameterType Text = ParameterType.Text;
         public const ParameterType Integer = ParameterType.Integer;
+        public const ParameterType YesNo = ParameterType.YesNo;
         #endregion
 
         public static IList<string> parameterNames = new List<string>();

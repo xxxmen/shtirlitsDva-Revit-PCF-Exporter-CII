@@ -49,7 +49,7 @@ namespace PCF_Parameters
             xel.Worksheet worksheet;
             worksheet = excel.ActiveSheet as xel.Worksheet;
             worksheet.Name = "PCF Export - pipelines";
-            
+
             worksheet.Columns.ColumnWidth = 20;
 
             worksheet.Cells[1, 1] = "Family and Type";
@@ -57,7 +57,7 @@ namespace PCF_Parameters
             //Change domain for query
             string curDomain = "PIPL", curUsage = "U";
 
-            var query = from p in new plst().ListParametersAll
+            var query = from p in new plst().LPAll
                         where p.Domain == curDomain && p.Usage == curUsage
                         select p;
 
@@ -91,7 +91,7 @@ namespace PCF_Parameters
             orderedCollector =
                 collector.OrderBy(e => e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString());
             elementGroups = from e in orderedCollector
-                group e by e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
+                            group e by e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
 
 
             excel.Sheets.Add(Missing.Value, Missing.Value, Missing.Value, Missing.Value);
@@ -104,7 +104,7 @@ namespace PCF_Parameters
 
             //Query parameters
             curDomain = "ELEM";
-            
+
             //Formatting must occur here, because it depends on query
             worksheet.Range["A1", Util.GetColumnName(query.Count()) + "1"].Font.Bold = true;
 
@@ -124,7 +124,7 @@ namespace PCF_Parameters
 
             #endregion
 
-            
+
 
             collector.Dispose();
             return Result.Succeeded;
@@ -146,18 +146,18 @@ namespace PCF_Parameters
             StringBuilder sbFeedback = new StringBuilder();
 
             FilteredElementCollector collector = Filter.GetElementsWithConnectors(doc);
-           
+
             //prepare input variables which are initialized when looping the elements
             string eFamilyType = null; string columnName = null;
 
             //query is using the variables in the loop to query the dataset
             EnumerableRowCollection<string> query = from value in PCF_Exporter_form.DATA_TABLE.AsEnumerable()
-                        where value.Field<string>(0) == eFamilyType
-                        select value.Field<string>(columnName);
+                                                    where value.Field<string>(0) == eFamilyType
+                                                    select value.Field<string>(columnName);
 
-            var pQuery = from p in new plst().ListParametersAll
-                        where p.Domain == "ELEM"
-                        select p;
+            var pQuery = from p in new plst().LPAll
+                         where p.Domain == "ELEM"
+                         select p;
 
             //Debugging
             //StringBuilder sbParameters = new StringBuilder();
@@ -174,9 +174,9 @@ namespace PCF_Parameters
                 {
                     //reporting
                     if (string.Equals(element.Category.Name.ToString(), "Pipes")) pNumber++;
-                    if (string.Equals(element.Category.Name.ToString(), "Pipe Fittings")) fNumber++;
-                    if (string.Equals(element.Category.Name.ToString(), "Pipe Accessories")) aNumber++;
-                    
+                    else if (string.Equals(element.Category.Name.ToString(), "Pipe Fittings")) fNumber++;
+                    else if (string.Equals(element.Category.Name.ToString(), "Pipe Accessories")) aNumber++;
+
                     eFamilyType = element.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString();
                     foreach (string parameterName in pd.parameterNames) // <-- pd.parameterNames must be correctly initialized by FormCaller!!!
                     {
@@ -193,15 +193,15 @@ namespace PCF_Parameters
                         element.get_Parameter(parGuid).Set(parameterValue);
                     }
 
-                        //sbParameters.Append(eFamilyType);
-                        //sbParameters.AppendLine();
+                    //sbParameters.Append(eFamilyType);
+                    //sbParameters.AppendLine();
                 }
 
                 //sbParameters.Append(eFamilyType);
                 //sbParameters.AppendLine();
-                
+
                 trans.Commit();
-                sbFeedback.Append(pNumber + " Pipes initialized.\n"+fNumber + " Pipe fittings initialized.\n"+aNumber+" Pipe accessories initialized.");
+                sbFeedback.Append(pNumber + " Pipes initialized.\n" + fNumber + " Pipe fittings initialized.\n" + aNumber + " Pipe accessories initialized.");
                 Util.InfoMsg(sbFeedback.ToString());
                 //excelReader.Close();
 
@@ -248,7 +248,7 @@ namespace PCF_Parameters
             //Get the systems of things and get the SystemTypes
             //Collector for PipingSystems
             FilteredElementCollector collector = new FilteredElementCollector(doc);
-            IList<Element> elementList = collector.OfClass(typeof (PipingSystem)).ToElements();
+            IList<Element> elementList = collector.OfClass(typeof(PipingSystem)).ToElements();
             //Collector returns Element, cast to PipingSystem
             IList<PipingSystem> systemList = elementList.Cast<PipingSystem>().ToList();
             //Get the PipingSystemType Id from the PipingSystem elements
@@ -257,9 +257,9 @@ namespace PCF_Parameters
             IEnumerable<Element> systemTypeList = from id in systemTypeIdList select doc.GetElement(id);
             //Group PipingSystemType by Name and retrieve first element of group -> equals to filtering a list to contain only unique elements
             List<Element> sQuery = (from st in systemTypeList
-                group st by new {st.Name} //http://stackoverflow.com/a/9589705/6073998 {st.Name, st.Attribute1, st.Attribute2}
+                                    group st by new { st.Name } //http://stackoverflow.com/a/9589705/6073998 {st.Name, st.Attribute1, st.Attribute2}
                 into stGroup
-                select stGroup.First()).ToList();
+                                    select stGroup.First()).ToList();
 
             //prepare input variables which are initialized when looping the elements
             string eFamilyType = null; string columnName = null;
@@ -270,7 +270,7 @@ namespace PCF_Parameters
                                                     select value.Field<string>(columnName);
 
             //Get a query for pipeline parameters
-            var pQuery = from p in new plst().ListParametersAll
+            var pQuery = from p in new plst().LPAll
                          where p.Domain == "PIPL"
                          select p;
 
@@ -336,7 +336,7 @@ namespace PCF_Parameters
             catch (Exception ex)
             {
                 msg = ex.Message;
-                Util.ErrorMsg("Population of parameters failed with the following exception: \n"+msg);
+                Util.ErrorMsg("Population of parameters failed with the following exception: \n" + msg);
                 trans.RollBack();
                 return Result.Failed;
             }
@@ -364,10 +364,14 @@ namespace PCF_Parameters
             string ExecutingAssemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             string oriFile = app.SharedParametersFilename;
             string tempFile = ExecutingAssemblyPath + "Temp.txt";
-            
+
             StringBuilder sbFeedback = new StringBuilder();
             //Parameter query
-            var query = from p in new plst().ListParametersAll where p.Domain == "ELEM" select p;
+            var query = from p in new plst().LPAll
+                        where p.Domain == "ELEM" ||
+                              p.Name == "PCF_ELEM_EXCL"
+                        select p;
+
             //Create parameter bindings
             try
             {
@@ -399,7 +403,7 @@ namespace PCF_Parameters
                 Util.InfoMsg(sbFeedback.ToString());
             }
 
-            catch (Autodesk.Revit.Exceptions.OperationCanceledException){return Result.Cancelled;}
+            catch (Autodesk.Revit.Exceptions.OperationCanceledException) { return Result.Cancelled; }
 
             catch (Exception ex)
             {
@@ -410,7 +414,7 @@ namespace PCF_Parameters
             app.SharedParametersFilename = oriFile;
 
             return Result.Succeeded;
-           
+
         }
 
         internal Result CreatePipelineBindings(UIApplication uiApp, ref string msg)
@@ -432,7 +436,10 @@ namespace PCF_Parameters
             StringBuilder sbFeedback = new StringBuilder();
 
             //Parameter query
-            var query = from p in new plst().ListParametersAll where p.Domain == "PIPL" select p;
+            var query = from p in new plst().LPAll
+                        where p.Domain == "PIPL" ||
+                              p.Name == "PCF_PIPL_EXCL"
+                        select p;
 
             //Create parameter bindings
             try
@@ -480,12 +487,8 @@ namespace PCF_Parameters
         }
     }
 
-    public class DeleteParameters //: IExternalCommand
+    public class DeleteParameters
     {
-        //public Result Execute(ExternalCommandData data, ref string msg, ElementSet elements)
-        //{
-        //    return ExecuteMyCommand(data.Application, ref msg);
-        //}
         private StringBuilder sbFeedback = new StringBuilder();
 
         internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg)
@@ -498,7 +501,7 @@ namespace PCF_Parameters
             {
                 Transaction trans = new Transaction(doc, "Delete PCF parameters");
                 trans.Start();
-                foreach (pdef parameter in new plst().ListParametersAll.ToList())
+                foreach (pdef parameter in new plst().LPAll.ToList())
                     RemoveSharedParameterBinding(doc.Application, parameter.Name, parameter.Type);
                 trans.Commit();
                 Util.InfoMsg(sbFeedback.ToString());

@@ -28,7 +28,7 @@ namespace PCF_Pipeline
                     where string.Equals(st.Abbreviation, key)
                     select st).FirstOrDefault();
             
-                IEnumerable<pdef> query = from p in new plst().ListParametersAll
+                IEnumerable<pdef> query = from p in new plst().LPAll
                     where string.Equals(p.Domain, "PIPL") && !string.Equals(p.ExportingTo, "CII")
                     select p;
 
