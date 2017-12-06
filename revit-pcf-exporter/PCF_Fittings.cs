@@ -27,9 +27,6 @@ namespace PCF_Fittings
             StringBuilder sbFittings = new StringBuilder();
             foreach (Element element in fittingsList)
             {
-                //If the Element Type field is empty -> ignore the component
-                if (string.IsNullOrEmpty(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString())) continue;
-
                 sbFittings.AppendLine(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString());
                 sbFittings.AppendLine("    COMPONENT-IDENTIFIER " + element.get_Parameter(new plst().PCF_ELEM_COMPID.Guid).AsInteger());
 

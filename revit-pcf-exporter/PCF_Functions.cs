@@ -37,6 +37,7 @@ namespace PCF_Functions
         public static bool WriteWallThickness = false;
         public static bool ExportToPlant3DIso = false;
         public static bool ExportToCII = false;
+        public static bool Overwrite = true;
 
         //PCF File Header (preamble) control
         public static string UNITS_BORE = "MM";

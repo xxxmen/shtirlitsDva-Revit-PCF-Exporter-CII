@@ -97,6 +97,9 @@ namespace PCF_Exporter
             //Init export to section
             iv.ExportToPlant3DIso = mySettings.Default.checkBox1Checked;
             iv.ExportToCII = mySettings.Default.checkBox2Checked;
+
+            //Init write mode section
+            iv.Overwrite = mySettings.Default.radioButton15Overwrite;
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -374,6 +377,15 @@ namespace PCF_Exporter
             iv.SysAbbr = comboBox2.SelectedItem.ToString();
         }
 
-        
+        private void radioButton15_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton15.Checked) iv.Overwrite = true;
+            else iv.Overwrite = false;
+        }
+
+        private void radioButton16_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -38,8 +38,6 @@ namespace PCF_Accessories
                 {
                     //This is a workaround to try to determine what element caused an exception
                     element = Element;
-                    //If the Element Type field is empty -> ignore the component
-                    if (string.IsNullOrEmpty(element.get_Parameter(pList.PCF_ELEM_TYPE.Guid).AsString())) continue;
 
                     sbAccessories.AppendLine(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString());
                     sbAccessories.AppendLine("    COMPONENT-IDENTIFIER " + element.get_Parameter(new plst().PCF_ELEM_COMPID.Guid).AsInteger());

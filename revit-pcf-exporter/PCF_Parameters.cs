@@ -17,6 +17,7 @@ using PCF_Exporter;
 using pd = PCF_Functions.ParameterData;
 using pdef = PCF_Functions.ParameterDefinition;
 using plst = PCF_Functions.ParameterList;
+using iv = PCF_Functions.InputVars;
 
 namespace PCF_Parameters
 {
@@ -190,7 +191,13 @@ namespace PCF_Parameters
                             Util.ErrorMsg("Wrong parameter set. Select ELEMENT parameters.");
                             return Result.Failed;
                         }
-                        element.get_Parameter(parGuid).Set(parameterValue);
+                        if (iv.Overwrite) element.get_Parameter(parGuid).Set(parameterValue);
+                        else
+                        {
+                            Parameter par = element.get_Parameter(parGuid);
+                            if (!string.IsNullOrEmpty(par.AsString())) continue;
+                            else par.Set(parameterValue);
+                        }
                     }
 
                     //sbParameters.Append(eFamilyType);
