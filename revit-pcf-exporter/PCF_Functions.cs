@@ -315,7 +315,7 @@ namespace PCF_Functions
 
                 case (int)BuiltInCategory.OST_PipeFitting:
                 case (int)BuiltInCategory.OST_PipeAccessory:
-                   
+
                     //Declare a variable for 
                     Connector testedConnector = null;
 
@@ -914,7 +914,9 @@ namespace PCF_Functions
             FilteredElementCollector collector = new FilteredElementCollector(doc);
             HashSet<PipingSystem> pipingSystems = collector.OfClass(typeof(PipingSystem)).Cast<PipingSystem>().ToHashSet();
             HashSet<PipingSystemType> pipingSystemTypes = pipingSystems.Select(ps => doc.GetElement(ps.GetTypeId())).Cast<PipingSystemType>().ToHashSet();
-            HashSet<string> abbreviations = pipingSystemTypes.Select(pst => pst.Abbreviation).ToHashSet();
+            HashSet<string> abbreviations = pipingSystemTypes
+                .Where(pst => pst.get_Parameter(new plst().PCF_PIPL_EXCL.Guid).AsInteger() == 0) //Filter out EXCLUDED piping systems
+                .Select(pst => pst.Abbreviation).ToHashSet();
 
             return abbreviations.Distinct().ToList();
         }
@@ -963,7 +965,6 @@ namespace PCF_Functions
                     }
                 }
             }
-
         }
     }
 }
