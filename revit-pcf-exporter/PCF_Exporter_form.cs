@@ -10,6 +10,7 @@ using Autodesk.Revit.UI;
 using BuildingCoder;
 using PCF_Parameters;
 using PCF_Functions;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using mySettings = PCF_Functions.Properties.Settings;
 using iv = PCF_Functions.InputVars;
 using dh = PCF_Functions.DataHandler;
@@ -63,7 +64,7 @@ namespace PCF_Exporter
                 comboBox2.Visible = false;
                 textBox4.Visible = false;
             }
-            
+
             //Init Bore
             iv.UNITS_BORE_MM = mySettings.Default.radioButton3BoreMM;
             iv.UNITS_BORE_INCH = mySettings.Default.radioButton4BoreINCH;
@@ -213,14 +214,24 @@ namespace PCF_Exporter
 
         private void button5_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            DialogResult result = fbd.ShowDialog();
-            if (result == DialogResult.OK)
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog
             {
-                iv.OutputDirectoryFilePath = fbd.SelectedPath;
+                IsFolderPicker = true
+            };
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                iv.OutputDirectoryFilePath = dialog.FileName; //"\\" is added in the output part.
                 textBox5.Text = iv.OutputDirectoryFilePath;
                 mySettings.Default.textBox5OutputPath = iv.OutputDirectoryFilePath;
             }
+            //FolderBrowserDialog fbd = new FolderBrowserDialog();
+            //DialogResult result = fbd.ShowDialog();
+            //if (result == DialogResult.OK)
+            //{
+            //    iv.OutputDirectoryFilePath = fbd.SelectedPath;
+            //    textBox5.Text = iv.OutputDirectoryFilePath;
+            //    mySettings.Default.textBox5OutputPath = iv.OutputDirectoryFilePath;
+            //}
         }
 
         private void button6_Click(object sender, EventArgs e)
