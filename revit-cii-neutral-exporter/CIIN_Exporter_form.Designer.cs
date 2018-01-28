@@ -12,6 +12,8 @@ using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 
+using RadioBox = PCF_Functions.RadioBox;
+
 namespace CIINExporter
 {
     public partial class CIIN_Exporter_form : System.Windows.Forms.Form
@@ -67,27 +69,27 @@ namespace CIINExporter
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
-            this.radioBox3 = new CIINExporter.RadioBox();
+            this.radioBox3 = new RadioBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.radioBox2 = new CIINExporter.RadioBox();
+            this.radioBox2 = new RadioBox();
             this.radioButton12 = new System.Windows.Forms.RadioButton();
             this.radioButton11 = new System.Windows.Forms.RadioButton();
             this.textBox8 = new System.Windows.Forms.TextBox();
-            this.groupBox6 = new CIINExporter.RadioBox();
-            this.groupBox10 = new CIINExporter.RadioBox();
+            this.groupBox6 = new RadioBox();
+            this.groupBox10 = new RadioBox();
             this.radioButton10 = new System.Windows.Forms.RadioButton();
             this.radioButton9 = new System.Windows.Forms.RadioButton();
-            this.groupBox9 = new CIINExporter.RadioBox();
+            this.groupBox9 = new RadioBox();
             this.radioButton7 = new System.Windows.Forms.RadioButton();
             this.radioButton8 = new System.Windows.Forms.RadioButton();
-            this.groupBox8 = new CIINExporter.RadioBox();
+            this.groupBox8 = new RadioBox();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
-            this.groupBox7 = new CIINExporter.RadioBox();
+            this.groupBox7 = new RadioBox();
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.groupBox3 = new CIINExporter.RadioBox();
+            this.groupBox3 = new RadioBox();
             this.radioButton14 = new System.Windows.Forms.RadioButton();
             this.radioButton13 = new System.Windows.Forms.RadioButton();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
@@ -100,10 +102,10 @@ namespace CIINExporter
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.radioBox4 = new CIINExporter.RadioBox();
+            this.radioBox4 = new RadioBox();
             this.radioButton16 = new System.Windows.Forms.RadioButton();
             this.radioButton15 = new System.Windows.Forms.RadioButton();
-            this.radioBox1 = new CIINExporter.RadioBox();
+            this.radioBox1 = new RadioBox();
             this.button9 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.Tabs.SuspendLayout();
@@ -934,7 +936,7 @@ namespace CIINExporter
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.ComboBox comboBox1;
-        private CIINExporter.RadioBox groupBox3;
+        private RadioBox groupBox3;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.TextBox textBox2;
@@ -947,16 +949,16 @@ namespace CIINExporter
         private System.Windows.Forms.TextBox textBox6;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button button6;
-        private CIINExporter.RadioBox groupBox6;
-        private CIINExporter.RadioBox groupBox10;
+        private RadioBox groupBox6;
+        private RadioBox groupBox10;
         private System.Windows.Forms.RadioButton radioButton9;
-        private CIINExporter.RadioBox groupBox9;
+        private RadioBox groupBox9;
         private System.Windows.Forms.RadioButton radioButton7;
         private System.Windows.Forms.RadioButton radioButton8;
-        private CIINExporter.RadioBox groupBox8;
+        private RadioBox groupBox8;
         private System.Windows.Forms.RadioButton radioButton5;
         private System.Windows.Forms.RadioButton radioButton6;
-        private CIINExporter.RadioBox groupBox7;
+        private RadioBox groupBox7;
         private System.Windows.Forms.RadioButton radioButton4;
         private System.Windows.Forms.RadioButton radioButton3;
         private System.Windows.Forms.Button button7;
@@ -968,20 +970,20 @@ namespace CIINExporter
         private System.Windows.Forms.TextBox textBox23;
         private System.Windows.Forms.TextBox textBox24;
         private System.Windows.Forms.TextBox textBox21;
-        private CIINExporter.RadioBox radioBox2;
+        private RadioBox radioBox2;
         private System.Windows.Forms.RadioButton radioButton12;
         private System.Windows.Forms.RadioButton radioButton11;
         private System.Windows.Forms.TextBox textBox8;
-        private CIINExporter.RadioBox radioBox3;
+        private RadioBox radioBox3;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.RadioButton radioButton14;
         private System.Windows.Forms.RadioButton radioButton13;
         private System.Windows.Forms.ComboBox comboBox2;
-        private CIINExporter.RadioBox radioBox1;
+        private RadioBox radioBox1;
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Button button8;
-        private CIINExporter.RadioBox radioBox4;
+        private RadioBox radioBox4;
         private System.Windows.Forms.RadioButton radioButton16;
         private System.Windows.Forms.RadioButton radioButton15;
     }

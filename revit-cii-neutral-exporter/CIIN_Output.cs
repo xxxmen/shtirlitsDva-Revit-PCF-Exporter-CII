@@ -4,7 +4,7 @@ using System.Text;
 using Autodesk.Revit.DB;
 using iv = CIINExporter.InputVars;
 
-namespace PCF_Output
+namespace CIINExporter
 {
     public class Output
     {
@@ -30,7 +30,7 @@ namespace PCF_Output
                 scope = "_Selection";
             }
 
-            string filename = _outputDir + "\\" + docName + "_" + dateAndTime + scope + ".pcf";
+            string filename = _outputDir + "\\" + docName + "_" + dateAndTime + scope + ".CII";
             //string filename = _outputDir+"\\" + docName + ".pcf";
 
             //Clear the output file
