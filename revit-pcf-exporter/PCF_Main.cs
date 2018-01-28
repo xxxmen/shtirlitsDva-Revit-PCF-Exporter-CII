@@ -79,7 +79,7 @@ namespace PCF_Exporter
                     colElements = collector.ToElements().ToHashSet();
 
                 }
-                
+
                 else if (InputVars.ExportAllSepFiles || InputVars.ExportSpecificPipeLine)
                 {
                     //Define a collector with multiple filters to collect PipeFittings OR PipeAccessories OR Pipes + filter by System Abbreviation
@@ -101,20 +101,30 @@ namespace PCF_Exporter
                     colElements = selection.Select(s => doc.GetElement(s)).ToHashSet();
                 }
 
-                //DiameterLimit filter applied to ALL elements.
-                HashSet<Element> elements = (from element in colElements
-                                             where
-                                             //Diameter limit filter
-                                             new FilterDiameterLimit().FilterDL(element) &&
-                                             ////Filter out elements with empty PCF_ELEM_TYPE field (remember to !negate)
-                                             //!string.IsNullOrEmpty(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString()) &&
-                                             //Filter out EXCLUDED elements -> 0 means no checkmark
-                                             element.get_Parameter(new plst().PCF_ELEM_EXCL.Guid).AsInteger() == 0
-                                             select element).ToHashSet();
+                HashSet<Element> elements;
+                try
+                {
+                    //DiameterLimit filter applied to ALL elements.
+                    elements = (from element in colElements
+                                where
+                                //Diameter limit filter
+                                new FilterDiameterLimit().FilterDL(element) &&
+                                ////Filter out elements with empty PCF_ELEM_TYPE field (remember to !negate)
+                                //!string.IsNullOrEmpty(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString()) &&
+                                //Filter out EXCLUDED elements -> 0 means no checkmark
+                                element.get_Parameter(new plst().PCF_ELEM_EXCL.Guid).AsInteger() == 0
+                                select element).ToHashSet();
 
-                //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
-                pipelineGroups = from e in elements
-                                 group e by e.LookupParameter(InputVars.PipelineGroupParameterName).AsString();
+                    //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
+                    pipelineGroups = from e in elements
+                                     group e by e.LookupParameter(InputVars.PipelineGroupParameterName).AsString();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Filtering in Main threw an exception:\n" + ex.Message +
+                        "\nTo fix:\n" +
+                        "1. See if parameter PCF_ELEM_EXCL exists, if not, rerun parameter import.");
+                }
                 #endregion
 
                 #region Initialize Material Data
@@ -131,13 +141,13 @@ namespace PCF_Exporter
                         throw new Exception("PCF_MAT_DESCR is empty for element " + e.Id + "! Please, correct this issue before exporting again.");
                     }
                 }
-                
+
                 //Initialize material group numbers on the elements
                 IEnumerable<IGrouping<string, Element>> materialGroups = from e in elements group e by e.get_Parameter(new plst().PCF_MAT_DESCR.Guid).AsString();
 
                 using (Transaction trans = new Transaction(doc, "Set PCF_ELEM_COMPID and PCF_MAT_ID"))
                 {
-                    
+
                     trans.Start();
 
                     //Access groups
