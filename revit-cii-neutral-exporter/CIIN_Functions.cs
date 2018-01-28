@@ -920,14 +920,14 @@ namespace CIINExporter
             if (pstype == null) throw new Exception("No piping systems created yet! Draw some pipes.");
 
             HashSet<string> abbreviations;
-            if (pstype.get_Parameter(new plst().PCF_PIPL_EXCL.Guid) == null)
+            if (pstype.get_Parameter(new plst().CII_PIPL_EXCL.Guid) == null)
             {
                 abbreviations = pipingSystemTypes.Select(pst => pst.Abbreviation).ToHashSet();
             }
             else
             {
                 abbreviations = pipingSystemTypes
-                      .Where(pst => pst.get_Parameter(new plst().PCF_PIPL_EXCL.Guid).AsInteger() == 0) //Filter out EXCLUDED piping systems
+                      .Where(pst => pst.get_Parameter(new plst().CII_PIPL_EXCL.Guid).AsInteger() == 0) //Filter out EXCLUDED piping systems
                       .Select(pst => pst.Abbreviation).ToHashSet();
             }
 

@@ -237,7 +237,7 @@ namespace CIINExporter
             this.groupBox2.Size = new System.Drawing.Size(369, 218);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "PCF parameter INITIALIZATION";
+            this.groupBox2.Text = "CIIN parameter INITIALIZATION";
             // 
             // textBox20
             // 
@@ -311,7 +311,7 @@ namespace CIINExporter
             this.groupBox1.Size = new System.Drawing.Size(369, 132);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "PCF parameter MANAGEMENT";
+            this.groupBox1.Text = "CIIN parameter MANAGEMENT";
             // 
             // button2
             // 
@@ -887,7 +887,7 @@ namespace CIINExporter
             this.ClientSize = new System.Drawing.Size(383, 609);
             this.Controls.Add(this.Tabs);
             this.Name = "CIIN_Exporter_form";
-            this.Text = "PCF_Exporter_form";
+            this.Text = "CII Neutral File Exporter";
             this.Tabs.ResumeLayout(false);
             this.TabSetup.ResumeLayout(false);
             this.radioBox1.ResumeLayout(false);

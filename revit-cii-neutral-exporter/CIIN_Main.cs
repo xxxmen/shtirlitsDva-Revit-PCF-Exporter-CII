@@ -108,7 +108,7 @@ namespace CIINExporter
                                              ////Filter out elements with empty PCF_ELEM_TYPE field (remember to !negate)
                                              //!string.IsNullOrEmpty(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString()) &&
                                              //Filter out EXCLUDED elements -> 0 means no checkmark
-                                             element.get_Parameter(new plst().PCF_ELEM_EXCL.Guid).AsInteger() == 0
+                                             element.get_Parameter(new plst().CII_ELEM_EXCL.Guid).AsInteger() == 0
                                              select element).ToHashSet();
 
                 //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
