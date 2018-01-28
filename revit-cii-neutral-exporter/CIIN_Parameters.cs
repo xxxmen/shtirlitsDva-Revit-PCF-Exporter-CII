@@ -378,7 +378,7 @@ namespace CIINExporter
             //Parameter query
             var query = from p in new plst().LPAll
                         where p.Domain == "ELEM" ||
-                              p.Name == "PCF_ELEM_EXCL"
+                              p.Name == "CII_ELEM_EXCL"
                         select p;
 
             //Create parameter bindings
@@ -447,7 +447,7 @@ namespace CIINExporter
             //Parameter query
             var query = from p in new plst().LPAll
                         where p.Domain == "PIPL" ||
-                              p.Name == "PCF_PIPL_EXCL"
+                              p.Name == "CII_PIPL_EXCL"
                         select p;
 
             //Create parameter bindings

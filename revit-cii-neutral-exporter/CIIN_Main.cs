@@ -93,20 +93,30 @@ namespace CIINExporter
                     colElements = selection.Select(s => doc.GetElement(s)).ToHashSet();
                 }
 
-                //DiameterLimit filter applied to ALL elements.
-                HashSet<Element> elements = (from element in colElements
-                                             where
-                                             //Diameter limit filter
-                                             new FilterDiameterLimit().FilterDL(element) &&
-                                             ////Filter out elements with empty PCF_ELEM_TYPE field (remember to !negate)
-                                             //!string.IsNullOrEmpty(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString()) &&
-                                             //Filter out EXCLUDED elements -> 0 means no checkmark
-                                             element.get_Parameter(new plst().CII_ELEM_EXCL.Guid).AsInteger() == 0
-                                             select element).ToHashSet();
+                try
+                {
+                    //DiameterLimit filter applied to ALL elements.
+                    HashSet<Element> elements = (from element in colElements
+                                                 where
+                                                 //Diameter limit filter
+                                                 new FilterDiameterLimit().FilterDL(element) &&
+                                                 ////Filter out elements with empty PCF_ELEM_TYPE field (remember to !negate)
+                                                 //!string.IsNullOrEmpty(element.get_Parameter(new plst().PCF_ELEM_TYPE.Guid).AsString()) &&
+                                                 //Filter out EXCLUDED elements -> 0 means no checkmark
+                                                 element.get_Parameter(new plst().CII_ELEM_EXCL.Guid).AsInteger() == 0
+                                                 select element).ToHashSet();
 
-                //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
-                pipelineGroups = from e in elements
-                                 group e by e.LookupParameter(InputVars.PipelineGroupParameterName).AsString();
+                    //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
+                    pipelineGroups = from e in elements
+                                     group e by e.LookupParameter(InputVars.PipelineGroupParameterName).AsString();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Filtering in Main threw an exception:\n" + ex.Message +
+                        "\nTo fix:\n" +
+                        "1. See if parameter CII_ELEM_EXCL exists, if not, rerun parameter import.");
+                }
+                
                 #endregion
 
 

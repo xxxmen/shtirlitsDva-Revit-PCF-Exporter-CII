@@ -30,8 +30,8 @@ namespace CIINExporter
                 scope = "_Selection";
             }
 
-            string filename = _outputDir + "\\" + docName + "_" + dateAndTime + scope + ".CII";
-            //string filename = _outputDir+"\\" + docName + ".pcf";
+            //string filename = _outputDir + "\\" + docName + "_" + dateAndTime + scope + ".CII";
+            string filename = _outputDir+"\\" + docName + ".CII";
 
             //Clear the output file
             System.IO.File.WriteAllBytes(filename, new byte[0]);
