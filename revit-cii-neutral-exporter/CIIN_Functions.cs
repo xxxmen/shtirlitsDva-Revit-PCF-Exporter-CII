@@ -75,148 +75,28 @@ namespace CIINExporter
         #endregion
     }
 
-    public class Composer
+    public static class Composer
     {
-        #region Preamble
-        //PCF Preamble composition
-
-        public StringBuilder PreambleComposer()
+        //CII VERSION section
+        public static StringBuilder Section_VERSION()
         {
-            StringBuilder sbPreamble = new StringBuilder();
-            sbPreamble.Append("ISOGEN-FILES ISOCONFIG.FLS");
-            sbPreamble.AppendLine();
-            sbPreamble.Append("UNITS-BORE " + InputVars.UNITS_BORE);
-            sbPreamble.AppendLine();
-            sbPreamble.Append("UNITS-CO-ORDS " + InputVars.UNITS_CO_ORDS);
-            sbPreamble.AppendLine();
-            sbPreamble.Append("UNITS-WEIGHT " + InputVars.UNITS_WEIGHT);
-            sbPreamble.AppendLine();
-            sbPreamble.Append("UNITS-BOLT-DIA MM");
-            sbPreamble.AppendLine();
-            sbPreamble.Append("UNITS-BOLT-LENGTH MM");
-            sbPreamble.AppendLine();
-            sbPreamble.Append("UNITS-WEIGHT-LENGTH " + InputVars.UNITS_WEIGHT_LENGTH);
-            sbPreamble.AppendLine();
-            return sbPreamble;
-        }
-        #endregion
+            string bl = "                                                                             ";
 
-        #region Materials section
-        public StringBuilder MaterialsSection(IEnumerable<IGrouping<string, Element>> elementGroups)
-        {
-            StringBuilder sbMaterials = new StringBuilder();
-            int groupNumber = 0;
-            sbMaterials.Append("MATERIALS");
-            foreach (IGrouping<string, Element> group in elementGroups)
-            {
-                groupNumber++;
-                sbMaterials.AppendLine();
-                sbMaterials.Append("MATERIAL-IDENTIFIER " + groupNumber);
-                sbMaterials.AppendLine();
-                sbMaterials.Append("    DESCRIPTION " + group.Key);
-            }
-            return sbMaterials;
-        }
-        #endregion
-
-        #region CII export writer
-
-        public static StringBuilder CIIWriter(Document document, string systemAbbreviation)
-        {
-            StringBuilder sbCII = new StringBuilder();
-            //Handle CII export parameters
-            //Instantiate collector
-            FilteredElementCollector collector = new FilteredElementCollector(document);
-            //Get the elements
-            PipingSystemType sQuery = collector.OfClass(typeof(PipingSystemType))
-                .WherePasses(Filter.ParameterValueFilterStringEquals(systemAbbreviation, BuiltInParameter.RBS_SYSTEM_ABBREVIATION_PARAM))
-                .Cast<PipingSystemType>()
-                .FirstOrDefault();
-
-            ////Select correct systemType
-            //PipingSystemType sQuery = (from PipingSystemType st in collector
-            //                           where string.Equals(st.Abbreviation, systemAbbreviation)
-            //                           select st).FirstOrDefault();
-
-            var query = from p in new plst().LPAll
-                        where string.Equals(p.Domain, "PIPL") && string.Equals(p.ExportingTo, "CII")
-                        select p;
-
-            foreach (pdef p in query.ToList())
-            {
-                if (string.IsNullOrEmpty(sQuery.get_Parameter(p.Guid).AsString())) continue;
-                sbCII.AppendLine("    " + p.Keyword + " " + sQuery.get_Parameter(p.Guid).AsString());
-            }
-
-            return sbCII;
-        }
-
-        #endregion
-
-        #region Plant 3D Iso Writer
-        /// <summary>
-        /// Method to write ITEM-CODE and ITEM-DESCRIPTION entries to enable import of the PCF file into the Plant 3D "PLANTPCFTOISO" command.
-        /// </summary>
-        /// <param name="element">The current element being written.</param>
-        /// <returns>StringBuilder containing the entries.</returns>
-        public static StringBuilder Plant3DIsoWriter(Element element, Document doc)
-        {
-            //If an element has EXISTING in it's PCF_ELEM_SPEC the writing of ITEM-CODE will be skipped, making Plant 3D ISO treat it as existing.
-            pdef elemSpec = new plst().PCF_ELEM_SPEC;
-            Parameter pm = element.get_Parameter(elemSpec.Guid);
-            if (string.Equals(pm.AsString(), "EXISTING")) return new StringBuilder();
-
-            //Write ITEM-CODE et al
             StringBuilder sb = new StringBuilder();
-
-            pdef matId = new plst().PCF_MAT_ID;
-            pdef matDescr = new plst().PCF_MAT_DESCR;
-
-            int itemCode = element.get_Parameter(matId.Guid).AsInteger();
-            string itemDescr = element.get_Parameter(matDescr.Guid).AsString();
-            string key = MepUtils.GetElementPipingSystemType(element, doc).Abbreviation;
-
-            sb.AppendLine("    ITEM-CODE " + key + "-" + itemCode);
-            sb.AppendLine("    ITEM-DESCRIPTION " + itemDescr);
-
+            sb.AppendLine("#$ VERSION ");
+            sb.AppendLine("    5.00000      10.0000        1252");
+            sb.AppendLine("    PROJECT:                                                                 ");
+            sb.AppendLine(bl);
+            sb.AppendLine("    CLIENT :                                                                 ");
+            sb.AppendLine(bl);
+            sb.AppendLine("    ANALYST:                                                                 ");
+            sb.AppendLine(bl);
+            sb.AppendLine("    NOTES  :                                                                 ");
+            for (int i = 0; i < 52; i++) sb.AppendLine(bl);
+            sb.AppendLine("   Data generated by Revit Addin: revit-cii-neutral-exporter (GitHub)        ");
             return sb;
         }
 
-        #endregion
-
-        #region ELEM parameter writer
-        public StringBuilder ElemParameterWriter(Element passedElement)
-        {
-            StringBuilder sbElemParameters = new StringBuilder();
-
-            var pQuery = from p in new plst().LPAll
-                         where !string.IsNullOrEmpty(p.Keyword) && string.Equals(p.Domain, "ELEM")
-                         select p;
-
-            foreach (pdef p in pQuery)
-            {
-                //Check for parameter's storage type (can be Int for select few parameters)
-                int sT = (int)passedElement.get_Parameter(p.Guid).StorageType;
-
-                if (sT == 1)
-                {
-                    //Check if the parameter contains anything
-                    if (string.IsNullOrEmpty(passedElement.get_Parameter(p.Guid).AsInteger().ToString())) continue;
-                    sbElemParameters.Append("    " + p.Keyword + " ");
-                    sbElemParameters.Append(passedElement.get_Parameter(p.Guid).AsInteger());
-                }
-                else if (sT == 3)
-                {
-                    //Check if the parameter contains anything
-                    if (string.IsNullOrEmpty(passedElement.get_Parameter(p.Guid).AsString())) continue;
-                    sbElemParameters.Append("    " + p.Keyword + " ");
-                    sbElemParameters.Append(passedElement.get_Parameter(p.Guid).AsString());
-                }
-                sbElemParameters.AppendLine();
-            }
-            return sbElemParameters;
-        }
-        #endregion
     }
 
     public class Filter
@@ -782,85 +662,6 @@ namespace CIINExporter
             }
 
             return excelSheetNames;
-        }
-    }
-
-    public static class ParameterDataWriter
-    {
-        public static void SetWallThicknessPipes(HashSet<Element> elements)
-        {
-            //Wallthicknes for pipes are hardcoded until further notice
-            //Values are from 10216-2 - Seamless steel tubes for pressure purposes
-            //TODO: Implement a way to read values from excel
-            Dictionary<int, string> pipeWallThk = new Dictionary<int, string>
-            {
-                [10] = "1.8 mm",
-                [15] = "2 mm",
-                [20] = "2.3 mm",
-                [25] = "2.6 mm",
-                [32] = "2.6 mm",
-                [40] = "2.6 mm",
-                [50] = "2.9 mm",
-                [65] = "2.9 mm",
-                [80] = "3.2 mm",
-                [100] = "3.6 mm",
-                [125] = "4 mm",
-                [150] = "4.5 mm",
-                [200] = "6.3 mm",
-                [250] = "6.3 mm",
-                [300] = "7.1 mm",
-                [350] = "8 mm",
-                [400] = "8.8 mm",
-                [450] = "10 mm",
-                [500] = "11 mm",
-                [600] = "12.5 mm"
-            };
-
-            pdef wallThkDef = new plst().PCF_ELEM_CII_WALLTHK;
-            pdef elemType = new plst().PCF_ELEM_TYPE;
-
-            foreach (Element element in elements)
-            {
-                //See if the parameter already has value and skip element if it has
-                if (!string.IsNullOrEmpty(element.get_Parameter(wallThkDef.Guid).AsString())) continue;
-                if (element.get_Parameter(elemType.Guid).AsString().Equals("SUPPORT")) continue;
-
-                //Retrieve the correct wallthickness from dictionary and set it on the element
-                Parameter wallThkParameter = element.get_Parameter(wallThkDef.Guid);
-
-                //Get connector set for the pipes
-                ConnectorSet connectorSet = MepUtils.GetConnectorManager(element).Connectors;
-
-                Connector c1 = null;
-
-                if (element is Pipe)
-                {
-                    //Filter out non-end types of connectors
-                    c1 = (from Connector connector in connectorSet
-                          where connector.ConnectorType.ToString().Equals("End")
-                          select connector).FirstOrDefault();
-                }
-
-                if (element is FamilyInstance)
-                {
-                    c1 = (from Connector connector in connectorSet
-                          where connector.GetMEPConnectorInfo().IsPrimary
-                          select connector).FirstOrDefault();
-                    Connector c2 = (from Connector connector in connectorSet
-                                    where connector.GetMEPConnectorInfo().IsSecondary
-                                    select connector).FirstOrDefault();
-                    if (c2 != null)
-                    {
-                        if (c1.Radius > c2.Radius) c1 = c2;
-                    }
-                }
-
-                string data = string.Empty;
-                string source = Conversion.PipeSizeToMm(c1.Radius);
-                int dia = Convert.ToInt32(source);
-                pipeWallThk.TryGetValue(dia, out data);
-                wallThkParameter.Set(data);
-            }
         }
     }
 

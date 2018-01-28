@@ -8,7 +8,7 @@ namespace CIINExporter
 {
     public class Output
     {
-        public void OutputWriter(Document _document, StringBuilder _collect, string _outputDir)
+        public void OutputWriter(Document _document, StringBuilder sb, string _outputDir)
         {
             string docName = _document.ProjectInformation.Name;
             string dateAndTime = DateTime.Now.ToString();
@@ -39,7 +39,7 @@ namespace CIINExporter
             // Write to output file
             using (StreamWriter w = File.AppendText(filename))
             {
-                w.Write(_collect);
+                w.Write(sb);
                 w.Close();
             }
         }

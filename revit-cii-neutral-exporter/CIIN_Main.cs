@@ -19,7 +19,6 @@ namespace CIINExporter
     {
         internal Result ExecuteMyCommand(UIApplication uiApp, ref string msg)
         {
-            // UIApplication uiApp = commandData.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
 
             try
@@ -27,7 +26,6 @@ namespace CIINExporter
                 #region Declaration of variables
                 // Instance a collector
                 FilteredElementCollector collector = new FilteredElementCollector(doc);
-                //FilteredElementCollector pipeTypeCollector = new FilteredElementCollector(doc); //Obsolete???
 
                 // Define a Filter instance to filter by System Abbreviation
                 ElementParameterFilter sysAbbr = Filter.ParameterValueFilterStringEquals(InputVars.SysAbbr, InputVars.SysAbbrParam);
@@ -43,13 +41,8 @@ namespace CIINExporter
                 #endregion
 
                 #region Compose preamble
-                //Compose preamble
-                Composer composer = new Composer();
-
-                StringBuilder sbPreamble = composer.PreambleComposer();
-
-                //Append preamble
-                sbCollect.Append(sbPreamble);
+                //Append VERSION
+                sbCollect.Append(Composer.Section_VERSION());
                 #endregion
 
                 #region Element collectors
@@ -116,57 +109,6 @@ namespace CIINExporter
                                  group e by e.LookupParameter(InputVars.PipelineGroupParameterName).AsString();
                 #endregion
 
-                #region Initialize Material Data
-                //Set the start number to count the COMPID instances and MAT groups.
-                int elementIdentificationNumber = 0;
-                int materialGroupIdentifier = 0;
-
-                //Make sure that every element has PCF_MAT_DESCR filled out.
-                foreach (Element e in elements)
-                {
-                    if (string.IsNullOrEmpty(e.get_Parameter(new plst().PCF_MAT_DESCR.Guid).AsString()))
-                    {
-                        Util.ErrorMsg("PCF_MAT_DESCR is empty for element " + e.Id + "! Please, correct this issue before exporting again.");
-                        throw new Exception("PCF_MAT_DESCR is empty for element " + e.Id + "! Please, correct this issue before exporting again.");
-                    }
-                }
-                
-                //Initialize material group numbers on the elements
-                IEnumerable<IGrouping<string, Element>> materialGroups = from e in elements group e by e.get_Parameter(new plst().PCF_MAT_DESCR.Guid).AsString();
-
-                using (Transaction trans = new Transaction(doc, "Set PCF_ELEM_COMPID and PCF_MAT_ID"))
-                {
-                    
-                    trans.Start();
-
-                    //Access groups
-                    foreach (IEnumerable<Element> group in materialGroups)
-                    {
-                        materialGroupIdentifier++;
-                        //Access parameters
-                        foreach (Element element in group)
-                        {
-                            elementIdentificationNumber++;
-                            element.LookupParameter("PCF_ELEM_COMPID").Set(elementIdentificationNumber);
-                            element.LookupParameter("PCF_MAT_ID").Set(materialGroupIdentifier);
-                        }
-                    }
-                    trans.Commit();
-                }
-
-                //If turned on, write wall thickness of all components
-                if (InputVars.WriteWallThickness)
-                {
-                    //Assign correct wall thickness to elements.
-                    using (Transaction trans1 = new Transaction(doc))
-                    {
-                        trans1.Start("Set wall thickness for pipes!");
-                        ParameterDataWriter.SetWallThicknessPipes(elements);
-                        trans1.Commit();
-                    }
-                }
-
-                #endregion
 
                 #region Pipeline management
                 foreach (IGrouping<string, Element> gp in pipelineGroups)
@@ -190,10 +132,6 @@ namespace CIINExporter
                 }
                 #endregion
 
-                #region Materials
-                StringBuilder sbMaterials = composer.MaterialsSection(materialGroups);
-                sbCollect.Append(sbMaterials);
-                #endregion
 
                 #region Output
                 // Output the processed data
