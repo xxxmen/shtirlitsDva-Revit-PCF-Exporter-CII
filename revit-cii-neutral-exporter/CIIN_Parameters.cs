@@ -11,7 +11,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.ApplicationServices;
 using xel = Microsoft.Office.Interop.Excel;
 
-using BuildingCoder;
+using CIINExporter.BuildingCoder;
 
 using pd = CIINExporter.ParameterData;
 using pdef = CIINExporter.ParameterDefinition;

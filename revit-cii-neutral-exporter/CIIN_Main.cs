@@ -7,7 +7,7 @@ using MoreLinq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.UI;
-using BuildingCoder;
+using CIINExporter.BuildingCoder;
 
 using pd = CIINExporter.ParameterData;
 using plst = CIINExporter.ParameterList;

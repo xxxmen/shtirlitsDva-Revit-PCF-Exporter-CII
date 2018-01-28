@@ -11,7 +11,7 @@ using System.Windows.Forms.ComponentModel.Com2Interop;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.UI;
-using BuildingCoder;
+using CIINExporter.BuildingCoder;
 using MoreLinq;
 using iv = CIINExporter.InputVars;
 using pdef = CIINExporter.ParameterDefinition;

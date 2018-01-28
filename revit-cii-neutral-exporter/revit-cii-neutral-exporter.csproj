@@ -139,11 +139,5 @@
       <DependentUpon>CIIN_Exporter_form.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Revit-PCF-exporter\Revit-PCF-Exporter.csproj">
-      <Project>{037B382D-9BC9-4D7A-B76D-55BE5964E44D}</Project>
-      <Name>Revit-PCF-Exporter</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
