@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Data;
 using System.Data.OleDb;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms.ComponentModel.Com2Interop;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
+using Autodesk.Revit.DB.Electrical;
 using Autodesk.Revit.UI;
 using CIINExporter.BuildingCoder;
 using MoreLinq;
@@ -216,6 +218,150 @@ namespace CIINExporter
             }
             return diameterLimitBool;
         }
+    }
+
+    public static class GeometricalComparison
+    {
+        #region Geometrical Comparison
+        //const double _eps = 1.0e-9; //Original tolerance
+        const double _eps = 0.00328; //Tolerance equal to 1 mm
+
+        public static double Eps => _eps;
+
+        public static double MinLineLength => _eps;
+
+        public static double TolPointOnPlane => _eps;
+
+        public static bool IsZero(double a, double tolerance) => tolerance > Math.Abs(a);
+
+        public static bool IsZero(double a) => IsZero(a, _eps);
+
+        public static bool IsEqual(double a, double b) => IsZero(b - a);
+
+        public static bool IsEqual(double a, double b, double tolerance) => IsZero(b - a, tolerance);
+
+        public static bool Equalz(this double a, double b, double tolerance) => IsZero(b - a, tolerance);
+
+        public static int Compare(double a, double b) => IsEqual(a, b) ? 0 : (a < b ? -1 : 1);
+
+        public static int Compare(XYZ p, XYZ q)
+        {
+            int d = Compare(p.X, q.X);
+            if (0 == d)
+            {
+                d = Compare(p.Y, q.Y);
+                if (0 == d) d = Compare(p.Z, q.Z);
+            }
+            return d;
+        }
+
+        public static int Compare(Plane a, Plane b)
+        {
+            int d = Compare(a.Normal, b.Normal);
+            if (0 == d)
+            {
+                d = Compare(a.SignedDistanceTo(XYZ.Zero),
+                  b.SignedDistanceTo(XYZ.Zero));
+                if (0 == d)
+                {
+                    d = Compare(a.XVec.AngleOnPlaneTo(
+                      b.XVec, b.Normal), 0);
+                }
+            }
+            return d;
+        }
+
+        public static bool IsEqual(this XYZ p, XYZ q) => 0 == Compare(p, q);
+
+        public static bool IsEqual(this Connector c1, Connector c2) => c1.Origin.IsEqual(c2.Origin);
+
+        /// <summary>
+        /// Return true if the given bounding box bb
+        /// contains the given point p in its interior.
+        /// </summary>
+        public static bool BoundingBoxXyzContains(BoundingBoxXYZ bb, XYZ p) => 0 < Compare(bb.Min, p) && 0 < Compare(p, bb.Max);
+
+        /// <summary>
+        /// Return true if the vectors v and w 
+        /// are non-zero and perpendicular.
+        /// </summary>
+        static bool IsPerpendicular(XYZ v, XYZ w)
+        {
+            double a = v.GetLength();
+            double b = v.GetLength();
+            double c = Math.Abs(v.DotProduct(w));
+            return _eps < a
+              && _eps < b
+              && _eps > c;
+            // c * c < _eps * a * b
+        }
+
+        public static bool IsParallel(XYZ p, XYZ q) => p.CrossProduct(q).IsZeroLength();
+
+        public static bool IsHorizontal(XYZ v) => IsZero(v.Z);
+
+        public static bool IsVertical(XYZ v) => IsZero(v.X) && IsZero(v.Y);
+
+        public static bool IsVertical(XYZ v, double tolerance) => IsZero(v.X, tolerance) && IsZero(v.Y, tolerance);
+
+        public static bool IsHorizontal(Edge e)
+        {
+            XYZ p = e.Evaluate(0);
+            XYZ q = e.Evaluate(1);
+            return IsHorizontal(q - p);
+        }
+
+        public static bool IsHorizontal(PlanarFace f) => IsVertical(f.FaceNormal);
+
+        public static bool IsVertical(PlanarFace f) => IsHorizontal(f.FaceNormal);
+
+        public static bool IsVertical(CylindricalFace f) => IsVertical(f.Axis);
+
+        /// <summary>
+        /// Minimum slope for a vector to be considered
+        /// to be pointing upwards. Slope is simply the
+        /// relationship between the vertical and
+        /// horizontal components.
+        /// </summary>
+        const double _minimumSlope = 0.3;
+
+        /// <summary>
+        /// Return true if the Z coordinate of the
+        /// given vector is positive and the slope
+        /// is larger than the minimum limit.
+        /// </summary>
+        public static bool PointsUpwards(XYZ v)
+        {
+            double horizontalLength = v.X * v.X + v.Y * v.Y;
+            double verticalLength = v.Z * v.Z;
+
+            return 0 < v.Z
+              && _minimumSlope
+                < verticalLength / horizontalLength;
+
+            //return _eps < v.Normalize().Z;
+            //return _eps < v.Normalize().Z && IsVertical( v.Normalize(), tolerance );
+        }
+
+        /// <summary>
+        /// Return the maximum value from an array of real numbers.
+        /// </summary>
+        public static double Max(double[] a)
+        {
+            Debug.Assert(1 == a.Rank, "expected one-dimensional array");
+            Debug.Assert(0 == a.GetLowerBound(0), "expected zero-based array");
+            Debug.Assert(0 < a.GetUpperBound(0), "expected non-empty array");
+            double max = a[0];
+            for (int i = 1; i <= a.GetUpperBound(0); ++i)
+            {
+                if (max < a[i])
+                {
+                    max = a[i];
+                }
+            }
+            return max;
+        }
+        #endregion // Geometrical Comparison
     }
 
     public static class Conversion
@@ -736,6 +882,159 @@ namespace CIINExporter
         }
 
         public static Cons GetConnectors(Element element) => new Cons(element);
+
+        public static FilteredElementCollector GetElementsWithConnectors(Document doc)
+        {
+            // what categories of family instances
+            // are we interested in?
+            // From here: http://thebuildingcoder.typepad.com/blog/2010/06/retrieve-mep-elements-and-connectors.html
+
+            BuiltInCategory[] bics = new BuiltInCategory[]
+            {
+                //BuiltInCategory.OST_CableTray,
+                //BuiltInCategory.OST_CableTrayFitting,
+                //BuiltInCategory.OST_Conduit,
+                //BuiltInCategory.OST_ConduitFitting,
+                //BuiltInCategory.OST_DuctCurves,
+                //BuiltInCategory.OST_DuctFitting,
+                //BuiltInCategory.OST_DuctTerminal,
+                //BuiltInCategory.OST_ElectricalEquipment,
+                //BuiltInCategory.OST_ElectricalFixtures,
+                //BuiltInCategory.OST_LightingDevices,
+                //BuiltInCategory.OST_LightingFixtures,
+                BuiltInCategory.OST_MechanicalEquipment,
+                BuiltInCategory.OST_PipeAccessory,
+                BuiltInCategory.OST_PipeCurves,
+                BuiltInCategory.OST_PipeFitting,
+                //BuiltInCategory.OST_PlumbingFixtures,
+                //BuiltInCategory.OST_SpecialityEquipment,
+                //BuiltInCategory.OST_Sprinklers,
+                //BuiltInCategory.OST_Wire
+            };
+
+            IList<ElementFilter> a = new List<ElementFilter>(bics.Count());
+
+            foreach (BuiltInCategory bic in bics) a.Add(new ElementCategoryFilter(bic));
+
+            LogicalOrFilter categoryFilter = new LogicalOrFilter(a);
+
+            LogicalAndFilter familyInstanceFilter = new LogicalAndFilter(categoryFilter, new ElementClassFilter(typeof(FamilyInstance)));
+
+            //IList<ElementFilter> b = new List<ElementFilter>(6);
+            IList<ElementFilter> b = new List<ElementFilter>
+            {
+
+                //b.Add(new ElementClassFilter(typeof(CableTray)));
+                //b.Add(new ElementClassFilter(typeof(Conduit)));
+                //b.Add(new ElementClassFilter(typeof(Duct)));
+                new ElementClassFilter(typeof(Pipe)),
+
+                familyInstanceFilter
+            };
+            LogicalOrFilter classFilter = new LogicalOrFilter(b);
+
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+
+            collector.WherePasses(classFilter);
+
+            return collector;
+        }
+
+        /// <summary>
+        /// Returns the collection of all instances of the specified BuiltInCategory. Warning: does not work with Pipes!
+        /// </summary>
+        /// <param name="doc">The active document.</param>
+        /// <param name="cat">The specified category. Ex: BuiltInCategory.OST_PipeFitting</param>
+        /// <returns>A collection of all instances of the specified category.</returns>
+        public static FilteredElementCollector GetElementsOfBuiltInCategory(Document doc, BuiltInCategory cat)
+        {
+            // what categories of family instances
+            // are we interested in?
+            // From here: http://thebuildingcoder.typepad.com/blog/2010/06/retrieve-mep-elements-and-connectors.html
+
+            ElementFilter categoryFilter = new ElementCategoryFilter(cat);
+            LogicalAndFilter familyInstanceFilter = new LogicalAndFilter(categoryFilter, new ElementClassFilter(typeof(FamilyInstance)));
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            collector.WherePasses(familyInstanceFilter);
+            return collector;
+        }
+
+        public static ConnectorSet GetConnectorSet(Element e)
+        {
+            ConnectorSet connectors = null;
+
+            if (e is FamilyInstance)
+            {
+                MEPModel m = ((FamilyInstance)e).MEPModel;
+                if (null != m && null != m.ConnectorManager) connectors = m.ConnectorManager.Connectors;
+            }
+
+            else if (e is Wire) connectors = ((Wire)e).ConnectorManager.Connectors;
+
+            else
+            {
+                Debug.Assert(e.GetType().IsSubclassOf(typeof(MEPCurve)),
+                    "expected all candidate connector provider "
+                    + "elements to be either family instances or "
+                    + "derived from MEPCurve");
+
+                if (e is MEPCurve) connectors = ((MEPCurve)e).ConnectorManager.Connectors;
+            }
+            return connectors;
+        }
+
+        public static HashSet<Connector> GetALLConnectorsFromElements(HashSet<Element> elements)
+        {
+            return (from e in elements from Connector c in GetConnectorSet(e) select c).ToHashSet();
+        }
+
+        public static HashSet<Connector> GetALLConnectorsFromElements(Element element)
+        {
+            return (from Connector c in GetConnectorSet(element) select c).ToHashSet();
+        }
+
+        public static HashSet<Connector> GetALLConnectorsInDocument(Document doc)
+        {
+            return (from e in GetElementsWithConnectors(doc) from Connector c in GetConnectorSet(e) select c).ToHashSet();
+        }
+
+        /// <summary>
+        /// Compare Connector objects based on their location point.
+        /// </summary>
+        public class ConnectorXyzComparer : IEqualityComparer<Connector>
+        {
+            public bool Equals(Connector x, Connector y)
+            {
+                return null != x && null != y && GeometricalComparison.IsEqual(x.Origin, y.Origin);
+            }
+
+            public int GetHashCode(Connector x)
+            {
+                return HashString(x.Origin).GetHashCode();
+            }
+        }
+
+        /// <summary>
+        /// Return a hash string for a real number
+        /// formatted to nine decimal places.
+        /// </summary>
+        public static string HashString(double a)
+        {
+            return a.ToString("0.#########");
+        }
+
+        /// <summary>
+        /// Return a hash string for an XYZ point
+        /// or vector with its coordinates
+        /// formatted to nine decimal places.
+        /// </summary>
+        public static string HashString(XYZ p)
+        {
+            return string.Format("({0},{1},{2})",
+              HashString(p.X),
+              HashString(p.Y),
+              HashString(p.Z));
+        }
     }
 
     public class Cons

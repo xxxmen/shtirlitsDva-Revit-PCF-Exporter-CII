@@ -36,6 +36,9 @@ namespace CIINExporter
                 //Declare an object to hold collected elements from collector
                 HashSet<Element> colElements = new HashSet<Element>();
 
+                //Declare an object to hold filtered elements
+                HashSet<Element> filteredElements = new HashSet<Element>();
+
                 // Instance a collecting stringbuilder
                 StringBuilder sbCollect = new StringBuilder();
                 #endregion
@@ -96,7 +99,7 @@ namespace CIINExporter
                 try
                 {
                     //DiameterLimit filter applied to ALL elements.
-                    HashSet<Element> elements = (from element in colElements
+                    filteredElements = (from element in colElements
                                                  where
                                                  //Diameter limit filter
                                                  new FilterDiameterLimit().FilterDL(element) &&
@@ -107,7 +110,7 @@ namespace CIINExporter
                                                  select element).ToHashSet();
 
                     //Create a grouping of elements based on the Pipeline identifier (System Abbreviation)
-                    pipelineGroups = from e in elements
+                    pipelineGroups = from e in filteredElements
                                      group e by e.LookupParameter(InputVars.PipelineGroupParameterName).AsString();
                 }
                 catch (Exception ex)
@@ -116,31 +119,37 @@ namespace CIINExporter
                         "\nTo fix:\n" +
                         "1. See if parameter CII_ELEM_EXCL exists, if not, rerun parameter import.");
                 }
-                
+
                 #endregion
 
+                #region Node Analysis
 
-                #region Pipeline management
-                foreach (IGrouping<string, Element> gp in pipelineGroups)
-                {
-                    HashSet<Element> pipeList = (from element in gp
-                                                 where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeCurves
-                                                 select element).ToHashSet();
-                    HashSet<Element> fittingList = (from element in gp
-                                                    where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeFitting
-                                                    select element).ToHashSet();
-                    HashSet<Element> accessoryList = (from element in gp
-                                                      where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeAccessory
-                                                      select element).ToHashSet();
+                CIIN_Analysis cIIA = new CIIN_Analysis();
+                cIIA.AnalyzeSystem(doc, filteredElements);
 
-                    //StringBuilder sbPipeline = new PCF_Pipeline.PCF_Pipeline_Export().Export(gp.Key, doc);
-                    //StringBuilder sbPipes = new PCF_Pipes.PCF_Pipes_Export().Export(gp.Key, pipeList, doc);
-                    //StringBuilder sbFittings = new PCF_Fittings.PCF_Fittings_Export().Export(gp.Key, fittingList, doc);
-                    //StringBuilder sbAccessories = new PCF_Accessories.PCF_Accessories_Export().Export(gp.Key, accessoryList, doc);
-
-                    //sbCollect.Append(sbPipeline); sbCollect.Append(sbPipes); sbCollect.Append(sbFittings); sbCollect.Append(sbAccessories);
-                }
                 #endregion
+
+                //#region Pipeline management
+                //foreach (IGrouping<string, Element> gp in pipelineGroups)
+                //{
+                //    HashSet<Element> pipeList = (from element in gp
+                //                                 where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeCurves
+                //                                 select element).ToHashSet();
+                //    HashSet<Element> fittingList = (from element in gp
+                //                                    where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeFitting
+                //                                    select element).ToHashSet();
+                //    HashSet<Element> accessoryList = (from element in gp
+                //                                      where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeAccessory
+                //                                      select element).ToHashSet();
+
+                //    //StringBuilder sbPipeline = new PCF_Pipeline.PCF_Pipeline_Export().Export(gp.Key, doc);
+                //    //StringBuilder sbPipes = new PCF_Pipes.PCF_Pipes_Export().Export(gp.Key, pipeList, doc);
+                //    //StringBuilder sbFittings = new PCF_Fittings.PCF_Fittings_Export().Export(gp.Key, fittingList, doc);
+                //    //StringBuilder sbAccessories = new PCF_Accessories.PCF_Accessories_Export().Export(gp.Key, accessoryList, doc);
+
+                //    //sbCollect.Append(sbPipeline); sbCollect.Append(sbPipes); sbCollect.Append(sbFittings); sbCollect.Append(sbAccessories);
+                //}
+                //#endregion
 
 
                 #region Output
