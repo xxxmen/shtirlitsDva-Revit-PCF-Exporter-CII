@@ -7,6 +7,7 @@ using MoreLinq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.DB.Structure;
+using Autodesk.Revit.DB.Mechanical;
 using Autodesk.Revit.UI;
 using CIINExporter.BuildingCoder;
 
@@ -17,32 +18,192 @@ namespace CIINExporter
 {
     class CIIN_Analysis
     {
-        public void AnalyzeSystem(Document doc, HashSet<Element> elements)
+        Document doc;
+        AnalyticModel Model;
+
+        public CIIN_Analysis(Document doc, HashSet<Element> elements)
         {
-            //Instantiate the analytical model
-            AnalyticModel aModel = new AnalyticModel();
-
-            //Detect open ends
-            var openEnds = detectOpenEnds(doc, elements);
-
-            //Start analysis
-            startAnalysis(doc, elements, openEnds, aModel);
-
-
-            foreach (var item in openEnds) PlaceMarker(doc, item.Origin);
+            Model = new AnalyticModel(elements);
+            this.doc = doc;
         }
 
-        private void startAnalysis(Document doc, HashSet<Element> elements, List<Connector> openEnds, AnalyticModel aModel)
+        public void AnalyzeSystem()
         {
-            foreach (Connector openEnd in openEnds)
+            //Start analysis
+            var openEnds = detectOpenEnds();
+
+            //foreach (var item in openEnds) PlaceMarker(doc, item.Origin);
+
+            Connector From = openEnds.FirstOrDefault();
+            Connector To = null;
+
+            Node FromNode = new Node();
+            FromNode.FromConnector = From;
+            FromNode.Number = 10; //TODO: Implement automatic numbering
+            Model.AllNodes.Add(FromNode);
+
+            Node ToNode = new Node();
+
+            Element curElem = null;
+            AnalyticElement curAElem = null;
+
+            for (int i = 0; i < Model.AllElements.Count; i++)
             {
-                AnalyticSequence sequence = new AnalyticSequence();
+                curElem = From.Owner;
 
-                Element owner = openEnd.Owner;
+                switch (curElem)
+                {
+                    case Pipe pipe:
 
-                AnalyticElement ae = new AnalyticElement(owner);
-                ae.From = new Node(openEnd);
-                ae.To = new Node(DetermineNextConnector(doc, openEnd));
+                        To = (from Connector c in pipe.ConnectorManager.Connectors //End of the host/dummy pipe
+                              where c.Id != From.Id && (int)c.ConnectorType == 1
+                              select c).FirstOrDefault();
+                        curAElem = new AnalyticElement(curElem);
+                        break;
+                    case FamilyInstance fi:
+                        int cat = fi.Category.Id.IntegerValue;
+                        switch (cat)
+                        {
+                            case (int)BuiltInCategory.OST_PipeFitting:
+                                var mf = fi.MEPModel as MechanicalFitting;
+                                var partType = mf.PartType;
+                                switch (partType)
+                                {
+                                    case PartType.Undefined:
+                                        break;
+                                    case PartType.Normal:
+                                        break;
+                                    case PartType.DuctMounted:
+                                        break;
+                                    case PartType.JunctionBox:
+                                        break;
+                                    case PartType.AttachesTo:
+                                        break;
+                                    case PartType.BreaksInto:
+                                        break;
+                                    case PartType.Elbow:
+                                        break;
+                                    case PartType.Tee:
+                                        break;
+                                    case PartType.Transition:
+                                        break;
+                                    case PartType.Cross:
+                                        break;
+                                    case PartType.Cap:
+                                        break;
+                                    case PartType.TapPerpendicular:
+                                        break;
+                                    case PartType.TapAdjustable:
+                                        break;
+                                    case PartType.Offset:
+                                        break;
+                                    case PartType.Union:
+                                        break;
+                                    case PartType.PanelBoard:
+                                        break;
+                                    case PartType.Transformer:
+                                        break;
+                                    case PartType.SwitchBoard:
+                                        break;
+                                    case PartType.OtherPanel:
+                                        break;
+                                    case PartType.EquipmentSwitch:
+                                        break;
+                                    case PartType.Switch:
+                                        break;
+                                    case PartType.ValveBreaksInto:
+                                        break;
+                                    case PartType.SpudPerpendicular:
+                                        break;
+                                    case PartType.SpudAdjustable:
+                                        break;
+                                    case PartType.Damper:
+                                        break;
+                                    case PartType.Wye:
+                                        break;
+                                    case PartType.LateralTee:
+                                        break;
+                                    case PartType.LateralCross:
+                                        break;
+                                    case PartType.Pants:
+                                        break;
+                                    case PartType.MultiPort:
+                                        break;
+                                    case PartType.ValveNormal:
+                                        break;
+                                    case PartType.JunctionBoxTee:
+                                        break;
+                                    case PartType.JunctionBoxCross:
+                                        break;
+                                    case PartType.PipeFlange:
+                                        break;
+                                    case PartType.JunctionBoxElbow:
+                                        break;
+                                    case PartType.ChannelCableTrayElbow:
+                                        break;
+                                    case PartType.ChannelCableTrayVerticalElbow:
+                                        break;
+                                    case PartType.ChannelCableTrayCross:
+                                        break;
+                                    case PartType.ChannelCableTrayTee:
+                                        break;
+                                    case PartType.ChannelCableTrayTransition:
+                                        break;
+                                    case PartType.ChannelCableTrayUnion:
+                                        break;
+                                    case PartType.ChannelCableTrayOffset:
+                                        break;
+                                    case PartType.ChannelCableTrayMultiPort:
+                                        break;
+                                    case PartType.LadderCableTrayElbow:
+                                        break;
+                                    case PartType.LadderCableTrayVerticalElbow:
+                                        break;
+                                    case PartType.LadderCableTrayCross:
+                                        break;
+                                    case PartType.LadderCableTrayTee:
+                                        break;
+                                    case PartType.LadderCableTrayTransition:
+                                        break;
+                                    case PartType.LadderCableTrayUnion:
+                                        break;
+                                    case PartType.LadderCableTrayOffset:
+                                        break;
+                                    case PartType.LadderCableTrayMultiPort:
+                                        break;
+                                    case PartType.InlineSensor:
+                                        break;
+                                    case PartType.Sensor:
+                                        break;
+                                    case PartType.EndCap:
+                                        break;
+                                    case PartType.HandrailBracketHardware:
+                                        break;
+                                    case PartType.PanelBracketHardware:
+                                        break;
+                                    case PartType.TerminationHardware:
+                                        break;
+                                    case PartType.Rails:
+                                        break;
+                                    case PartType.Handrails:
+                                        break;
+                                    case PartType.TopRails:
+                                        break;
+                                    case PartType.PipeMechanicalCoupling:
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                ToNode.ToConnector = To;
 
                 sequence.Sequence.Push(ae);
 
@@ -63,43 +224,51 @@ namespace CIINExporter
             }
         }
 
-        Connector DetermineNextConnector(Document doc, Connector c1)
+        Connector DetermineToConnector(Document doc, Connector From)
         {
-            Element owner = c1.Owner;
+            Element owner = From.Owner;
+            Connector
 
             Connector c2 = null;
             if (owner is Pipe pipe)
             {
                 c2 = (from Connector c in pipe.ConnectorManager.Connectors //End of the host/dummy pipe
-                      where c.Id != c1.Id && (int)c.ConnectorType == 1
+                      where c.Id != From.Id && (int)c.ConnectorType == 1
                       select c).FirstOrDefault();
+
+
             }
             else if (owner is FamilyInstance fi)
             {
                 var cons = GetConnectors(owner);
-                var c1mep = c1.GetMEPConnectorInfo();
+                var c1mep = From.GetMEPConnectorInfo();
                 if (c1mep.IsPrimary) c2 = cons.Secondary;
                 else if (c1mep.IsSecondary) c2 = cons.Primary;
                 else if (!c1mep.IsPrimary && !c1mep.IsSecondary) c2 = cons.Primary;
             }
+
+
+
             return c2;
         }
 
-        List<Connector> detectOpenEnds(Document doc, HashSet<Element> elements)
+        List<Connector> detectOpenEnds()
         {
-            var cons = GetALLConnectorsFromElements(elements);
             List<Connector> singleConnectors = new List<Connector>();
-            foreach (Connector c1 in cons) if (!(1 < cons.Count(c => c.IsEqual(c1)))) singleConnectors.Add(c1);
+            foreach (Connector c1 in Model.AllConnectors) if (!(1 < Model.AllConnectors.Count(c => c.IsEqual(c1)))) singleConnectors.Add(c1);
             return singleConnectors;
         }
     }
 
     class Node
     {
-        public Connector Connector { get; set; } = null;
+        public Connector ToConnector { get; set; } = null;
+        public Connector FromConnector { get; set; } = null;
         public int Number { get; set; } = 0;
+        public bool IsElbow { get; set; } = false;
+        public bool IsJunction { get; set; } = false;
 
-        public Node(Connector connector) => Connector = connector;
+        //public Node(Connector connector) => ToConnector = connector;
     }
 
     class AnalyticElement
@@ -113,12 +282,22 @@ namespace CIINExporter
 
     class AnalyticSequence
     {
-        public Stack<AnalyticElement> Sequence { get; set; } = null;
+        public List<AnalyticElement> Sequence { get; set; } = null;
     }
 
     class AnalyticModel
     {
-        public Stack<AnalyticSequence> Sequences { get; set; } = new Stack<AnalyticSequence>();
+        public List<AnalyticSequence> Sequences { get; } = new List<AnalyticSequence>();
+        public List<Node> AllNodes { get; } = new List<Node>();
+        public List<AnalyticElement> AllAnalyticElements { get; } = new List<AnalyticElement>();
+        public List<Connector> AllConnectors { get; }
+        public List<Element> AllElements { get; }
+
+        public AnalyticModel(HashSet<Element> elements)
+        {
+            AllElements = elements.ToList();
+            AllConnectors = GetALLConnectorsFromElements(elements).ToList();
+        }
     }
 
     public static class Debugger

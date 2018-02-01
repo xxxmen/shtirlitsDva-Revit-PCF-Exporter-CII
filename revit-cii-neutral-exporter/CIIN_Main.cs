@@ -124,8 +124,8 @@ namespace CIINExporter
 
                 #region Node Analysis
 
-                CIIN_Analysis cIIA = new CIIN_Analysis();
-                cIIA.AnalyzeSystem(doc, filteredElements);
+                CIIN_Analysis cIIA = new CIIN_Analysis(doc, filteredElements);
+                cIIA.AnalyzeSystem();
 
                 #endregion
 
