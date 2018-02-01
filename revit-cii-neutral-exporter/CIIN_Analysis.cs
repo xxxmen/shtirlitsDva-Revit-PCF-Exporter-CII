@@ -35,22 +35,25 @@ namespace CIINExporter
             //foreach (var item in openEnds) PlaceMarker(doc, item.Origin);
 
             Connector From = openEnds.FirstOrDefault();
+            openEnds.Remove(From);
             Connector To = null;
 
             Node FromNode = new Node();
-            FromNode.FromConnector = From;
-            FromNode.Number = 10; //TODO: Implement automatic numbering
+            FromNode.NextCon = From;
             Model.AllNodes.Add(FromNode);
 
             Node ToNode = new Node();
 
             Element curElem = null;
+            curElem = From.Owner;
             AnalyticElement curAElem = null;
+
+            bool continueSequence = true;
+
+            AnalyticSequence curSequence = new AnalyticSequence();
 
             for (int i = 0; i < Model.AllElements.Count; i++)
             {
-                curElem = From.Owner;
-
                 switch (curElem)
                 {
                     case Pipe pipe:
@@ -58,9 +61,16 @@ namespace CIINExporter
                         To = (from Connector c in pipe.ConnectorManager.Connectors //End of the host/dummy pipe
                               where c.Id != From.Id && (int)c.ConnectorType == 1
                               select c).FirstOrDefault();
+
+                        ToNode.PreviousCon = To;
+
                         curAElem = new AnalyticElement(curElem);
+                        curAElem.From = FromNode;
+                        curAElem.To = ToNode;
+
                         break;
                     case FamilyInstance fi:
+                        Cons cons = GetConnectors(fi);
                         int cat = fi.Category.Id.IntegerValue;
                         switch (cat)
                         {
@@ -69,26 +79,42 @@ namespace CIINExporter
                                 var partType = mf.PartType;
                                 switch (partType)
                                 {
-                                    case PartType.Undefined:
-                                        break;
-                                    case PartType.Normal:
-                                        break;
-                                    case PartType.DuctMounted:
-                                        break;
-                                    case PartType.JunctionBox:
-                                        break;
-                                    case PartType.AttachesTo:
-                                        break;
-                                    case PartType.BreaksInto:
-                                        break;
                                     case PartType.Elbow:
+                                        //First Analytic Element
+                                        XYZ elementLocation = ((LocationPoint)fi.Location).Point;
+                                        ToNode.PreviousLoc = elementLocation;
+                                        ToNode.NextLoc = elementLocation;
+                                        ToNode.IsElbow = true;
+                                        Model.AllNodes.Add(ToNode);
+
+                                        curAElem = new AnalyticElement(curElem);
+                                        curAElem.From = FromNode;
+                                        curAElem.To = ToNode;
+                                        curSequence.Sequence.Add(curAElem);
+
+                                        //Second Analytic Element
+                                        //First determine the To connector
+                                        To = (from Connector c in GetALLConnectorsFromElements(curElem)
+                                              where c.Id != From.Id
+                                              select c).FirstOrDefault();
+
+
+                                        FromNode = ToNode; //Switch to next element
+                                        ToNode = new Node(); //Added to allnodes later, see "ToNode" added to AllNodes
+                                        ToNode.PreviousCon = To;
+                                        curAElem = new AnalyticElement(curElem);
+                                        curAElem.From = FromNode;
+                                        curAElem.To = ToNode;
+                                        curSequence.Sequence.Add(curAElem);
+
                                         break;
+                                    #region Hide
                                     case PartType.Tee:
                                         break;
                                     case PartType.Transition:
                                         break;
-                                    case PartType.Cross:
-                                        break;
+                                    //case PartType.Cross:
+                                    //    break;
                                     case PartType.Cap:
                                         break;
                                     case PartType.TapPerpendicular:
@@ -99,95 +125,15 @@ namespace CIINExporter
                                         break;
                                     case PartType.Union:
                                         break;
-                                    case PartType.PanelBoard:
-                                        break;
-                                    case PartType.Transformer:
-                                        break;
-                                    case PartType.SwitchBoard:
-                                        break;
-                                    case PartType.OtherPanel:
-                                        break;
-                                    case PartType.EquipmentSwitch:
-                                        break;
-                                    case PartType.Switch:
-                                        break;
-                                    case PartType.ValveBreaksInto:
-                                        break;
                                     case PartType.SpudPerpendicular:
                                         break;
                                     case PartType.SpudAdjustable:
-                                        break;
-                                    case PartType.Damper:
-                                        break;
-                                    case PartType.Wye:
-                                        break;
-                                    case PartType.LateralTee:
-                                        break;
-                                    case PartType.LateralCross:
-                                        break;
-                                    case PartType.Pants:
-                                        break;
-                                    case PartType.MultiPort:
-                                        break;
-                                    case PartType.ValveNormal:
-                                        break;
-                                    case PartType.JunctionBoxTee:
-                                        break;
-                                    case PartType.JunctionBoxCross:
-                                        break;
-                                    case PartType.PipeFlange:
-                                        break;
-                                    case PartType.JunctionBoxElbow:
-                                        break;
-                                    case PartType.ChannelCableTrayElbow:
-                                        break;
-                                    case PartType.ChannelCableTrayVerticalElbow:
-                                        break;
-                                    case PartType.ChannelCableTrayCross:
-                                        break;
-                                    case PartType.ChannelCableTrayTee:
-                                        break;
-                                    case PartType.ChannelCableTrayTransition:
-                                        break;
-                                    case PartType.ChannelCableTrayUnion:
-                                        break;
-                                    case PartType.ChannelCableTrayOffset:
-                                        break;
-                                    case PartType.ChannelCableTrayMultiPort:
-                                        break;
-                                    case PartType.LadderCableTrayElbow:
-                                        break;
-                                    case PartType.LadderCableTrayVerticalElbow:
-                                        break;
-                                    case PartType.LadderCableTrayCross:
-                                        break;
-                                    case PartType.LadderCableTrayTee:
-                                        break;
-                                    case PartType.LadderCableTrayTransition:
-                                        break;
-                                    case PartType.LadderCableTrayUnion:
-                                        break;
-                                    case PartType.LadderCableTrayOffset:
-                                        break;
-                                    case PartType.LadderCableTrayMultiPort:
                                         break;
                                     case PartType.InlineSensor:
                                         break;
                                     case PartType.Sensor:
                                         break;
                                     case PartType.EndCap:
-                                        break;
-                                    case PartType.HandrailBracketHardware:
-                                        break;
-                                    case PartType.PanelBracketHardware:
-                                        break;
-                                    case PartType.TerminationHardware:
-                                        break;
-                                    case PartType.Rails:
-                                        break;
-                                    case PartType.Handrails:
-                                        break;
-                                    case PartType.TopRails:
                                         break;
                                     case PartType.PipeMechanicalCoupling:
                                         break;
@@ -201,26 +147,44 @@ namespace CIINExporter
                         break;
                     default:
                         break;
+                        #endregion
                 }
 
-                ToNode.ToConnector = To;
+                //Prepare to restart iteration
+                Model.AllConnectors.Remove(From);
+                Model.AllConnectors.Remove(To);
 
-                sequence.Sequence.Push(ae);
+                From = (from Connector c in Model.AllConnectors
+                        where c.IsEqual(To)
+                        select c).FirstOrDefault();
 
-                //int i = 10;
+                if (From != null)
+                {
+                    curElem = From.Owner;
 
-                //Node from = new Node();
-                //from.Number = i;
-                //from.Connector = openEnd;
+                    FromNode = ToNode;
+                    FromNode.NextCon = From;
+                    Model.AllNodes.Add(FromNode); //"ToNode" added to AllNodes
+                }
+                else
+                {
+                    continueSequence = false;
+                    Model.Sequences.Add(curSequence);
+                    curSequence = new AnalyticSequence();
+                }
+                ToNode = new Node();
 
-                //Element owner = openEnd.Owner;
-                //AnalyticElement aElement = new AnalyticElement();
-                //aElement.Element = owner;
-                //aElement.From = from;
+            }
+        }
 
+        public void NumberNodes()
+        {
+            foreach (AnalyticSequence ans in Model.Sequences)
+            {
+                foreach (AnalyticElement ae in ans.Sequence)
+                {
 
-
-                aModel.Sequences.Push(sequence);
+                }
             }
         }
 
@@ -262,8 +226,10 @@ namespace CIINExporter
 
     class Node
     {
-        public Connector ToConnector { get; set; } = null;
-        public Connector FromConnector { get; set; } = null;
+        public Connector PreviousCon { get; set; } = null;
+        public Connector NextCon { get; set; } = null;
+        public XYZ PreviousLoc { get; set; } = null;
+        public XYZ NextLoc { get; set; } = null;
         public int Number { get; set; } = 0;
         public bool IsElbow { get; set; } = false;
         public bool IsJunction { get; set; } = false;
