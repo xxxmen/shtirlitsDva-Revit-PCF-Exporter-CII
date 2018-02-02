@@ -54,6 +54,11 @@ namespace CIINExporter
 
             for (int i = 0; i < Model.AllElements.Count; i++)
             {
+                if (!continueSequence)
+                {
+                    curSequence = new AnalyticSequence();
+                }
+
                 switch (curElem)
                 {
                     case Pipe pipe:
@@ -179,41 +184,51 @@ namespace CIINExporter
 
         public void NumberNodes()
         {
+            int thCount = 0;
+            int thousands = 0;
+
             foreach (AnalyticSequence ans in Model.Sequences)
             {
+                int tens = 0;
+                int tensCount = 0;
+
                 foreach (AnalyticElement ae in ans.Sequence)
                 {
-
+                    tensCount++;
+                    if (tensCount == 1)
+                    {
+                        ae.From.Number = thousands + 10;
+                        ae.To.Number = thousands + 20;
+                        tensCount = 2;
+                        continue;
+                    }
+                    tens = tensCount * 10;
+                    int nodeNumber = thousands + tens;
+                    ae.To.Number = thousands + tens;
                 }
+                thCount++;
+                thousands = thCount * 1000;
             }
         }
 
-        Connector DetermineToConnector(Document doc, Connector From)
+        public void PlaceTextNotesAtNodes()
         {
-            Element owner = From.Owner;
-            Connector
-
-            Connector c2 = null;
-            if (owner is Pipe pipe)
+            using (Transaction t = new Transaction(doc))
             {
-                c2 = (from Connector c in pipe.ConnectorManager.Connectors //End of the host/dummy pipe
-                      where c.Id != From.Id && (int)c.ConnectorType == 1
-                      select c).FirstOrDefault();
+                t.Start("Create TextNotes");
+                foreach (Node node in Model.AllNodes)
+                {
+                    XYZ location = null;
+                    if (node.NextCon != null) location = node.NextCon.Origin;
+                    else if (node.NextLoc != null) location = node.NextLoc;
+                    else if (node.PreviousCon != null) location = node.PreviousCon.Origin;
+                    else if (node.PreviousLoc != null) location = node.PreviousLoc;
 
+                    TextNote.Create(doc, doc.ActiveView.Id, location, node.Number.ToString(), new ElementId(361));
 
+                }
+                t.Commit();
             }
-            else if (owner is FamilyInstance fi)
-            {
-                var cons = GetConnectors(owner);
-                var c1mep = From.GetMEPConnectorInfo();
-                if (c1mep.IsPrimary) c2 = cons.Secondary;
-                else if (c1mep.IsSecondary) c2 = cons.Primary;
-                else if (!c1mep.IsPrimary && !c1mep.IsSecondary) c2 = cons.Primary;
-            }
-
-
-
-            return c2;
         }
 
         List<Connector> detectOpenEnds()

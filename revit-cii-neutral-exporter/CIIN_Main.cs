@@ -126,6 +126,8 @@ namespace CIINExporter
 
                 CIIN_Analysis cIIA = new CIIN_Analysis(doc, filteredElements);
                 cIIA.AnalyzeSystem();
+                cIIA.NumberNodes();
+                cIIA.PlaceTextNotesAtNodes();
 
                 #endregion
 
