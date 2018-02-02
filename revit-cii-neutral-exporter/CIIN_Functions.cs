@@ -444,6 +444,11 @@ namespace CIINExporter
         {
             return number % 2 != 0;
         }
+
+        public static IEnumerable<T> ExceptWhere<T>(this IEnumerable<T> source, Predicate<T> predicate)
+        {
+            return source.Where(x => !predicate(x));
+        }
     }
 
     public class EndWriter

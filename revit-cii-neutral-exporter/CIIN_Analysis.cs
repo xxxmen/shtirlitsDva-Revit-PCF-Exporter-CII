@@ -46,7 +46,7 @@ namespace CIINExporter
 
             Element curElem = null;
             curElem = From.Owner;
-            AnalyticElement curAElem = null;
+            AnalyticElement curAElem = new AnalyticElement(curElem);
 
             bool continueSequence = true;
 
@@ -57,6 +57,7 @@ namespace CIINExporter
                 if (!continueSequence)
                 {
                     curSequence = new AnalyticSequence();
+                    continueSequence = true;
                 }
 
                 switch (curElem)
@@ -68,10 +69,12 @@ namespace CIINExporter
                               select c).FirstOrDefault();
 
                         ToNode.PreviousCon = To;
+                        Model.AllNodes.Add(ToNode);
 
-                        curAElem = new AnalyticElement(curElem);
                         curAElem.From = FromNode;
                         curAElem.To = ToNode;
+
+                        curSequence.Sequence.Add(curAElem);
 
                         break;
                     case FamilyInstance fi:
@@ -92,7 +95,6 @@ namespace CIINExporter
                                         ToNode.IsElbow = true;
                                         Model.AllNodes.Add(ToNode);
 
-                                        curAElem = new AnalyticElement(curElem);
                                         curAElem.From = FromNode;
                                         curAElem.To = ToNode;
                                         curSequence.Sequence.Add(curAElem);
@@ -105,7 +107,8 @@ namespace CIINExporter
 
 
                                         FromNode = ToNode; //Switch to next element
-                                        ToNode = new Node(); //Added to allnodes later, see "ToNode" added to AllNodes
+                                        ToNode = new Node();
+                                        Model.AllNodes.Add(ToNode);
                                         ToNode.PreviousCon = To;
                                         curAElem = new AnalyticElement(curElem);
                                         curAElem.From = FromNode;
@@ -156,8 +159,7 @@ namespace CIINExporter
                 }
 
                 //Prepare to restart iteration
-                Model.AllConnectors.Remove(From);
-                Model.AllConnectors.Remove(To);
+                Model.AllConnectors = Model.AllConnectors.ExceptWhere(c => c.Owner.Id.IntegerValue == curElem.Id.IntegerValue).ToList();
 
                 From = (from Connector c in Model.AllConnectors
                         where c.IsEqual(To)
@@ -169,13 +171,14 @@ namespace CIINExporter
 
                     FromNode = ToNode;
                     FromNode.NextCon = From;
-                    Model.AllNodes.Add(FromNode); //"ToNode" added to AllNodes
+                    Model.AllNodes.Add(FromNode);
+
+                    curAElem = new AnalyticElement(curElem);
                 }
                 else
                 {
                     continueSequence = false;
                     Model.Sequences.Add(curSequence);
-                    curSequence = new AnalyticSequence();
                 }
                 ToNode = new Node();
 
@@ -263,7 +266,7 @@ namespace CIINExporter
 
     class AnalyticSequence
     {
-        public List<AnalyticElement> Sequence { get; set; } = null;
+        public List<AnalyticElement> Sequence { get; set; } = new List<AnalyticElement>();
     }
 
     class AnalyticModel
@@ -271,7 +274,7 @@ namespace CIINExporter
         public List<AnalyticSequence> Sequences { get; } = new List<AnalyticSequence>();
         public List<Node> AllNodes { get; } = new List<Node>();
         public List<AnalyticElement> AllAnalyticElements { get; } = new List<AnalyticElement>();
-        public List<Connector> AllConnectors { get; }
+        public List<Connector> AllConnectors { get; set; }
         public List<Element> AllElements { get; }
 
         public AnalyticModel(HashSet<Element> elements)
