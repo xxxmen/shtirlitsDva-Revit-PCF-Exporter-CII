@@ -1053,7 +1053,13 @@ namespace CIINExporter
                             switch (partType)
                             {
                                 case PartType.Cap:
-                                    return true;
+                                    //Flanges share the same PartType with Caps
+                                    //I assume that Family Name of the Cap contains word "Cap"
+                                    //Thus filtering for Cap families and retaining flanges
+                                    Parameter para = element.get_Parameter(BuiltInParameter.ELEM_FAMILY_PARAM);
+                                    string familyName = para.AsValueString();
+                                    if (familyName.Contains("Cap")) return true;
+                                    else return false;
                                 default:
                                     return false;
                             }

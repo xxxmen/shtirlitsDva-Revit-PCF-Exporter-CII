@@ -127,8 +127,17 @@ namespace CIINExporter
                                         curSequence.Sequence.Add(curAElem);
                                         break;
                                     case PartType.Cap:
-                                        //Caps are ignored... for now...
-                                        continue;
+                                        To = (from Connector c in GetALLConnectorsFromElements(curElem)
+                                              where c.Id != From.Id
+                                              select c).FirstOrDefault();
+                                        ToNode.PreviousCon = To;
+                                        Model.AllNodes.Add(ToNode);
+
+                                        curAElem.From = FromNode;
+                                        curAElem.To = ToNode;
+
+                                        curSequence.Sequence.Add(curAElem);
+                                        break;
                                     case PartType.Union:
                                         //Unions are not implemeted
                                         continue;
@@ -143,7 +152,7 @@ namespace CIINExporter
                         }
                         break;
                     default:
-                        break;
+                        continue;
                 }
 
                 //Prepare to restart iteration
