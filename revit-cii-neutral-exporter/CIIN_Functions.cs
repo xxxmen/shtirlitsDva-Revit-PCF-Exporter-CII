@@ -169,21 +169,17 @@ namespace CIINExporter
         }
     }
 
-    public class FilterDiameterLimit
+    internal static class FilterDiameterLimit
     {
-        private Element element;
-        private bool diameterLimitBool;
-        private double diameterLimit;
         /// <summary>
         /// Tests the diameter of the pipe or primary connector of element against the diameter limit set in the interface.
         /// </summary>
         /// <param name="passedElement"></param>
         /// <returns>True if diameter is larger than limit and false if smaller.</returns>
-        public bool FilterDL(Element passedElement)
+        internal static bool FilterDL(Element element)
         {
-            element = passedElement;
-            diameterLimit = iv.DiameterLimit;
-            diameterLimitBool = true;
+            double diameterLimit = iv.DiameterLimit;
+            bool diameterLimitBool = true;
             double testedDiameter = 0;
             switch (element.Category.Id.IntegerValue)
             {

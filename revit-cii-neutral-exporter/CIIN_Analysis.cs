@@ -130,17 +130,12 @@ namespace CIINExporter
                                         //Caps are ignored... for now...
                                         continue;
                                     case PartType.Union:
-                                        break;
-                                    case PartType.SpudPerpendicular:
-                                        break;
+                                        //Unions are not implemeted
+                                        continue;
                                     case PartType.SpudAdjustable:
-                                        break;
-                                    case PartType.EndCap:
-                                        break;
-                                    case PartType.PipeMechanicalCoupling:
-                                        break;
+                                        throw new NotImplementedException();
                                     default:
-                                        break;
+                                        continue;
                                 }
                                 break;
                             default:
