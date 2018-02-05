@@ -1040,49 +1040,77 @@ namespace CIINExporter
               HashString(p.Y),
               HashString(p.Z));
         }
+
+        internal static bool IsTheElementACap(Element element)
+        {
+            switch (element)
+            {
+                case Pipe pipe:
+                    return false;
+                case FamilyInstance fi:
+                    int cat = fi.Category.Id.IntegerValue;
+                    switch (cat)
+                    {
+                        case (int)BuiltInCategory.OST_PipeFitting:
+                            var mf = fi.MEPModel as MechanicalFitting;
+                            var partType = mf.PartType;
+                            switch (partType)
+                            {
+                                case PartType.Cap:
+                                    return true;
+                                default:
+                                    return false;
+                            }
+                        default:
+                            return false;
+                    }
+                default:
+                    return false;
+            }
+        }
     }
 
     public class Cons
-    {
-        public Connector Primary { get; } = null;
-        public Connector Secondary { get; } = null;
-        public Connector Tertiary { get; } = null;
-        public int Count { get; } = 0;
-        public Connector Largest { get; } = null;
-        public Connector Smallest { get; } = null;
-
-        public Cons(Element element)
         {
-            ConnectorManager cmgr = MepUtils.GetConnectorManager(element);
+            public Connector Primary { get; } = null;
+            public Connector Secondary { get; } = null;
+            public Connector Tertiary { get; } = null;
+            public int Count { get; } = 0;
+            public Connector Largest { get; } = null;
+            public Connector Smallest { get; } = null;
 
-            foreach (Connector connector in cmgr.Connectors)
+            public Cons(Element element)
             {
-                Count++;
-                if (connector.GetMEPConnectorInfo().IsPrimary) Primary = connector;
-                else if (connector.GetMEPConnectorInfo().IsSecondary) Secondary = connector;
-                else if ((connector.GetMEPConnectorInfo().IsPrimary == false) && (connector.GetMEPConnectorInfo().IsSecondary == false))
-                    Tertiary = connector;
-            }
+                ConnectorManager cmgr = MepUtils.GetConnectorManager(element);
 
-            if (Count > 1 && Secondary == null)
-                throw new Exception($"Element {element.Id.ToString()} has {Count} connectors and no secondary!");
-
-            if (element is FamilyInstance)
-            {
-                if (element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeFitting)
+                foreach (Connector connector in cmgr.Connectors)
                 {
-                    var mf = ((FamilyInstance)element).MEPModel as MechanicalFitting;
+                    Count++;
+                    if (connector.GetMEPConnectorInfo().IsPrimary) Primary = connector;
+                    else if (connector.GetMEPConnectorInfo().IsSecondary) Secondary = connector;
+                    else if ((connector.GetMEPConnectorInfo().IsPrimary == false) && (connector.GetMEPConnectorInfo().IsSecondary == false))
+                        Tertiary = connector;
+                }
 
-                    if (mf.PartType.ToString() == "Transition")
+                if (Count > 1 && Secondary == null)
+                    throw new Exception($"Element {element.Id.ToString()} has {Count} connectors and no secondary!");
+
+                if (element is FamilyInstance)
+                {
+                    if (element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeFitting)
                     {
-                        double primDia = (Primary.Radius * 2).Round(3);
-                        double secDia = (Secondary.Radius * 2).Round(3);
+                        var mf = ((FamilyInstance)element).MEPModel as MechanicalFitting;
 
-                        Largest = primDia > secDia ? Primary : Secondary;
-                        Smallest = primDia < secDia ? Primary : Secondary;
+                        if (mf.PartType.ToString() == "Transition")
+                        {
+                            double primDia = (Primary.Radius * 2).Round(3);
+                            double secDia = (Secondary.Radius * 2).Round(3);
+
+                            Largest = primDia > secDia ? Primary : Secondary;
+                            Smallest = primDia < secDia ? Primary : Secondary;
+                        }
                     }
                 }
             }
         }
     }
-}

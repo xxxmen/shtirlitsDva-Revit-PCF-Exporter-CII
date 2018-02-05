@@ -32,10 +32,8 @@ namespace CIINExporter
             //Start analysis
             var openEnds = detectOpenEnds();
 
-            //foreach (var item in openEnds) PlaceMarker(doc, item.Origin);
-
             Connector From = openEnds.FirstOrDefault();
-            openEnds.Remove(From);
+            openEnds = openEnds.ExceptWhere(c => c.IsEqual(From)).ToList();
             Connector To = null;
 
             Node FromNode = new Node();
@@ -105,7 +103,6 @@ namespace CIINExporter
                                               where c.Id != From.Id
                                               select c).FirstOrDefault();
 
-
                                         FromNode = ToNode; //Switch to next element
                                         ToNode = new Node();
                                         Model.AllNodes.Add(ToNode);
@@ -114,32 +111,29 @@ namespace CIINExporter
                                         curAElem.From = FromNode;
                                         curAElem.To = ToNode;
                                         curSequence.Sequence.Add(curAElem);
-
                                         break;
-                                    #region Hide
                                     case PartType.Tee:
                                         break;
                                     case PartType.Transition:
+                                        To = (from Connector c in GetALLConnectorsFromElements(curElem)
+                                              where c.Id != From.Id
+                                              select c).FirstOrDefault();
+                                        ToNode.PreviousCon = To;
+                                        Model.AllNodes.Add(ToNode);
+
+                                        curAElem.From = FromNode;
+                                        curAElem.To = ToNode;
+
+                                        curSequence.Sequence.Add(curAElem);
                                         break;
-                                    //case PartType.Cross:
-                                    //    break;
                                     case PartType.Cap:
-                                        break;
-                                    case PartType.TapPerpendicular:
-                                        break;
-                                    case PartType.TapAdjustable:
-                                        break;
-                                    case PartType.Offset:
-                                        break;
+                                        //Caps are ignored... for now...
+                                        continue;
                                     case PartType.Union:
                                         break;
                                     case PartType.SpudPerpendicular:
                                         break;
                                     case PartType.SpudAdjustable:
-                                        break;
-                                    case PartType.InlineSensor:
-                                        break;
-                                    case PartType.Sensor:
                                         break;
                                     case PartType.EndCap:
                                         break;
@@ -155,7 +149,6 @@ namespace CIINExporter
                         break;
                     default:
                         break;
-                        #endregion
                 }
 
                 //Prepare to restart iteration
