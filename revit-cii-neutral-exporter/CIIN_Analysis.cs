@@ -56,6 +56,7 @@ namespace CIINExporter
                 {
                     curSequence = new AnalyticSequence();
                     continueSequence = true;
+                    From = openEnds.FirstOrDefault();
                 }
 
                 switch (curElem)
@@ -147,8 +148,21 @@ namespace CIINExporter
                                         continue;
                                 }
                                 break;
-                            default:
+                            case (int)BuiltInCategory.OST_PipeAccessory:
+                                if (From.GetMEPConnectorInfo().IsPrimary) To = cons.Secondary;
+                                else if (From.GetMEPConnectorInfo().IsSecondary) To = cons.Primary;
+                                else throw new Exception("Something went wrong with connectors of element " + curElem.Id.ToString());
+
+                                ToNode.PreviousCon = To;
+                                Model.AllNodes.Add(ToNode);
+
+                                curAElem.From = FromNode;
+                                curAElem.To = ToNode;
+
+                                curSequence.Sequence.Add(curAElem);
                                 break;
+                            default:
+                                continue;
                         }
                         break;
                     default:
@@ -176,6 +190,8 @@ namespace CIINExporter
                 {
                     continueSequence = false;
                     Model.Sequences.Add(curSequence);
+
+                    openEnds = openEnds.ExceptWhere(c => c.IsEqual(To)).ToList();
                 }
                 ToNode = new Node();
 
