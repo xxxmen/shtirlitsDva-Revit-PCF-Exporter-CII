@@ -54,9 +54,22 @@ namespace CIINExporter
             {
                 if (!continueSequence)
                 {
-                    curSequence = new AnalyticSequence();
-                    continueSequence = true;
                     From = openEnds.FirstOrDefault();
+                    openEnds = openEnds.ExceptWhere(c => c.IsEqual(From)).ToList();
+                    To = null;
+                    FromNode = new Node();
+                    FromNode.NextCon = From;
+                    Model.AllNodes.Add(FromNode);
+
+                    ToNode = new Node();
+
+                    curElem = null;
+                    curElem = From.Owner;
+                    curAElem = new AnalyticElement(curElem);
+
+                    continueSequence = true;
+
+                    curSequence = new AnalyticSequence();
                 }
 
                 switch (curElem)
