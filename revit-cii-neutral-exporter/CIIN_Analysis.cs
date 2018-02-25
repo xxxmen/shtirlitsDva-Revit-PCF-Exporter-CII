@@ -65,17 +65,19 @@ namespace CIINExporter
                         FromNode.NextCon = From;
                         Model.AllNodes.Add(FromNode);
 
-                        ToNode = new Node();
+
 
                         curSequence = new AnalyticSequence();
                     }
+
+                    ToNode = new Node();
 
                     curElem = From.Owner;
                     curAElem = new AnalyticElement(curElem);
 
                     continueSequence = true;
 
-                    
+
                 }
 
                 switch (curElem)
@@ -86,8 +88,25 @@ namespace CIINExporter
                               where c.Id != From.Id && (int)c.ConnectorType == 1
                               select c).FirstOrDefault();
 
-                        ToNode.PreviousCon = To;
-                        Model.AllNodes.Add(ToNode);
+                        //Test if the ToNode already exists
+                        //TODO: This test must be copied to all other elements
+                        Node existingToNode = (from Node n in Model.AllNodes
+                                               where
+                                               (n.PreviousCon != null && n.PreviousCon.IsEqual(To)) ||
+                                               (n.NextCon != null && n.NextCon.IsEqual(To))
+                                               select n).FirstOrDefault();
+
+                        if (existingToNode != null)
+                        {
+                            ToNode = existingToNode;
+                            if (ToNode.PreviousCon == null) ToNode.PreviousCon = To;
+                            else if (ToNode.NextCon == null) ToNode.NextCon = To;
+                        }
+                        else
+                        {
+                            ToNode.PreviousCon = To;
+                            Model.AllNodes.Add(ToNode);
+                        }
 
                         curAElem.From = FromNode;
                         curAElem.To = ToNode;
@@ -133,6 +152,11 @@ namespace CIINExporter
                                         curSequence.Sequence.Add(curAElem);
                                         break;
                                     case PartType.Tee:
+                                        //Junction logic
+                                        Node primNode = null;
+                                        Node secNode = null;
+                                        Node tertNode = null;
+
                                         //First analytic element
                                         XYZ teeLoc = ((LocationPoint)fi.Location).Point;
                                         ToNode.PreviousLoc = teeLoc; //The node has only element Location point defining it -
@@ -143,6 +167,11 @@ namespace CIINExporter
                                         curAElem.From = FromNode;
                                         curAElem.To = ToNode;
                                         curSequence.Sequence.Add(curAElem);
+
+                                        //Logic to return correct node to next element
+                                        if (From.GetMEPConnectorInfo().IsPrimary) primNode = FromNode;
+                                        else if (From.GetMEPConnectorInfo().IsSecondary) secNode = FromNode;
+                                        else tertNode = FromNode;
 
                                         //From node is common for next two elements
                                         FromNode = ToNode;
@@ -160,6 +189,11 @@ namespace CIINExporter
                                         curAElem.To = ToNode;
                                         curSequence.Sequence.Add(curAElem);
 
+                                        //Logic to return correct node to next element
+                                        if (From.GetMEPConnectorInfo().IsPrimary) secNode = ToNode;
+                                        else if (From.GetMEPConnectorInfo().IsSecondary) primNode = ToNode;
+                                        else primNode = ToNode;
+
                                         //Third Analytic Element
                                         if (From.GetMEPConnectorInfo().IsPrimary) To = cons.Tertiary;
                                         else if (From.GetMEPConnectorInfo().IsSecondary) To = cons.Tertiary;
@@ -172,6 +206,11 @@ namespace CIINExporter
                                         curAElem.From = FromNode;
                                         curAElem.To = ToNode;
                                         curSequence.Sequence.Add(curAElem);
+
+                                        //Logic to return correct node to next element
+                                        if (From.GetMEPConnectorInfo().IsPrimary) tertNode = ToNode;
+                                        else if (From.GetMEPConnectorInfo().IsSecondary) tertNode = ToNode;
+                                        else secNode = ToNode;
 
                                         //Continuation logic
                                         Connector candidate1;
@@ -189,9 +228,14 @@ namespace CIINExporter
                                             if (candidate1 != null)
                                             {
                                                 To = cons.Secondary;
+                                                ToNode = secNode;
                                                 if (candidate2 != null) branchEnds.Add(candidate2);
                                             }
-                                            else if (candidate2 != null) To = cons.Tertiary;
+                                            else if (candidate2 != null)
+                                            {
+                                                To = cons.Tertiary;
+                                                ToNode = tertNode;
+                                            }
                                         }
                                         else if (From.GetMEPConnectorInfo().IsSecondary)
                                         {
@@ -205,9 +249,14 @@ namespace CIINExporter
                                             if (candidate1 != null)
                                             {
                                                 To = cons.Primary;
+                                                ToNode = primNode;
                                                 if (candidate2 != null) branchEnds.Add(candidate2);
                                             }
-                                            else if (candidate2 != null) To = cons.Tertiary;
+                                            else if (candidate2 != null)
+                                            {
+                                                To = cons.Tertiary;
+                                                ToNode = tertNode;
+                                            }
                                         }
                                         else
                                         {
@@ -221,9 +270,14 @@ namespace CIINExporter
                                             if (candidate1 != null)
                                             {
                                                 To = cons.Primary;
+                                                ToNode = primNode;
                                                 if (candidate2 != null) branchEnds.Add(candidate2);
                                             }
-                                            else if (candidate2 != null) To = cons.Secondary;
+                                            else if (candidate2 != null)
+                                            {
+                                                To = cons.Secondary;
+                                                ToNode = secNode;
+                                            }
                                         }
                                         break;
                                     case PartType.Transition:
@@ -302,10 +356,15 @@ namespace CIINExporter
                 else
                 {
                     continueSequence = false;
-                    if (branchEnds.Count < 1) Model.Sequences.Add(curSequence);
                     openEnds = openEnds.ExceptWhere(c => c.IsEqual(To)).ToList();
 
-                    if (branchEnds.Count > 0 && To != null) branchEnds = branchEnds.ExceptWhere(c => c.IsEqual(To)).ToList();
+                    if (branchEnds.Count > 0 && To != null)
+                    {
+                        branchEnds = branchEnds.ExceptWhere(c => c.IsEqual(To)).ToList();
+                    }
+
+                    if (branchEnds.Count < 1) Model.Sequences.Add(curSequence);
+
                 }
             }
 
@@ -327,14 +386,14 @@ namespace CIINExporter
                     tensCount++;
                     if (tensCount == 1)
                     {
-                        ae.From.Number = thousands + 10;
-                        ae.To.Number = thousands + 20;
+                        if (ae.From.Number == 0) ae.From.Number = thousands + 10;
+                        if (ae.To.Number == 0) ae.To.Number = thousands + 20;
                         tensCount = 2;
                         continue;
                     }
                     tens = tensCount * 10;
-                    int nodeNumber = thousands + tens;
-                    ae.To.Number = thousands + tens;
+                    //int nodeNumber = thousands + tens;
+                    if (ae.To.Number == 0) ae.To.Number = thousands + tens;
                 }
                 thCount++;
                 thousands = thCount * 1000;
