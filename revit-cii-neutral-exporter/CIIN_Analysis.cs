@@ -32,44 +32,50 @@ namespace CIINExporter
             //Start analysis
             var openEnds = detectOpenEnds();
 
-            Connector From = openEnds.FirstOrDefault();
-            openEnds = openEnds.ExceptWhere(c => c.IsEqual(From)).ToList();
             Connector To = null;
-
-            Node FromNode = new Node();
-            FromNode.NextCon = From;
-            Model.AllNodes.Add(FromNode);
-
-            Node ToNode = new Node();
-
+            Connector From = null;
+            Node FromNode = null;
+            Node ToNode = null;
             Element curElem = null;
-            curElem = From.Owner;
-            AnalyticElement curAElem = new AnalyticElement(curElem);
+            AnalyticElement curAElem = null;
+            AnalyticSequence curSequence = null;
 
-            bool continueSequence = true;
+            bool continueSequence = false;
 
-            AnalyticSequence curSequence = new AnalyticSequence();
+            IList<Connector> branchEnds = new List<Connector>();
 
             for (int i = 0; i < Model.AllElements.Count; i++)
             {
                 if (!continueSequence)
                 {
-                    From = openEnds.FirstOrDefault();
-                    openEnds = openEnds.ExceptWhere(c => c.IsEqual(From)).ToList();
-                    To = null;
-                    FromNode = new Node();
-                    FromNode.NextCon = From;
-                    Model.AllNodes.Add(FromNode);
+                    if (branchEnds.Count > 0)
+                    {
+                        From = branchEnds.FirstOrDefault();
+                        branchEnds = branchEnds.ExceptWhere(c => c.IsEqual(From)).ToList();
+                        FromNode = (from Node n in Model.AllNodes
+                                    where n.PreviousCon != null && n.PreviousCon.IsEqual(From)
+                                    select n).FirstOrDefault();
+                        FromNode.NextCon = From;
+                    }
+                    else
+                    {
+                        From = openEnds.FirstOrDefault();
+                        openEnds = openEnds.ExceptWhere(c => c.IsEqual(From)).ToList();
+                        FromNode = new Node();
+                        FromNode.NextCon = From;
+                        Model.AllNodes.Add(FromNode);
 
-                    ToNode = new Node();
+                        ToNode = new Node();
 
-                    curElem = null;
+                        curSequence = new AnalyticSequence();
+                    }
+
                     curElem = From.Owner;
                     curAElem = new AnalyticElement(curElem);
 
                     continueSequence = true;
 
-                    curSequence = new AnalyticSequence();
+                    
                 }
 
                 switch (curElem)
@@ -101,9 +107,9 @@ namespace CIINExporter
                                 {
                                     case PartType.Elbow:
                                         //First Analytic Element
-                                        XYZ elementLocation = ((LocationPoint)fi.Location).Point;
-                                        ToNode.PreviousLoc = elementLocation;
-                                        ToNode.NextLoc = elementLocation;
+                                        XYZ elbowLoc = ((LocationPoint)fi.Location).Point;
+                                        ToNode.PreviousLoc = elbowLoc; //The node has only element Location point defining it -
+                                        ToNode.NextLoc = elbowLoc; //and not two adjacent Connectors as element connection nodes
                                         ToNode.IsElbow = true;
                                         Model.AllNodes.Add(ToNode);
 
@@ -127,6 +133,98 @@ namespace CIINExporter
                                         curSequence.Sequence.Add(curAElem);
                                         break;
                                     case PartType.Tee:
+                                        //First analytic element
+                                        XYZ teeLoc = ((LocationPoint)fi.Location).Point;
+                                        ToNode.PreviousLoc = teeLoc; //The node has only element Location point defining it -
+                                        ToNode.NextLoc = teeLoc; //and not two adjacent Connectors as element connection nodes
+                                        ToNode.IsJunction = true;
+                                        Model.AllNodes.Add(ToNode);
+
+                                        curAElem.From = FromNode;
+                                        curAElem.To = ToNode;
+                                        curSequence.Sequence.Add(curAElem);
+
+                                        //From node is common for next two elements
+                                        FromNode = ToNode;
+
+                                        //Second Analytic Element
+                                        if (From.GetMEPConnectorInfo().IsPrimary) To = cons.Secondary;
+                                        else if (From.GetMEPConnectorInfo().IsSecondary) To = cons.Primary;
+                                        else To = cons.Primary;
+
+                                        ToNode = new Node();
+                                        Model.AllNodes.Add(ToNode);
+                                        ToNode.PreviousCon = To;
+                                        curAElem = new AnalyticElement(curElem);
+                                        curAElem.From = FromNode;
+                                        curAElem.To = ToNode;
+                                        curSequence.Sequence.Add(curAElem);
+
+                                        //Third Analytic Element
+                                        if (From.GetMEPConnectorInfo().IsPrimary) To = cons.Tertiary;
+                                        else if (From.GetMEPConnectorInfo().IsSecondary) To = cons.Tertiary;
+                                        else To = cons.Secondary;
+
+                                        ToNode = new Node();
+                                        Model.AllNodes.Add(ToNode);
+                                        ToNode.PreviousCon = To;
+                                        curAElem = new AnalyticElement(curElem);
+                                        curAElem.From = FromNode;
+                                        curAElem.To = ToNode;
+                                        curSequence.Sequence.Add(curAElem);
+
+                                        //Continuation logic
+                                        Connector candidate1;
+                                        Connector candidate2;
+
+                                        if (From.GetMEPConnectorInfo().IsPrimary)
+                                        {
+                                            candidate1 = (from Connector c in Model.AllConnectors
+                                                          where c.IsEqual(cons.Secondary)
+                                                          select c).FirstOrDefault();
+                                            candidate2 = (from Connector c in Model.AllConnectors
+                                                          where c.IsEqual(cons.Tertiary)
+                                                          select c).FirstOrDefault();
+
+                                            if (candidate1 != null)
+                                            {
+                                                To = cons.Secondary;
+                                                if (candidate2 != null) branchEnds.Add(candidate2);
+                                            }
+                                            else if (candidate2 != null) To = cons.Tertiary;
+                                        }
+                                        else if (From.GetMEPConnectorInfo().IsSecondary)
+                                        {
+                                            candidate1 = (from Connector c in Model.AllConnectors
+                                                          where c.IsEqual(cons.Primary)
+                                                          select c).FirstOrDefault();
+                                            candidate2 = (from Connector c in Model.AllConnectors
+                                                          where c.IsEqual(cons.Tertiary)
+                                                          select c).FirstOrDefault();
+
+                                            if (candidate1 != null)
+                                            {
+                                                To = cons.Primary;
+                                                if (candidate2 != null) branchEnds.Add(candidate2);
+                                            }
+                                            else if (candidate2 != null) To = cons.Tertiary;
+                                        }
+                                        else
+                                        {
+                                            candidate1 = (from Connector c in Model.AllConnectors
+                                                          where c.IsEqual(cons.Primary)
+                                                          select c).FirstOrDefault();
+                                            candidate2 = (from Connector c in Model.AllConnectors
+                                                          where c.IsEqual(cons.Secondary)
+                                                          select c).FirstOrDefault();
+
+                                            if (candidate1 != null)
+                                            {
+                                                To = cons.Primary;
+                                                if (candidate2 != null) branchEnds.Add(candidate2);
+                                            }
+                                            else if (candidate2 != null) To = cons.Secondary;
+                                        }
                                         break;
                                     case PartType.Transition:
                                         To = (from Connector c in GetALLConnectorsFromElements(curElem)
@@ -141,6 +239,8 @@ namespace CIINExporter
                                         curSequence.Sequence.Add(curAElem);
                                         break;
                                     case PartType.Cap:
+                                        //Handles flanges because of the workaround PartType.Cap for flanges
+                                        //Real Caps are ignored for now
                                         To = (from Connector c in GetALLConnectorsFromElements(curElem)
                                               where c.Id != From.Id
                                               select c).FirstOrDefault();
@@ -153,8 +253,7 @@ namespace CIINExporter
                                         curSequence.Sequence.Add(curAElem);
                                         break;
                                     case PartType.Union:
-                                        //Unions are not implemeted
-                                        continue;
+                                        throw new NotImplementedException();
                                     case PartType.SpudAdjustable:
                                         throw new NotImplementedException();
                                     default:
@@ -195,20 +294,22 @@ namespace CIINExporter
 
                     FromNode = ToNode;
                     FromNode.NextCon = From;
-                    Model.AllNodes.Add(FromNode);
+
+                    ToNode = new Node();
 
                     curAElem = new AnalyticElement(curElem);
                 }
                 else
                 {
                     continueSequence = false;
-                    Model.Sequences.Add(curSequence);
-
+                    if (branchEnds.Count < 1) Model.Sequences.Add(curSequence);
                     openEnds = openEnds.ExceptWhere(c => c.IsEqual(To)).ToList();
-                }
-                ToNode = new Node();
 
+                    if (branchEnds.Count > 0 && To != null) branchEnds = branchEnds.ExceptWhere(c => c.IsEqual(To)).ToList();
+                }
             }
+
+            Util.InfoMsg(Model.AllNodes.Count.ToString());
         }
 
         public void NumberNodes()
