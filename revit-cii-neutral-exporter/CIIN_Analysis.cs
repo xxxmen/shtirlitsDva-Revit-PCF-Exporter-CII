@@ -13,13 +13,14 @@ using CIINExporter.BuildingCoder;
 
 using static CIINExporter.MepUtils;
 using static CIINExporter.Debugger;
+using static CIINExporter.Enums;
 
 namespace CIINExporter
 {
     class CIIN_Analysis
     {
         Document doc;
-        AnalyticModel Model;
+        public AnalyticModel Model;
 
         public CIIN_Analysis(Document doc, HashSet<Element> elements)
         {
@@ -111,6 +112,9 @@ namespace CIINExporter
                         curAElem.From = FromNode;
                         curAElem.To = ToNode;
 
+                        //Assign correct element type to analytic element
+                        curAElem.Type = ElemType.Pipe;
+
                         curSequence.Sequence.Add(curAElem);
 
                         break;
@@ -129,7 +133,7 @@ namespace CIINExporter
                                         XYZ elbowLoc = ((LocationPoint)fi.Location).Point;
                                         ToNode.PreviousLoc = elbowLoc; //The node has only element Location point defining it -
                                         ToNode.NextLoc = elbowLoc; //and not two adjacent Connectors as element connection nodes
-                                        ToNode.IsElbow = true;
+                                        ToNode.Type = ElemType.Elbow;
                                         Model.AllNodes.Add(ToNode);
 
                                         curAElem.From = FromNode;
@@ -161,7 +165,7 @@ namespace CIINExporter
                                         XYZ teeLoc = ((LocationPoint)fi.Location).Point;
                                         ToNode.PreviousLoc = teeLoc; //The node has only element Location point defining it -
                                         ToNode.NextLoc = teeLoc; //and not two adjacent Connectors as element connection nodes
-                                        ToNode.IsJunction = true;
+                                        ToNode.Type = ElemType.Tee;
                                         Model.AllNodes.Add(ToNode);
 
                                         curAElem.From = FromNode;
@@ -290,6 +294,9 @@ namespace CIINExporter
                                         curAElem.From = FromNode;
                                         curAElem.To = ToNode;
 
+                                        //Assign correct element type to analytic element
+                                        curAElem.Type = ElemType.Transition;
+
                                         curSequence.Sequence.Add(curAElem);
                                         break;
                                     case PartType.Cap:
@@ -303,6 +310,9 @@ namespace CIINExporter
 
                                         curAElem.From = FromNode;
                                         curAElem.To = ToNode;
+
+                                        //Assign correct element type to analytic element
+                                        curAElem.Type = ElemType.Flange;
 
                                         curSequence.Sequence.Add(curAElem);
                                         break;
@@ -324,6 +334,9 @@ namespace CIINExporter
 
                                 curAElem.From = FromNode;
                                 curAElem.To = ToNode;
+
+                                //Assign correct element type to analytic element
+                                curAElem.Type = ElemType.Rigid;
 
                                 curSequence.Sequence.Add(curAElem);
                                 break;
@@ -434,8 +447,7 @@ namespace CIINExporter
         public XYZ PreviousLoc { get; set; } = null;
         public XYZ NextLoc { get; set; } = null;
         public int Number { get; set; } = 0;
-        public bool IsElbow { get; set; } = false;
-        public bool IsJunction { get; set; } = false;
+        public ElemType Type { get; set; } = 0;
 
         //public Node(Connector connector) => ToConnector = connector;
     }
@@ -445,6 +457,7 @@ namespace CIINExporter
         public Node From { get; set; } = null;
         public Node To { get; set; } = null;
         public Element Element { get; set; } = null;
+        public Enums.ElemType Type { get; set; } = 0;
 
         public AnalyticElement(Element element) => Element = element;
     }
@@ -466,6 +479,20 @@ namespace CIINExporter
         {
             AllElements = elements.ToList();
             AllConnectors = GetALLConnectorsFromElements(elements).ToList();
+        }
+    }
+
+    public static class Enums
+    {
+        public enum ElemType
+        {
+            NotAssigned = 0,
+            Pipe = 1,
+            Elbow = 2,
+            Tee = 3,
+            Transition = 4,
+            Flange = 5,
+            Rigid = 6
         }
     }
 

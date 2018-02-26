@@ -133,6 +133,8 @@ namespace CIINExporter
 
                 #endregion
 
+                sbCollect.Append(Composer.Section_CONTROL(cIIA.Model));
+
                 //#region Pipeline management
                 //foreach (IGrouping<string, Element> gp in pipelineGroups)
                 //{

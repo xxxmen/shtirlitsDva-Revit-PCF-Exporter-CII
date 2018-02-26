@@ -19,6 +19,7 @@ using iv = CIINExporter.InputVars;
 using pdef = CIINExporter.ParameterDefinition;
 using plst = CIINExporter.ParameterList;
 using Autodesk.Revit.DB.Mechanical;
+using static CIINExporter.Enums;
 
 namespace CIINExporter
 {
@@ -99,6 +100,55 @@ namespace CIINExporter
             return sb;
         }
 
+        internal static StringBuilder Section_CONTROL(AnalyticModel model)
+        {
+            StringBuilder sb = new StringBuilder();
+            string twox = "  ";
+
+            sb.AppendLine("#$ CONTROL");
+
+            //Start of a new line
+            sb.Append(twox);
+
+            //NUMELT - number of piping elements
+            int numberOfPipes = model.AllAnalyticElements.Count(x => x.Type == ElemType.Pipe);
+            sb.Append(INT(numberOfPipes, 13));
+
+            //NUMNOZ - number of nozzles
+            sb.Append(INT(0, 13));
+
+            //NOHGRS - number of hangers
+            sb.Append(INT(0, 13));
+
+            //NONAM - number of Node Name data blocks
+            int numberOfNodes = model.AllNodes.Count();
+            sb.Append(INT(numberOfNodes, 13));
+
+            //NORED - number of reducers
+            int numberOfReducers = model.AllAnalyticElements.Count(x => x.Type == ElemType.Transition);
+            sb.Append(INT(numberOfReducers, 13));
+
+            //NUMFLG - number of flanges
+            int numberOfFlanges = model.AllAnalyticElements.Count(x => x.Type == ElemType.Flange);
+            sb.Append(INT(numberOfFlanges, 13));
+
+            //NEWLINE
+            sb.AppendLine();
+            sb.Append(twox);
+
+            return sb;
+        }
+
+        internal static string INT(int input, int fieldWidth)
+        {
+            string inputString = input.ToString();
+            string result = string.Empty;
+            for (int i = 0; i < fieldWidth-inputString.Length; i++)
+            {
+                result += " ";
+            }
+            return result += inputString;
+        }
     }
 
     public class Filter
