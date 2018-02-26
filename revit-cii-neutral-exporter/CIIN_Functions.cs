@@ -105,14 +105,19 @@ namespace CIINExporter
             StringBuilder sb = new StringBuilder();
             string twox = "  ";
 
+            //Gather data
+            int numberOfReducers = model.AllAnalyticElements.Count(x => x.Type == ElemType.Transition);
+            int numberOfElbows = model.AllAnalyticElements.Count(x => x.Type == ElemType.Elbow);
+            int numberOfRigids = model.AllAnalyticElements.Count(x => x.Type == ElemType.Rigid);
+            int numberOfTees = model.AllAnalyticElements.Count(x => x.Type == ElemType.Tee);
+
             sb.AppendLine("#$ CONTROL");
 
             //Start of a new line
             sb.Append(twox);
 
-            //NUMELT - number of piping elements
-            int numberOfPipes = model.AllAnalyticElements.Count(x => x.Type == ElemType.Pipe);
-            sb.Append(INT(numberOfPipes, 13));
+            //NUMELT - number of "piping" (every element with DX, DY, DZ) elements
+            sb.Append(INT(model.AllAnalyticElements.Count, 13));
 
             //NUMNOZ - number of nozzles
             sb.Append(INT(0, 13));
@@ -120,34 +125,90 @@ namespace CIINExporter
             //NOHGRS - number of hangers
             sb.Append(INT(0, 13));
 
-            //NONAM - number of Node Name data blocks
-            int numberOfNodes = model.AllNodes.Count();
-            sb.Append(INT(numberOfNodes, 13));
+            //NONAM - number of Node Name data blocks (A node can be given a name besides number)
+            sb.Append(INT(0, 13));
 
             //NORED - number of reducers
-            int numberOfReducers = model.AllAnalyticElements.Count(x => x.Type == ElemType.Transition);
             sb.Append(INT(numberOfReducers, 13));
 
-            //NUMFLG - number of flanges
-            int numberOfFlanges = model.AllAnalyticElements.Count(x => x.Type == ElemType.Flange);
-            sb.Append(INT(numberOfFlanges, 13));
+            //NUMFLG - number of flanges (I think they mean flange checks)
+            sb.Append(INT(0, 13));
 
             //NEWLINE
             sb.AppendLine();
             sb.Append(twox);
 
+            //BEND - number of bends
+            sb.Append(INT(numberOfElbows, 13));
+
+            //RIGID - number of rigids
+            sb.Append(INT(numberOfRigids, 13));
+
+            //EXPJT - number of expansion joints
+            sb.Append(INT(0, 13));
+
+            //RESTRANT - number of restraints aux blocks
+            sb.Append(INT(0, 13));
+
+            //DISPLMNT - number of displacements
+            sb.Append(INT(0, 13));
+
+            //FORCMNT - number of force/moments
+            sb.Append(INT(0, 13));
+
+            //NEWLINE
+            sb.AppendLine();
+            sb.Append(twox);
+
+            //UNIFORM - number of uniform loads
+            sb.Append(INT(0, 13));
+
+            //WIND - number of wind loads
+            sb.Append(INT(0, 13));
+
+            //OFFSETS - number of element offsets
+            sb.Append(INT(0, 13));
+
+            //ALLOWBLS - number of allowables
+            sb.Append(INT(1, 13));
+
+            //SIF&TEES - number of tees
+            sb.Append(INT(numberOfTees, 13));
+
+            //IZUP flag - 0 global Y axis vertical and 1 global Z axis vertical
+            sb.Append(INT(1, 13)); //Revit works with Z axis vertical, so it is easier to keep it that way
+
+            //NEWLINE
+            sb.AppendLine();
+            sb.Append(twox);
+
+            //NOZNOM - number of nozzles
+            sb.AppendLine(INT(0, 13));
+
             return sb;
+        }
+
+        internal static StringBuilder Section_ELEMENTS(AnalyticModel model)
+        {
+            throw new NotImplementedException();
         }
 
         internal static string INT(int input, int fieldWidth)
         {
             string inputString = input.ToString();
             string result = string.Empty;
-            for (int i = 0; i < fieldWidth-inputString.Length; i++)
+            for (int i = 0; i < fieldWidth - inputString.Length; i++)
             {
                 result += " ";
             }
             return result += inputString;
+        }
+
+        internal static string FLO<T>(T input, int fieldWidth, int significantDecimals, int trailingZeros)
+        {
+            string result = string.Empty;
+
+            return result;
         }
     }
 
@@ -1123,46 +1184,46 @@ namespace CIINExporter
     }
 
     public class Cons
+    {
+        public Connector Primary { get; } = null;
+        public Connector Secondary { get; } = null;
+        public Connector Tertiary { get; } = null;
+        public int Count { get; } = 0;
+        public Connector Largest { get; } = null;
+        public Connector Smallest { get; } = null;
+
+        public Cons(Element element)
         {
-            public Connector Primary { get; } = null;
-            public Connector Secondary { get; } = null;
-            public Connector Tertiary { get; } = null;
-            public int Count { get; } = 0;
-            public Connector Largest { get; } = null;
-            public Connector Smallest { get; } = null;
+            ConnectorManager cmgr = MepUtils.GetConnectorManager(element);
 
-            public Cons(Element element)
+            foreach (Connector connector in cmgr.Connectors)
             {
-                ConnectorManager cmgr = MepUtils.GetConnectorManager(element);
+                Count++;
+                if (connector.GetMEPConnectorInfo().IsPrimary) Primary = connector;
+                else if (connector.GetMEPConnectorInfo().IsSecondary) Secondary = connector;
+                else if ((connector.GetMEPConnectorInfo().IsPrimary == false) && (connector.GetMEPConnectorInfo().IsSecondary == false))
+                    Tertiary = connector;
+            }
 
-                foreach (Connector connector in cmgr.Connectors)
+            if (Count > 1 && Secondary == null)
+                throw new Exception($"Element {element.Id.ToString()} has {Count} connectors and no secondary!");
+
+            if (element is FamilyInstance)
+            {
+                if (element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeFitting)
                 {
-                    Count++;
-                    if (connector.GetMEPConnectorInfo().IsPrimary) Primary = connector;
-                    else if (connector.GetMEPConnectorInfo().IsSecondary) Secondary = connector;
-                    else if ((connector.GetMEPConnectorInfo().IsPrimary == false) && (connector.GetMEPConnectorInfo().IsSecondary == false))
-                        Tertiary = connector;
-                }
+                    var mf = ((FamilyInstance)element).MEPModel as MechanicalFitting;
 
-                if (Count > 1 && Secondary == null)
-                    throw new Exception($"Element {element.Id.ToString()} has {Count} connectors and no secondary!");
-
-                if (element is FamilyInstance)
-                {
-                    if (element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeFitting)
+                    if (mf.PartType.ToString() == "Transition")
                     {
-                        var mf = ((FamilyInstance)element).MEPModel as MechanicalFitting;
+                        double primDia = (Primary.Radius * 2).Round(3);
+                        double secDia = (Secondary.Radius * 2).Round(3);
 
-                        if (mf.PartType.ToString() == "Transition")
-                        {
-                            double primDia = (Primary.Radius * 2).Round(3);
-                            double secDia = (Secondary.Radius * 2).Round(3);
-
-                            Largest = primDia > secDia ? Primary : Secondary;
-                            Smallest = primDia < secDia ? Primary : Secondary;
-                        }
+                        Largest = primDia > secDia ? Primary : Secondary;
+                        Smallest = primDia < secDia ? Primary : Secondary;
                     }
                 }
             }
         }
     }
+}

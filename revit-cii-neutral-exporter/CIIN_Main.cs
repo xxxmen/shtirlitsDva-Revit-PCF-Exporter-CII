@@ -43,10 +43,6 @@ namespace CIINExporter
                 StringBuilder sbCollect = new StringBuilder();
                 #endregion
 
-                #region Compose preamble
-                //Append VERSION
-                sbCollect.Append(Composer.Section_VERSION());
-                #endregion
 
                 #region Element collectors
                 //If user chooses to export a single pipeline get only elements in that pipeline and create grouping.
@@ -124,39 +120,19 @@ namespace CIINExporter
 
                 #endregion
 
-                #region Node Analysis
+                #region Analysis
 
                 CIIN_Analysis cIIA = new CIIN_Analysis(doc, filteredElements);
                 cIIA.AnalyzeSystem();
                 cIIA.NumberNodes();
-                cIIA.PlaceTextNotesAtNodes();
+                //cIIA.PlaceTextNotesAtNodes();
 
                 #endregion
 
-                sbCollect.Append(Composer.Section_CONTROL(cIIA.Model));
-
-                //#region Pipeline management
-                //foreach (IGrouping<string, Element> gp in pipelineGroups)
-                //{
-                //    HashSet<Element> pipeList = (from element in gp
-                //                                 where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeCurves
-                //                                 select element).ToHashSet();
-                //    HashSet<Element> fittingList = (from element in gp
-                //                                    where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeFitting
-                //                                    select element).ToHashSet();
-                //    HashSet<Element> accessoryList = (from element in gp
-                //                                      where element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_PipeAccessory
-                //                                      select element).ToHashSet();
-
-                //    //StringBuilder sbPipeline = new PCF_Pipeline.PCF_Pipeline_Export().Export(gp.Key, doc);
-                //    //StringBuilder sbPipes = new PCF_Pipes.PCF_Pipes_Export().Export(gp.Key, pipeList, doc);
-                //    //StringBuilder sbFittings = new PCF_Fittings.PCF_Fittings_Export().Export(gp.Key, fittingList, doc);
-                //    //StringBuilder sbAccessories = new PCF_Accessories.PCF_Accessories_Export().Export(gp.Key, accessoryList, doc);
-
-                //    //sbCollect.Append(sbPipeline); sbCollect.Append(sbPipes); sbCollect.Append(sbFittings); sbCollect.Append(sbAccessories);
-                //}
-                //#endregion
-
+                #region Data Processing
+                ModelData Data = new ModelData(cIIA.Model);
+                
+                #endregion
 
                 #region Output
                 // Output the processed data

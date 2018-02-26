@@ -138,6 +138,9 @@ namespace CIINExporter
 
                                         curAElem.From = FromNode;
                                         curAElem.To = ToNode;
+
+                                        curAElem.Type = ElemType.Elbow;
+
                                         curSequence.Sequence.Add(curAElem);
 
                                         //Second Analytic Element
@@ -153,6 +156,9 @@ namespace CIINExporter
                                         curAElem = new AnalyticElement(curElem);
                                         curAElem.From = FromNode;
                                         curAElem.To = ToNode;
+
+                                        curAElem.Type = ElemType.Pipe;
+
                                         curSequence.Sequence.Add(curAElem);
                                         break;
                                     case PartType.Tee:
@@ -170,6 +176,9 @@ namespace CIINExporter
 
                                         curAElem.From = FromNode;
                                         curAElem.To = ToNode;
+
+                                        curAElem.Type = ElemType.Tee;
+
                                         curSequence.Sequence.Add(curAElem);
 
                                         //Logic to return correct node to next element
@@ -191,6 +200,9 @@ namespace CIINExporter
                                         curAElem = new AnalyticElement(curElem);
                                         curAElem.From = FromNode;
                                         curAElem.To = ToNode;
+
+                                        curAElem.Type = ElemType.Pipe;
+
                                         curSequence.Sequence.Add(curAElem);
 
                                         //Logic to return correct node to next element
@@ -209,6 +221,9 @@ namespace CIINExporter
                                         curAElem = new AnalyticElement(curElem);
                                         curAElem.From = FromNode;
                                         curAElem.To = ToNode;
+
+                                        curAElem.Type = ElemType.Pipe;
+
                                         curSequence.Sequence.Add(curAElem);
 
                                         //Logic to return correct node to next element
@@ -312,7 +327,7 @@ namespace CIINExporter
                                         curAElem.To = ToNode;
 
                                         //Assign correct element type to analytic element
-                                        curAElem.Type = ElemType.Flange;
+                                        curAElem.Type = ElemType.Rigid;
 
                                         curSequence.Sequence.Add(curAElem);
                                         break;
@@ -381,6 +396,15 @@ namespace CIINExporter
                 }
             }
 
+            //Reference ALL analytic elements in the collecting pool
+            foreach (var sequence in Model.Sequences)
+            {
+                foreach (var item in sequence.Sequence)
+                {
+                    Model.AllAnalyticElements.Add(item);
+                }
+            }
+
             Util.InfoMsg(Model.AllNodes.Count.ToString());
         }
 
@@ -440,7 +464,7 @@ namespace CIINExporter
         }
     }
 
-    class Node
+    public class Node
     {
         public Connector PreviousCon { get; set; } = null;
         public Connector NextCon { get; set; } = null;
@@ -452,7 +476,7 @@ namespace CIINExporter
         //public Node(Connector connector) => ToConnector = connector;
     }
 
-    class AnalyticElement
+    public class AnalyticElement
     {
         public Node From { get; set; } = null;
         public Node To { get; set; } = null;
@@ -462,23 +486,55 @@ namespace CIINExporter
         public AnalyticElement(Element element) => Element = element;
     }
 
-    class AnalyticSequence
+    public class AnalyticSequence
     {
         public List<AnalyticElement> Sequence { get; set; } = new List<AnalyticElement>();
     }
 
-    class AnalyticModel
+    public class AnalyticModel
     {
         public List<AnalyticSequence> Sequences { get; } = new List<AnalyticSequence>();
         public List<Node> AllNodes { get; } = new List<Node>();
         public List<AnalyticElement> AllAnalyticElements { get; } = new List<AnalyticElement>();
         public List<Connector> AllConnectors { get; set; }
         public List<Element> AllElements { get; }
+        public ModelData Data { get; set; } = null;
 
         public AnalyticModel(HashSet<Element> elements)
         {
             AllElements = elements.ToList();
             AllConnectors = GetALLConnectorsFromElements(elements).ToList();
+        }
+    }
+
+    public class ModelData
+    {
+        public StringBuilder _01_VERSION { get; set; } = new StringBuilder();
+        public StringBuilder _02_CONTROL { get; set; } = new StringBuilder();
+        public StringBuilder _03_ELEMENTS { get; set; } = new StringBuilder();
+        public StringBuilder _04_AUXDATA { get; } = new StringBuilder("#$ AUX_DATA\n");
+        public StringBuilder _05_NODENAME { get; set; } = new StringBuilder();
+        public StringBuilder _06_BEND { get; set; } = new StringBuilder();
+        public StringBuilder _07_RIGID { get; set; } = new StringBuilder();
+        public StringBuilder _08_EXPJT { get; set; } = new StringBuilder();
+        public StringBuilder _09_RESTRANT { get; set; } = new StringBuilder();
+        public StringBuilder _10_DISPLMNT { get; set; } = new StringBuilder();
+        public StringBuilder _11_FORCMNT { get; set; } = new StringBuilder();
+        public StringBuilder _12_UNIFORM { get; set; } = new StringBuilder();
+        public StringBuilder _13_WIND { get; set; } = new StringBuilder();
+        public StringBuilder _14_OFFSETS { get; set; } = new StringBuilder();
+        public StringBuilder _15_ALLOWBLS { get; set; } = new StringBuilder();
+        public StringBuilder _16_SIFTEES { get; set; } = new StringBuilder();
+        public StringBuilder _17_REDUCERS { get; set; } = new StringBuilder();
+        public StringBuilder _18_FLANGES { get; set; } = new StringBuilder();
+        public StringBuilder _19_EQUIPMNT { get; set; } = new StringBuilder();
+        public StringBuilder _20_MISCEL_1 { get; set; } = new StringBuilder();
+        public StringBuilder _21_UNITS { get; set; } = new StringBuilder();
+        public StringBuilder _22_COORDS { get; set; } = new StringBuilder();
+
+        public ModelData(AnalyticModel Model)
+        {
+
         }
     }
 
