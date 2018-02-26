@@ -383,7 +383,7 @@ namespace CIINExporter
 
                 foreach (AnalyticElement ae in ans.Sequence)
                 {
-                    tensCount++;
+                    if (ae.To.Number == 0) tensCount++; //Possible fix for skipping a number after branches.
                     if (tensCount == 1)
                     {
                         if (ae.From.Number == 0) ae.From.Number = thousands + 10;
@@ -392,7 +392,6 @@ namespace CIINExporter
                         continue;
                     }
                     tens = tensCount * 10;
-                    //int nodeNumber = thousands + tens;
                     if (ae.To.Number == 0) ae.To.Number = thousands + tens;
                 }
                 thCount++;
