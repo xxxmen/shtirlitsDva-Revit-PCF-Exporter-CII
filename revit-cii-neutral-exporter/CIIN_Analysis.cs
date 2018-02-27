@@ -507,36 +507,7 @@ namespace CIINExporter
         }
     }
 
-    public class ModelData
-    {
-        public StringBuilder _01_VERSION { get; set; } = new StringBuilder();
-        public StringBuilder _02_CONTROL { get; set; } = new StringBuilder();
-        public StringBuilder _03_ELEMENTS { get; set; } = new StringBuilder();
-        public StringBuilder _04_AUXDATA { get; } = new StringBuilder("#$ AUX_DATA\n");
-        public StringBuilder _05_NODENAME { get; set; } = new StringBuilder();
-        public StringBuilder _06_BEND { get; set; } = new StringBuilder();
-        public StringBuilder _07_RIGID { get; set; } = new StringBuilder();
-        public StringBuilder _08_EXPJT { get; set; } = new StringBuilder();
-        public StringBuilder _09_RESTRANT { get; set; } = new StringBuilder();
-        public StringBuilder _10_DISPLMNT { get; set; } = new StringBuilder();
-        public StringBuilder _11_FORCMNT { get; set; } = new StringBuilder();
-        public StringBuilder _12_UNIFORM { get; set; } = new StringBuilder();
-        public StringBuilder _13_WIND { get; set; } = new StringBuilder();
-        public StringBuilder _14_OFFSETS { get; set; } = new StringBuilder();
-        public StringBuilder _15_ALLOWBLS { get; set; } = new StringBuilder();
-        public StringBuilder _16_SIFTEES { get; set; } = new StringBuilder();
-        public StringBuilder _17_REDUCERS { get; set; } = new StringBuilder();
-        public StringBuilder _18_FLANGES { get; set; } = new StringBuilder();
-        public StringBuilder _19_EQUIPMNT { get; set; } = new StringBuilder();
-        public StringBuilder _20_MISCEL_1 { get; set; } = new StringBuilder();
-        public StringBuilder _21_UNITS { get; set; } = new StringBuilder();
-        public StringBuilder _22_COORDS { get; set; } = new StringBuilder();
-
-        public ModelData(AnalyticModel Model)
-        {
-
-        }
-    }
+    
 
     public static class Enums
     {
