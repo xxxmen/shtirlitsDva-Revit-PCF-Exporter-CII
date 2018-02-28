@@ -166,7 +166,7 @@ namespace CIINExporter
         internal static StringBuilder Section_ELEMENTS(AnalyticModel model)
         {
             StringBuilder sb = new StringBuilder();
-            
+
 
             foreach (AnalyticElement ae in model.AllAnalyticElements)
             {
@@ -183,6 +183,8 @@ namespace CIINExporter
 
             sb.Append(twox);
             sb.Append(FLO(ae.From.Number, 13, 0, 2));
+            sb.Append(FLO(ae.To.Number, 13, 0, 2));
+            sb.Append(FLO(ae.To.X - ae.From.X, 13, 2, 4));
 
             return sb;
         }
@@ -225,11 +227,9 @@ namespace CIINExporter
 
             int delta = fieldWidth - result.Length;
 
-            if (delta > 0) result.PadLeft(fieldWidth);
+            if (delta > 0) return result.PadLeft(fieldWidth);
             else if (delta == 0) return result;
-            else if (delta < 0) throw new Exception("Field width less than value provided!");
-
-            return result;
+            else return result.Remove(result.Length + delta);
         }
     }
 }
