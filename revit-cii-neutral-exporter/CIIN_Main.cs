@@ -131,6 +131,7 @@ namespace CIINExporter
 
                 #region Data Processing
                 ModelData Data = new ModelData(cIIA.Model);
+                Data.ProcessData();
 
                 #endregion
 
@@ -139,6 +140,7 @@ namespace CIINExporter
 
                 sbCollect.Append(Data._01_VERSION);
                 sbCollect.Append(Data._02_CONTROL);
+                sbCollect.Append(Data._03_ELEMENTS);
 
                 Output output = new Output();
                 output.OutputWriter(doc, sbCollect, InputVars.OutputDirectoryFilePath);

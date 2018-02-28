@@ -488,9 +488,9 @@ namespace CIINExporter
             else if (PreviousLoc != null) location = PreviousLoc;
             else throw new Exception($"Node number {Number} has no Connector or XYZ assigned!");
 
-            X = location.X;
-            Y = location.Y;
-            Z = location.Z;
+            X = location.X.FtToMm();
+            Y = location.Y.FtToMm();
+            Z = location.Z.FtToMm();
         }
     }
 

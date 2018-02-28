@@ -413,12 +413,10 @@ namespace CIINExporter
 
         public static double FtToInch(this Double l) => l * _foot_to_inch;
 
-        public static int NrOfDigits(this double value)
+        public static int NrOfDigits(this string value)
         {
-            string s = Convert.ToString(value);
-            int index = s.IndexOf('.');
-
-            return index >= 0 ? s.Length - (index + 1) : 0;
+            int index = value.IndexOf('.');
+            return index >= 0 ? value.Length - (index + 1) : 0;
         }
 
         public static bool IsOdd(this int number)

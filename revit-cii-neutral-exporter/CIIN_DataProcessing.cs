@@ -14,33 +14,34 @@ using CIINExporter.BuildingCoder;
 using static CIINExporter.MepUtils;
 using static CIINExporter.Debugger;
 using static CIINExporter.Enums;
+using static CIINExporter.Extensions;
 
 namespace CIINExporter
 {
     public class ModelData
     {
-        public StringBuilder _01_VERSION { get; set; } = new StringBuilder();
-        public StringBuilder _02_CONTROL { get; set; } = new StringBuilder();
-        public StringBuilder _03_ELEMENTS { get; set; } = new StringBuilder();
+        public StringBuilder _01_VERSION { get; set; }
+        public StringBuilder _02_CONTROL { get; set; }
+        public StringBuilder _03_ELEMENTS { get; set; }
         public StringBuilder _04_AUXDATA { get; } = new StringBuilder("#$ AUX_DATA\n");
-        public StringBuilder _05_NODENAME { get; set; } = new StringBuilder();
-        public StringBuilder _06_BEND { get; set; } = new StringBuilder();
-        public StringBuilder _07_RIGID { get; set; } = new StringBuilder();
-        public StringBuilder _08_EXPJT { get; set; } = new StringBuilder();
-        public StringBuilder _09_RESTRANT { get; set; } = new StringBuilder();
-        public StringBuilder _10_DISPLMNT { get; set; } = new StringBuilder();
-        public StringBuilder _11_FORCMNT { get; set; } = new StringBuilder();
-        public StringBuilder _12_UNIFORM { get; set; } = new StringBuilder();
-        public StringBuilder _13_WIND { get; set; } = new StringBuilder();
-        public StringBuilder _14_OFFSETS { get; set; } = new StringBuilder();
-        public StringBuilder _15_ALLOWBLS { get; set; } = new StringBuilder();
-        public StringBuilder _16_SIFTEES { get; set; } = new StringBuilder();
-        public StringBuilder _17_REDUCERS { get; set; } = new StringBuilder();
-        public StringBuilder _18_FLANGES { get; set; } = new StringBuilder();
-        public StringBuilder _19_EQUIPMNT { get; set; } = new StringBuilder();
-        public StringBuilder _20_MISCEL_1 { get; set; } = new StringBuilder();
-        public StringBuilder _21_UNITS { get; set; } = new StringBuilder();
-        public StringBuilder _22_COORDS { get; set; } = new StringBuilder();
+        public StringBuilder _05_NODENAME { get; set; }
+        public StringBuilder _06_BEND { get; set; }
+        public StringBuilder _07_RIGID { get; set; }
+        public StringBuilder _08_EXPJT { get; set; }
+        public StringBuilder _09_RESTRANT { get; set; }
+        public StringBuilder _10_DISPLMNT { get; set; }
+        public StringBuilder _11_FORCMNT { get; set; }
+        public StringBuilder _12_UNIFORM { get; set; }
+        public StringBuilder _13_WIND { get; set; }
+        public StringBuilder _14_OFFSETS { get; set; }
+        public StringBuilder _15_ALLOWBLS { get; set; }
+        public StringBuilder _16_SIFTEES { get; set; }
+        public StringBuilder _17_REDUCERS { get; set; }
+        public StringBuilder _18_FLANGES { get; set; }
+        public StringBuilder _19_EQUIPMNT { get; set; }
+        public StringBuilder _20_MISCEL_1 { get; set; }
+        public StringBuilder _21_UNITS { get; set; }
+        public StringBuilder _22_COORDS { get; set; }
 
         public AnalyticModel Data;
 
@@ -53,6 +54,7 @@ namespace CIINExporter
         {
             _01_VERSION = Section_VERSION();
             _02_CONTROL = Section_CONTROL(Data);
+            _03_ELEMENTS = Section_ELEMENTS(Data);
         }
 
         //CII VERSION section
@@ -166,7 +168,7 @@ namespace CIINExporter
         internal static StringBuilder Section_ELEMENTS(AnalyticModel model)
         {
             StringBuilder sb = new StringBuilder();
-
+            sb.AppendLine("#$ ELEMENTS");
 
             foreach (AnalyticElement ae in model.AllAnalyticElements)
             {
@@ -181,10 +183,114 @@ namespace CIINExporter
             string twox = "  ";
             StringBuilder sb = new StringBuilder();
 
+            //New line
             sb.Append(twox);
+            //From number
             sb.Append(FLO(ae.From.Number, 13, 0, 2));
+            //To number
             sb.Append(FLO(ae.To.Number, 13, 0, 2));
+            //Delta X
             sb.Append(FLO(ae.To.X - ae.From.X, 13, 2, 4));
+            //Delta Y
+            sb.Append(FLO(ae.To.Y - ae.From.Y, 13, 2, 4));
+            //Delta Z
+            sb.Append(FLO(ae.To.Z - ae.From.Z, 13, 2, 4));
+            //Actual diameter
+            double dia = ae.Element.get_Parameter(BuiltInParameter.RBS_PIPE_OUTER_DIAMETER).AsDouble().FtToMm();
+            sb.AppendLine(FLO(dia, 13, 1, 5));
+            
+            //New line
+            sb.Append(twox);
+            //Wall thickness
+            double iDia = ae.Element.get_Parameter(BuiltInParameter.RBS_PIPE_INNER_DIAM_PARAM).AsDouble().FtToMm();
+            double wallThk = (dia - iDia) / 2;
+            sb.Append(FLO(wallThk, 13, 1, 5));
+            //Insulation thickness
+            double insThick = 0;
+            Parameter parInsTypeCheck = ae.Element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_TYPE);
+            if (parInsTypeCheck.HasValue)
+            {
+                Parameter parInsThickness = ae.Element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS);
+                insThick = parInsThickness.AsDouble().FtToMm();
+            }
+            sb.Append(FLO(insThick, 13, 0, 3));
+            //Corrosion Allowance
+            sb.Append(FLO(0, 13, 0, 6)); //TODO: Implement #$ ELEMENTS: Corrosion Allowance
+            //Thermal Expansion (or Temperature #1)
+            sb.Append(FLO(0, 13, 0, 6)); //TODO: Implement #$ ELEMENTS: Temperature 1
+            //Thermal Expansion (or Temperature #2)
+            sb.Append(FLO(0, 13, 0, 6)); //TODO: Implement #$ ELEMENTS: Temperature 2
+            //Thermal Expansion (or Temperature #3)
+            sb.AppendLine(FLO(0, 13, 0, 6)); //TODO: Implement #$ ELEMENTS: Temperature 3
+
+            //New line
+            sb.Append(twox);
+            //Thermal Expansion (or Temperature #4)
+            sb.Append(FLO(0, 13, 0, 6));
+            //Thermal Expansion (or Temperature #5)
+            sb.Append(FLO(0, 13, 0, 6));
+            //Thermal Expansion (or Temperature #6)
+            sb.Append(FLO(0, 13, 0, 6));
+            //Thermal Expansion (or Temperature #7)
+            sb.Append(FLO(0, 13, 0, 6));
+            //Thermal Expansion (or Temperature #8)
+            sb.Append(FLO(0, 13, 0, 6));
+            //Thermal Expansion (or Temperature #9)
+            sb.AppendLine(FLO(0, 13, 0, 6));
+
+            //New line
+            sb.Append(twox);
+            //Thermal Expansion (or Pressure #1)
+            sb.Append(FLO(0, 13, 0, 6)); //TODO: Implement #$ ELEMENTS: Pressure 1
+            //Thermal Expansion (or Pressure #2)
+            sb.Append(FLO(0, 13, 0, 6)); //TODO: Implement #$ ELEMENTS: Pressure 2
+            //Thermal Expansion (or Pressure #3)
+            sb.Append(FLO(0, 13, 0, 6)); //TODO: Implement #$ ELEMENTS: Pressure 3
+            //Thermal Expansion (or Pressure #4)
+            sb.Append(FLO(0, 13, 0, 6));
+            //Thermal Expansion (or Pressure #5)
+            sb.Append(FLO(0, 13, 0, 6));
+            //Thermal Expansion (or Pressure #6)
+            sb.AppendLine(FLO(0, 13, 0, 6));
+
+            //New line
+            sb.Append(twox);
+            //Thermal Expansion (or Pressure #7)
+            sb.Append(FLO(0, 13, 0, 6));
+            //Thermal Expansion (or Pressure #8)
+            sb.Append(FLO(0, 13, 0, 6));
+            //Thermal Expansion (or Pressure #9)
+            sb.Append(FLO(0, 13, 0, 6));
+            //Elastic Modulus (cold)
+            sb.Append(FLO(0, 13, 0, 6)); //Should be specified by material
+            //Poisoon's Ratio
+            sb.Append(FLO(0, 13, 0, 6)); //Should be specified by material
+            //Pipe Density
+            sb.AppendLine(FLO(0, 13, 0, 3)); //Should be specified by material???
+
+            //New line
+            sb.Append(twox);
+            //Insulation Density
+            sb.Append(FLO(136.158, 13, 3, 3)); //TODO: Implement Insulation Density
+            //Fluid Density
+            sb.Append(FLO(999.556, 13, 3, 3));
+            //Minus Mill Tolerance
+            sb.Append(FLO(0, 13, 0, 6));
+            //Plus Mill Tolerance
+            sb.Append(FLO(0, 13, 0, 6));
+            //Seam weld
+            sb.Append(FLO(0, 13, 0, 6));
+            //Hydro Pressure
+            sb.AppendLine(FLO(0, 13, 0, 6)); //TODO: Implement Hydro Pressure
+
+            //New line
+            sb.Append(twox);
+            //Elastic Modulus (Hot #1-#6)
+            sb.Append(FLO(0, 13, 0, 6, 6));
+            sb.AppendLine();
+            
+            
+
 
             return sb;
         }
@@ -200,16 +306,16 @@ namespace CIINExporter
             return result += input;
         }
 
-        internal static string FLO<T>(T number, int fieldWidth, int significantDecimals, int numberOfDecimals)
+        internal static string FLO<T>(T number, int fieldWidth, int significantDecimals, int numberOfDecimals, int totalNumberOfInstances = 1)
         {
             string result = string.Empty;
             if (number is double dbl)
             {
-                result = dbl.Round(significantDecimals).ToString();
-                int nrOfDigits = dbl.NrOfDigits();
+                result = dbl.Round(significantDecimals).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                int nrOfDigits = result.NrOfDigits();
                 if (nrOfDigits < numberOfDecimals)
                 {
-                    if (!result.Contains(".")) result += ".";
+                    if (!result.Contains('.')) result += ".";
                     int missingDigits = numberOfDecimals - nrOfDigits;
                     for (int i = 0; i < missingDigits; i++) result += "0";
                 }
@@ -226,10 +332,21 @@ namespace CIINExporter
             else throw new NotImplementedException();
 
             int delta = fieldWidth - result.Length;
+            
+            if (delta > 0) result = result.PadLeft(fieldWidth);
+            else if (delta == 0) ; //Do nothing
+            else result = result.Remove(result.Length + delta);
 
-            if (delta > 0) return result.PadLeft(fieldWidth);
-            else if (delta == 0) return result;
-            else return result.Remove(result.Length + delta);
+            if (totalNumberOfInstances > 1)
+            {
+                string singleInstance = result;
+                for (int i = 0; i < totalNumberOfInstances; i++)
+                {
+                    result += singleInstance;
+                }
+            }
+
+            return result;
         }
     }
 }
