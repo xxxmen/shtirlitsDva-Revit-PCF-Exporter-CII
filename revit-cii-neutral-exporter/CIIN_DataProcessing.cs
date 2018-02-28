@@ -24,22 +24,22 @@ namespace CIINExporter
         public StringBuilder _02_CONTROL { get; set; }
         public StringBuilder _03_ELEMENTS { get; set; }
         public StringBuilder _04_AUXDATA { get; } = new StringBuilder("#$ AUX_DATA\n");
-        public StringBuilder _05_NODENAME { get; set; }
-        public StringBuilder _06_BEND { get; set; }
-        public StringBuilder _07_RIGID { get; set; }
-        public StringBuilder _08_EXPJT { get; set; }
-        public StringBuilder _09_RESTRANT { get; set; }
-        public StringBuilder _10_DISPLMNT { get; set; }
-        public StringBuilder _11_FORCMNT { get; set; }
-        public StringBuilder _12_UNIFORM { get; set; }
-        public StringBuilder _13_WIND { get; set; }
-        public StringBuilder _14_OFFSETS { get; set; }
-        public StringBuilder _15_ALLOWBLS { get; set; }
-        public StringBuilder _16_SIFTEES { get; set; }
-        public StringBuilder _17_REDUCERS { get; set; }
-        public StringBuilder _18_FLANGES { get; set; }
-        public StringBuilder _19_EQUIPMNT { get; set; }
-        public StringBuilder _20_MISCEL_1 { get; set; }
+        public StringBuilder _05_NODENAME { get; set; } = null;
+        public StringBuilder _06_BEND { get; set; } = new StringBuilder("#$ BEND\n");
+        public StringBuilder _07_RIGID { get; set; } = new StringBuilder("#$ RIGID\n");
+        public StringBuilder _08_EXPJT { get; set; } = new StringBuilder("#$ EXPJT\n");
+        public StringBuilder _09_RESTRANT { get; set; } = new StringBuilder("#$ RESTRANT\n");
+        public StringBuilder _10_DISPLMNT { get; set; } = new StringBuilder("#$ DISPLMNT\n");
+        public StringBuilder _11_FORCMNT { get; set; } = new StringBuilder("#$ FORCMNT\n");
+        public StringBuilder _12_UNIFORM { get; set; } = new StringBuilder("#$ UNIFORM\n");
+        public StringBuilder _13_WIND { get; set; } = new StringBuilder("#$ WIND\n");
+        public StringBuilder _14_OFFSETS { get; set; } = new StringBuilder("#$ OFFSETS\n");
+        public StringBuilder _15_ALLOWBLS { get; set; } = new StringBuilder("#$ ALLOWBLS\n");
+        public StringBuilder _16_SIFTEES { get; set; } = new StringBuilder("#$ SIF&TEES\n");
+        public StringBuilder _17_REDUCERS { get; set; } = new StringBuilder("#$ REDUCERS\n");
+        public StringBuilder _18_FLANGES { get; set; } = new StringBuilder("#$ FLANGES\n");
+        public StringBuilder _19_EQUIPMNT { get; set; } = new StringBuilder("#$ EQUIPMNT\n");
+        public StringBuilder _20_MISCEL_1 { get; set; } = new StringBuilder("#$ MISCEL_1\n");
         public StringBuilder _21_UNITS { get; set; }
         public StringBuilder _22_COORDS { get; set; }
 
@@ -55,7 +55,43 @@ namespace CIINExporter
             _01_VERSION = Section_VERSION();
             _02_CONTROL = Section_CONTROL(Data);
             _03_ELEMENTS = Section_ELEMENTS(Data);
+
+            _20_MISCEL_1.Append(Section_MISCEL_1(Data));
+
+            _21_UNITS = Section_UNITS();
         }
+
+        private StringBuilder Section_MISCEL_1(AnalyticModel data)
+        {
+            StringBuilder sb = new StringBuilder();
+            string twox = "  ";
+
+            int numelt = data.AllAnalyticElements.Count();
+            bool straight = true;
+
+            int nlines = numelt / 6;
+            if (numelt % 6 != 0) { nlines += 1; straight = false; }
+
+            for (int i = 0; i < nlines; i++)
+            {
+                if (i == nlines - 1 && straight == false)
+                {
+                    int rest = numelt - (nlines - 1) * 6;
+                    sb.Append(twox);
+                    sb.Append(FLO(406, 13, 0, 3, rest));
+                    sb.AppendLine();
+                    break;
+                }
+
+                sb.Append(twox);
+                sb.Append(FLO(406, 13, 0, 3, 6));
+                sb.AppendLine();
+            }
+
+            return sb;
+        }
+
+
 
         //CII VERSION section
         internal static StringBuilder Section_VERSION()
@@ -178,6 +214,43 @@ namespace CIINExporter
             return sb;
         }
 
+        
+
+        internal static StringBuilder Section_UNITS()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(@"#$ UNITS   
+    25.4000      4.44800     0.453600     0.112980     0.112980     0.689460E-02
+   0.555600     -17.7778     0.689460E-01 0.689460E-02  27680.0      27680.0    
+    27680.0     0.175120     0.112980     0.175120      1.00000      6894.76    
+   0.254000E-01  25.4000      25.4000      25.4000    
+  units          
+  ON 
+  mm.
+  N. 
+  kg.
+  N.m.  
+  N.m.  
+  MPa       
+  C
+  C
+  bars      
+  N./sq.mm. 
+  kg/cu.m.  
+  kg/cu.m.  
+  kg/cu.m.  
+  N./mm. 
+  N.m./deg  
+  N./mm. 
+  g's
+  N./sq.m.  
+  m. 
+  mm.
+  mm.
+  mm.");
+            return sb;
+        }
+
         internal static StringBuilder wElement(AnalyticElement ae)
         {
             string twox = "  ";
@@ -196,77 +269,50 @@ namespace CIINExporter
             //Delta Z
             sb.Append(FLO(ae.To.Z - ae.From.Z, 13, 2, 4));
             //Actual diameter
-            double dia = ae.Element.get_Parameter(BuiltInParameter.RBS_PIPE_OUTER_DIAMETER).AsDouble().FtToMm();
-            sb.AppendLine(FLO(dia, 13, 1, 5));
+            //double dia = ae.Element.get_Parameter(BuiltInParameter.RBS_PIPE_OUTER_DIAMETER).AsDouble().FtToMm();
+            sb.AppendLine(FLO("na", 13, 1, 5));
             
             //New line
             sb.Append(twox);
             //Wall thickness
-            double iDia = ae.Element.get_Parameter(BuiltInParameter.RBS_PIPE_INNER_DIAM_PARAM).AsDouble().FtToMm();
-            double wallThk = (dia - iDia) / 2;
-            sb.Append(FLO(wallThk, 13, 1, 5));
+            //double iDia = ae.Element.get_Parameter(BuiltInParameter.RBS_PIPE_INNER_DIAM_PARAM).AsDouble().FtToMm();
+            //double wallThk = (dia - iDia) / 2;
+            sb.Append(FLO("na", 13, 1, 5));
             //Insulation thickness
-            double insThick = 0;
-            Parameter parInsTypeCheck = ae.Element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_TYPE);
-            if (parInsTypeCheck.HasValue)
-            {
-                Parameter parInsThickness = ae.Element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS);
-                insThick = parInsThickness.AsDouble().FtToMm();
-            }
-            sb.Append(FLO(insThick, 13, 0, 3));
-            //Corrosion Allowance
-            sb.Append(FLO(0, 13, 0, 6)); //TODO: Implement #$ ELEMENTS: Corrosion Allowance
-            //Thermal Expansion (or Temperature #1)
-            sb.Append(FLO(0, 13, 0, 6)); //TODO: Implement #$ ELEMENTS: Temperature 1
-            //Thermal Expansion (or Temperature #2)
-            sb.Append(FLO(0, 13, 0, 6)); //TODO: Implement #$ ELEMENTS: Temperature 2
-            //Thermal Expansion (or Temperature #3)
-            sb.AppendLine(FLO(0, 13, 0, 6)); //TODO: Implement #$ ELEMENTS: Temperature 3
+            //double insThick = 0;
+            //Parameter parInsTypeCheck = ae.Element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_TYPE);
+            //if (parInsTypeCheck.HasValue)
+            //{
+            //    Parameter parInsThickness = ae.Element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS);
+            //    insThick = parInsThickness.AsDouble().FtToMm();
+            //}
+            sb.Append(FLO("na", 13, 0, 3));
+
+            //Corrosion Allowance //TODO: Implement #$ ELEMENTS: Corrosion Allowance
+            //Thermal Expansion (or Temperature #1) //TODO: Implement #$ ELEMENTS: Temperature 1-3
+            sb.Append(FLO(0, 13, 0, 6, 4));
+            sb.AppendLine();
 
             //New line
             sb.Append(twox);
-            //Thermal Expansion (or Temperature #4)
-            sb.Append(FLO(0, 13, 0, 6));
-            //Thermal Expansion (or Temperature #5)
-            sb.Append(FLO(0, 13, 0, 6));
-            //Thermal Expansion (or Temperature #6)
-            sb.Append(FLO(0, 13, 0, 6));
-            //Thermal Expansion (or Temperature #7)
-            sb.Append(FLO(0, 13, 0, 6));
-            //Thermal Expansion (or Temperature #8)
-            sb.Append(FLO(0, 13, 0, 6));
-            //Thermal Expansion (or Temperature #9)
-            sb.AppendLine(FLO(0, 13, 0, 6));
+            //Thermal Expansion (or Temperature #4-#9)
+            sb.Append(FLO(0, 13, 0, 6, 6));
+            sb.AppendLine();
 
             //New line
             sb.Append(twox);
-            //Thermal Expansion (or Pressure #1)
-            sb.Append(FLO(0, 13, 0, 6)); //TODO: Implement #$ ELEMENTS: Pressure 1
-            //Thermal Expansion (or Pressure #2)
-            sb.Append(FLO(0, 13, 0, 6)); //TODO: Implement #$ ELEMENTS: Pressure 2
-            //Thermal Expansion (or Pressure #3)
-            sb.Append(FLO(0, 13, 0, 6)); //TODO: Implement #$ ELEMENTS: Pressure 3
-            //Thermal Expansion (or Pressure #4)
-            sb.Append(FLO(0, 13, 0, 6));
-            //Thermal Expansion (or Pressure #5)
-            sb.Append(FLO(0, 13, 0, 6));
-            //Thermal Expansion (or Pressure #6)
-            sb.AppendLine(FLO(0, 13, 0, 6));
+            //Thermal Expansion (or Pressure #1-#6) //TODO: Implement #$ ELEMENTS: Pressure 1-6
+            sb.Append(FLO(0, 13, 0, 6, 6));
+            sb.AppendLine();
 
             //New line
             sb.Append(twox);
-            //Thermal Expansion (or Pressure #7)
-            sb.Append(FLO(0, 13, 0, 6));
-            //Thermal Expansion (or Pressure #8)
-            sb.Append(FLO(0, 13, 0, 6));
-            //Thermal Expansion (or Pressure #9)
-            sb.Append(FLO(0, 13, 0, 6));
-            //Elastic Modulus (cold)
-            sb.Append(FLO(0, 13, 0, 6)); //Should be specified by material
-            //Poisoon's Ratio
-            sb.Append(FLO(0, 13, 0, 6)); //Should be specified by material
-            //Pipe Density
-            sb.AppendLine(FLO(0, 13, 0, 3)); //Should be specified by material???
+            //Thermal Expansion (or Pressure #7-#9)
+            //Elastic Modulus (cold) //Should be specified by material
+            //Poisoon's Ratio //Should be specified by material
+            //Pipe Density //Should be specified by material???
+            sb.Append(FLO(0, 13, 0, 6, 6));
+            sb.AppendLine();
 
             //New line
             sb.Append(twox);
@@ -275,11 +321,9 @@ namespace CIINExporter
             //Fluid Density
             sb.Append(FLO(999.556, 13, 3, 3));
             //Minus Mill Tolerance
-            sb.Append(FLO(0, 13, 0, 6));
             //Plus Mill Tolerance
-            sb.Append(FLO(0, 13, 0, 6));
             //Seam weld
-            sb.Append(FLO(0, 13, 0, 6));
+            sb.Append(FLO(0, 13, 0, 6, 3));
             //Hydro Pressure
             sb.AppendLine(FLO(0, 13, 0, 6)); //TODO: Implement Hydro Pressure
 
@@ -288,9 +332,46 @@ namespace CIINExporter
             //Elastic Modulus (Hot #1-#6)
             sb.Append(FLO(0, 13, 0, 6, 6));
             sb.AppendLine();
-            
-            
 
+            //New line
+            sb.Append(twox);
+            //Elastic Modulus (Hot #7-#9)
+            //"wL" factor
+            //Element Orientation Angle (To End)
+            //Element Orientation Angle (From End)
+            sb.Append(FLO(0, 13, 0, 6, 6));
+            sb.AppendLine();
+
+            //New line
+            sb.Append(twox);
+            //Cladding thickness
+            sb.Append(FLO(1, 13, 0, 6));
+            //Cladding Density
+            sb.Append(FLO(2700, 13, 0, 6));
+            //Insulation + Cladding Weight/length
+            //Refractory Thickness
+            //Refractory Density
+            sb.Append(FLO(0, 13, 0, 6, 3));
+            sb.AppendLine();
+
+            //ELEMENT NAME
+            //New line
+            sb.Append(twox);
+            sb.AppendLine(INT(0, 10));
+
+            //POINTERS TO AUXILIARY DATA ARRAYS
+            //New line
+            sb.Append(twox);
+            sb.Append(FLO(0, 13, 0, 0, 6));
+            sb.AppendLine();
+
+            sb.Append(twox);
+            sb.Append(FLO(0, 13, 0, 0, 6));
+            sb.AppendLine();
+
+            sb.Append(twox);
+            sb.Append(FLO(0, 13, 0, 0, 3));
+            sb.AppendLine();
 
             return sb;
         }
@@ -329,6 +410,7 @@ namespace CIINExporter
                     for (int i = 0; i < numberOfDecimals; i++) result += "0";
                 }
             }
+            else if (number is string str) return "_PLACEHOLDER_";
             else throw new NotImplementedException();
 
             int delta = fieldWidth - result.Length;
@@ -340,7 +422,7 @@ namespace CIINExporter
             if (totalNumberOfInstances > 1)
             {
                 string singleInstance = result;
-                for (int i = 0; i < totalNumberOfInstances; i++)
+                for (int i = 1; i < totalNumberOfInstances; i++)
                 {
                     result += singleInstance;
                 }

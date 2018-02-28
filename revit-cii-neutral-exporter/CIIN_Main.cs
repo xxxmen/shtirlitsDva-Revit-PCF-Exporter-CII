@@ -141,6 +141,25 @@ namespace CIINExporter
                 sbCollect.Append(Data._01_VERSION);
                 sbCollect.Append(Data._02_CONTROL);
                 sbCollect.Append(Data._03_ELEMENTS);
+                sbCollect.Append(Data._04_AUXDATA);
+                if (Data._05_NODENAME != null) sbCollect.Append(Data._05_NODENAME);
+                sbCollect.Append(Data._06_BEND);
+                sbCollect.Append(Data._07_RIGID);
+                sbCollect.Append(Data._08_EXPJT);
+                sbCollect.Append(Data._09_RESTRANT);
+                sbCollect.Append(Data._10_DISPLMNT);
+                sbCollect.Append(Data._11_FORCMNT);
+                sbCollect.Append(Data._12_UNIFORM);
+                sbCollect.Append(Data._13_WIND);
+                sbCollect.Append(Data._14_OFFSETS);
+                sbCollect.Append(Data._15_ALLOWBLS);
+                sbCollect.Append(Data._16_SIFTEES);
+                sbCollect.Append(Data._17_REDUCERS);
+                sbCollect.Append(Data._18_FLANGES);
+                sbCollect.Append(Data._19_EQUIPMNT);
+                sbCollect.Append(Data._20_MISCEL_1);
+                sbCollect.Append(Data._21_UNITS);
+                sbCollect.Append(Data._22_COORDS);
 
                 Output output = new Output();
                 output.OutputWriter(doc, sbCollect, InputVars.OutputDirectoryFilePath);
