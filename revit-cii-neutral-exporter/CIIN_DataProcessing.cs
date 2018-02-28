@@ -165,7 +165,26 @@ namespace CIINExporter
 
         internal static StringBuilder Section_ELEMENTS(AnalyticModel model)
         {
-            throw new NotImplementedException();
+            StringBuilder sb = new StringBuilder();
+            
+
+            foreach (AnalyticElement ae in model.AllAnalyticElements)
+            {
+                sb.Append(wElement(ae));
+            }
+
+            return sb;
+        }
+
+        internal static StringBuilder wElement(AnalyticElement ae)
+        {
+            string twox = "  ";
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append(twox);
+            sb.Append(FLO(ae.From.Number, 13, 0, 2));
+
+            return sb;
         }
 
         internal static string INT(int number, int fieldWidth)

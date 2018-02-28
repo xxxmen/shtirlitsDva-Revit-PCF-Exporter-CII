@@ -405,6 +405,9 @@ namespace CIINExporter
                 }
             }
 
+            //Loop over ALL nodes and populate coordinate information
+            foreach (Node n in Model.AllNodes) n.PopulateCoordinates();
+
             Util.InfoMsg(Model.AllNodes.Count.ToString());
         }
 
@@ -472,8 +475,23 @@ namespace CIINExporter
         public XYZ NextLoc { get; set; } = null;
         public int Number { get; set; } = 0;
         public ElemType Type { get; set; } = 0;
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
 
-        //public Node(Connector connector) => ToConnector = connector;
+        public void PopulateCoordinates()
+        {
+            XYZ location = null;
+            if (NextCon != null) location = NextCon.Origin;
+            else if (NextLoc != null) location = NextLoc;
+            else if (PreviousCon != null) location = PreviousCon.Origin;
+            else if (PreviousLoc != null) location = PreviousLoc;
+            else throw new Exception($"Node number {Number} has no Connector or XYZ assigned!");
+
+            X = location.X;
+            Y = location.Y;
+            Z = location.Z;
+        }
     }
 
     public class AnalyticElement
@@ -481,7 +499,7 @@ namespace CIINExporter
         public Node From { get; set; } = null;
         public Node To { get; set; } = null;
         public Element Element { get; set; } = null;
-        public Enums.ElemType Type { get; set; } = 0;
+        public ElemType Type { get; set; } = 0;
 
         public AnalyticElement(Element element) => Element = element;
     }
