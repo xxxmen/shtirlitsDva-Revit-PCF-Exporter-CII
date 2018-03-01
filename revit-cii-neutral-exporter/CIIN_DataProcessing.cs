@@ -388,7 +388,11 @@ namespace CIINExporter
             //POINTERS TO AUXILIARY DATA ARRAYS
             //New line
             sb.Append(twox);
-            sb.Append(FLO(0, 13, 0, 0, 6));
+            
+            //Bend aux field
+
+
+            sb.Append(FLO(0, 13, 0, 0, 5));
             sb.AppendLine();
 
             sb.Append(twox);

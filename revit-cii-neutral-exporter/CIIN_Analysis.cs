@@ -141,6 +141,8 @@ namespace CIINExporter
 
                                         curAElem.Type = ElemType.Elbow;
 
+                                        curAElem.AnalyzeBend();
+
                                         curSequence.Sequence.Add(curAElem);
 
                                         //Second Analytic Element
@@ -504,6 +506,7 @@ namespace CIINExporter
         public double oDia { get; } = 0;
         public double WallThk { get; } = 0;
         public int InsulationThk { get; } = 0;
+        public double BendRadius { get; } = 0;
 
         public AnalyticElement(Element element)
         {
@@ -531,8 +534,44 @@ namespace CIINExporter
                     DN = (int)(cons.Primary.Radius * 2).FtToMm().Round();
                     oDia = outerDiaDict()[DN];
                     WallThk = pipeWallThkDict()[DN];
+
+                    //    int cat = fi.Category.Id.IntegerValue;
+                    //    switch (cat)
+                    //    {
+                    //        case (int)BuiltInCategory.OST_PipeFitting:
+                    //            var mf = fi.MEPModel as MechanicalFitting;
+                    //            var partType = mf.PartType;
+                    //            switch (partType)
+                    //            {
+                    //                case PartType.Elbow:
+                    //                    break;
+                    //                case PartType.Tee:
+                    //                    break;
+                    //                case PartType.Transition:
+                    //                    break;
+                    //                case PartType.Cap:
+                    //                    break;
+                    //                case PartType.Union:
+                    //                    throw new NotImplementedException();
+                    //                case PartType.SpudAdjustable:
+                    //                    throw new NotImplementedException();
+                    //                default:
+                    //                    break;
+                    //            }
+                    //            break;
+                    //        case (int)BuiltInCategory.OST_PipeAccessory:
+                    //            break;
+                    //        default:
+                    //            break;
+
+                    break;
+                default:
                     break;
             }
+
+        }
+        public void AnalyzeBend()
+        {
 
         }
     }
