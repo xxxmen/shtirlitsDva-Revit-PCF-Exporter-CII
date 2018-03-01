@@ -31,7 +31,7 @@ namespace CIINExporter
         public void AnalyzeSystem()
         {
             //Start analysis
-            var openEnds = detectOpenEnds();
+            var openEnds = detectOpenEnds(Model);
 
             Connector To = null;
             Connector From = null;
@@ -459,7 +459,7 @@ namespace CIINExporter
             }
         }
 
-        List<Connector> detectOpenEnds()
+        internal static List<Connector> detectOpenEnds(AnalyticModel Model)
         {
             List<Connector> singleConnectors = new List<Connector>();
             foreach (Connector c1 in Model.AllConnectors) if (!(1 < Model.AllConnectors.Count(c => c.IsEqual(c1)))) singleConnectors.Add(c1);
@@ -500,8 +500,41 @@ namespace CIINExporter
         public Node To { get; set; } = null;
         public Element Element { get; set; } = null;
         public ElemType Type { get; set; } = 0;
+        public int DN { get; } = 0;
+        public double oDia { get; } = 0;
+        public double WallThk { get; } = 0;
+        public int InsulationThk { get; } = 0;
 
-        public AnalyticElement(Element element) => Element = element;
+        public AnalyticElement(Element element)
+        {
+            Element = element;
+
+            Parameter parInsTypeCheck = Element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_TYPE);
+            if (parInsTypeCheck.HasValue)
+            {
+                Parameter parInsThickness = Element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS);
+                InsulationThk = (int)parInsThickness.AsDouble().FtToMm().Round();
+            }
+
+            switch (Element)
+            {
+                case Pipe pipe:
+                    //Outside diameter
+                    oDia = Element.get_Parameter(BuiltInParameter.RBS_PIPE_OUTER_DIAMETER).AsDouble().FtToMm();
+                    //Wallthk
+                    DN = (int)pipe.Diameter.FtToMm().Round();
+                    WallThk = pipeWallThkDict()[DN];
+                    break;
+                case FamilyInstance fi:
+                    //Outside diameter
+                    Cons cons = GetConnectors(fi);
+                    DN = (int)(cons.Primary.Radius * 2).FtToMm().Round();
+                    oDia = outerDiaDict()[DN];
+                    WallThk = pipeWallThkDict()[DN];
+                    break;
+            }
+
+        }
     }
 
     public class AnalyticSequence
@@ -525,7 +558,7 @@ namespace CIINExporter
         }
     }
 
-    
+
 
     public static class Enums
     {

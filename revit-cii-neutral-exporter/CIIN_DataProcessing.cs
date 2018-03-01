@@ -59,6 +59,7 @@ namespace CIINExporter
             _20_MISCEL_1.Append(Section_MISCEL_1(Data));
 
             _21_UNITS = Section_UNITS();
+            _22_COORDS = Section_COORDS(Data);
         }
 
         private StringBuilder Section_MISCEL_1(AnalyticModel data)
@@ -195,7 +196,7 @@ namespace CIINExporter
             sb.Append(INT(0, 13));
 
             //ALLOWBLS - number of allowables
-            sb.Append(INT(1, 13));
+            sb.Append(INT(0, 13));
 
             //SIF&TEES - number of tees
             sb.Append(INT(numberOfTees, 13));
@@ -305,25 +306,14 @@ namespace CIINExporter
             //Delta Z
             sb.Append(FLO(ae.To.Z - ae.From.Z, 13, 2, 4));
             //Actual diameter
-            //double dia = ae.Element.get_Parameter(BuiltInParameter.RBS_PIPE_OUTER_DIAMETER).AsDouble().FtToMm();
-            sb.AppendLine(FLO("na", 13, 1, 5));
-            
+            sb.AppendLine(FLO(ae.oDia, 13, 1, 5));
+
             //New line
             sb.Append(twox);
             //Wall thickness
-            //double iDia = ae.Element.get_Parameter(BuiltInParameter.RBS_PIPE_INNER_DIAM_PARAM).AsDouble().FtToMm();
-            //double wallThk = (dia - iDia) / 2;
-            sb.Append(FLO("na", 13, 1, 5));
+            sb.Append(FLO(ae.WallThk, 13, 1, 5));
             //Insulation thickness
-            //double insThick = 0;
-            //Parameter parInsTypeCheck = ae.Element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_TYPE);
-            //if (parInsTypeCheck.HasValue)
-            //{
-            //    Parameter parInsThickness = ae.Element.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_THICKNESS);
-            //    insThick = parInsThickness.AsDouble().FtToMm();
-            //}
-            sb.Append(FLO("na", 13, 0, 3));
-
+            sb.Append(FLO(ae.InsulationThk, 13, 0, 3));
             //Corrosion Allowance //TODO: Implement #$ ELEMENTS: Corrosion Allowance
             //Thermal Expansion (or Temperature #1) //TODO: Implement #$ ELEMENTS: Temperature 1-3
             sb.Append(FLO(0, 13, 0, 6, 4));
@@ -450,7 +440,7 @@ namespace CIINExporter
             else throw new NotImplementedException();
 
             int delta = fieldWidth - result.Length;
-            
+
             if (delta > 0) result = result.PadLeft(fieldWidth);
             else if (delta == 0) ; //Do nothing
             else result = result.Remove(result.Length + delta);
