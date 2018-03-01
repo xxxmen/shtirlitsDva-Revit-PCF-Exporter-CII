@@ -66,6 +66,9 @@ namespace CIINExporter
             StringBuilder sb = new StringBuilder();
             string twox = "  ";
 
+            int MaterialNumber = 406;
+
+            //Write material number
             int numelt = data.AllAnalyticElements.Count();
             bool straight = true;
 
@@ -78,15 +81,24 @@ namespace CIINExporter
                 {
                     int rest = numelt - (nlines - 1) * 6;
                     sb.Append(twox);
-                    sb.Append(FLO(406, 13, 0, 3, rest));
+                    sb.Append(FLO(MaterialNumber, 13, 0, 3, rest));
                     sb.AppendLine();
                     break;
                 }
 
                 sb.Append(twox);
-                sb.Append(FLO(406, 13, 0, 3, 6));
+                sb.Append(FLO(MaterialNumber, 13, 0, 3, 6));
                 sb.AppendLine();
             }
+
+            //Nozzles - not implemented
+            //Hangers - not implemented
+            //Execution Options
+            sb.Append(@"              1            0            0            2       0.0000            0
+              0            0  10.0000      10.0000                0            0
+              0            0            0            0       0.2500            3
+              0");
+            sb.AppendLine();
 
             return sb;
         }
@@ -214,8 +226,6 @@ namespace CIINExporter
             return sb;
         }
 
-        
-
         internal static StringBuilder Section_UNITS()
         {
             StringBuilder sb = new StringBuilder();
@@ -248,6 +258,32 @@ namespace CIINExporter
   mm.
   mm.
   mm.");
+            return sb;
+        }
+
+        internal static StringBuilder Section_COORDS(AnalyticModel model)
+        {
+            StringBuilder sb = new StringBuilder();
+            string twox = "  ";
+
+            sb.AppendLine("#$ COORDS");
+
+            int count = model.Sequences.Count();
+            sb.Append(twox);
+            sb.AppendLine(INT(count, 13));
+
+            foreach (var sequence in model.Sequences)
+            {
+                var ae = sequence.Sequence.FirstOrDefault();
+
+                sb.Append(twox);
+                sb.Append(INT(ae.From.Number, 13));
+                sb.Append(FLO(ae.From.X, 13, 2, 4));
+                sb.Append(FLO(ae.From.Y, 13, 2, 4));
+                sb.Append(FLO(ae.From.Z, 13, 2, 4));
+                sb.AppendLine();
+            }
+
             return sb;
         }
 
