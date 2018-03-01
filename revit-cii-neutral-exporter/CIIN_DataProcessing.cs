@@ -214,7 +214,7 @@ namespace CIINExporter
             return sb;
         }
 
-        internal static StringBuilder Section_ELEMENTS(AnalyticModel model)
+        internal StringBuilder Section_ELEMENTS(AnalyticModel model)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("#$ ELEMENTS");
@@ -288,7 +288,7 @@ namespace CIINExporter
             return sb;
         }
 
-        internal static StringBuilder wElement(AnalyticElement ae)
+        internal StringBuilder wElement(AnalyticElement ae)
         {
             string twox = "  ";
             StringBuilder sb = new StringBuilder();
@@ -388,9 +388,15 @@ namespace CIINExporter
             //POINTERS TO AUXILIARY DATA ARRAYS
             //New line
             sb.Append(twox);
-            
-            //Bend aux field
 
+            //Bend aux field
+            if (ae.Type == ElemType.Elbow)
+            {
+                Data.Counter_Bends++;
+                sb.Append(FLO(Data.Counter_Bends, 13, 0, 0));
+                _06_BEND.Append(wBend(ae));
+            }
+            else sb.Append(FLO(0, 13, 0, 0));
 
             sb.Append(FLO(0, 13, 0, 0, 5));
             sb.AppendLine();
@@ -401,6 +407,38 @@ namespace CIINExporter
 
             sb.Append(twox);
             sb.Append(FLO(0, 13, 0, 0, 3));
+            sb.AppendLine();
+
+            return sb;
+        }
+
+        internal static StringBuilder wBend(AnalyticElement ae)
+        {
+            StringBuilder sb = new StringBuilder();
+            string twox = "  ";
+
+            //New line
+            sb.Append(twox);
+            //Radius
+            sb.Append(FLO(ae.BendRadius, 13, 1, 3));
+            sb.Append(FLO(0, 13, 0, 6));
+            sb.Append("     -2.02020");
+            sb.Append(FLO(ae.To.Number - 1, 13, 0, 4));
+            sb.Append(FLO(0, 13, 0, 6));
+            sb.Append(FLO(ae.To.Number - 2, 13, 0, 4));
+            sb.AppendLine();
+
+            //New line
+            sb.Append(twox);
+            sb.Append(FLO(0, 13, 0, 6, 3));
+            //Wallthk
+            sb.Append(FLO(ae.WallThk, 13, 1, 5));
+            sb.Append(FLO(0, 13, 0, 6, 2));
+            sb.AppendLine();
+
+            //New line
+            sb.Append(twox);
+            sb.Append(FLO(0, 13, 0, 6));
             sb.AppendLine();
 
             return sb;

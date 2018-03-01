@@ -506,7 +506,7 @@ namespace CIINExporter
         public double oDia { get; } = 0;
         public double WallThk { get; } = 0;
         public int InsulationThk { get; } = 0;
-        public double BendRadius { get; } = 0;
+        public double BendRadius { get; set; } = 0;
 
         public AnalyticElement(Element element)
         {
@@ -572,7 +572,15 @@ namespace CIINExporter
         }
         public void AnalyzeBend()
         {
+            Cons cons = GetConnectors(Element);
+            XYZ P = cons.Primary.Origin;
+            XYZ Q = cons.Secondary.Origin;
+            double a = P.DistanceTo(Q) / 2;
 
+            double angle = Element.LookupParameter("Angle").AsDouble();
+            double A = angle / 2;
+
+            BendRadius = (a / (Math.Sin(A))).FtToMm();
         }
     }
 
@@ -590,14 +598,14 @@ namespace CIINExporter
         public List<Element> AllElements { get; }
         public ModelData Data { get; set; } = null;
 
+        public int Counter_Bends { get; set; } = 0;
+
         public AnalyticModel(HashSet<Element> elements)
         {
             AllElements = elements.ToList();
             AllConnectors = GetALLConnectorsFromElements(elements).ToList();
         }
     }
-
-
 
     public static class Enums
     {
