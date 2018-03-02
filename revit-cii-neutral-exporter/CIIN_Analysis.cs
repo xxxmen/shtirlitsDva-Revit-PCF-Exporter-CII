@@ -314,6 +314,9 @@ namespace CIINExporter
                                         //Assign correct element type to analytic element
                                         curAElem.Type = ElemType.Transition;
 
+                                        //Determine start dia and second dia
+                                        curAElem.AnalyzeReducer();
+
                                         curSequence.Sequence.Add(curAElem);
                                         break;
                                     case PartType.Cap:
@@ -503,8 +506,10 @@ namespace CIINExporter
         public Element Element { get; set; } = null;
         public ElemType Type { get; set; } = 0;
         public int DN { get; } = 0;
-        public double oDia { get; } = 0;
-        public double WallThk { get; } = 0;
+        public double oDia { get; set; } = 0;
+        public double secondODia { get; set; } = 0;
+        public double WallThk { get; set; } = 0;
+        public double secondWallThk { get; set; } = 0;
         public int InsulationThk { get; } = 0;
         public double BendRadius { get; set; } = 0;
 
@@ -534,36 +539,6 @@ namespace CIINExporter
                     DN = (int)(cons.Primary.Radius * 2).FtToMm().Round();
                     oDia = outerDiaDict()[DN];
                     WallThk = pipeWallThkDict()[DN];
-
-                    //    int cat = fi.Category.Id.IntegerValue;
-                    //    switch (cat)
-                    //    {
-                    //        case (int)BuiltInCategory.OST_PipeFitting:
-                    //            var mf = fi.MEPModel as MechanicalFitting;
-                    //            var partType = mf.PartType;
-                    //            switch (partType)
-                    //            {
-                    //                case PartType.Elbow:
-                    //                    break;
-                    //                case PartType.Tee:
-                    //                    break;
-                    //                case PartType.Transition:
-                    //                    break;
-                    //                case PartType.Cap:
-                    //                    break;
-                    //                case PartType.Union:
-                    //                    throw new NotImplementedException();
-                    //                case PartType.SpudAdjustable:
-                    //                    throw new NotImplementedException();
-                    //                default:
-                    //                    break;
-                    //            }
-                    //            break;
-                    //        case (int)BuiltInCategory.OST_PipeAccessory:
-                    //            break;
-                    //        default:
-                    //            break;
-
                     break;
                 default:
                     break;
@@ -582,6 +557,16 @@ namespace CIINExporter
 
             BendRadius = (a / (Math.Sin(A))).FtToMm();
         }
+        public void AnalyzeReducer()
+        {
+            int fromDN = (int)(From.NextCon.Radius * 2).FtToMm().Round();
+            oDia = outerDiaDict()[fromDN];
+            WallThk = pipeWallThkDict()[fromDN];
+
+            int toDN = (int)(To.PreviousCon.Radius * 2).FtToMm().Round();
+            secondODia = outerDiaDict()[toDN];
+            secondWallThk = pipeWallThkDict()[toDN];
+        }
     }
 
     public class AnalyticSequence
@@ -599,6 +584,8 @@ namespace CIINExporter
         public ModelData Data { get; set; } = null;
 
         public int Counter_Bends { get; set; } = 0;
+        public int Counter_Reducers { get; set; } = 0;
+        public int Counter_Intersection { get; set; } = 0;
 
         public AnalyticModel(HashSet<Element> elements)
         {

@@ -402,11 +402,111 @@ namespace CIINExporter
             sb.AppendLine();
 
             sb.Append(twox);
-            sb.Append(FLO(0, 13, 0, 0, 6));
+            sb.Append(FLO(0, 13, 0, 0, 4));
+            //Tee aux field
+            if (ae.Type == ElemType.Tee)
+            {
+                Data.Counter_Intersection++;
+                sb.Append(FLO(Data.Counter_Intersection, 13, 0, 0));
+                _16_SIFTEES.Append(wTee(ae));
+            }
+            else sb.Append(FLO(0, 13, 0, 0));
+            sb.Append(FLO(0, 13, 0, 0));
             sb.AppendLine();
 
             sb.Append(twox);
-            sb.Append(FLO(0, 13, 0, 0, 3));
+            //Reducer aux field
+            if (ae.Type == ElemType.Transition)
+            {
+                Data.Counter_Reducers++;
+                sb.Append(FLO(Data.Counter_Reducers, 13, 0, 0));
+                _17_REDUCERS.Append(wReducer(ae));
+            }
+            else sb.Append(FLO(0, 13, 0, 0));
+
+            sb.Append(FLO(0, 13, 0, 0, 2));
+            sb.AppendLine();
+
+            return sb;
+        }
+
+        internal static StringBuilder wTee(AnalyticElement ae)
+        {
+            StringBuilder sb = new StringBuilder();
+            string twox = "  ";
+
+            //New line
+            sb.Append(twox);
+            //Node number
+            sb.Append(FLO(ae.To.Number, 13, 0, 4));
+            //Tee type, 3 = welded tee - the type I use normally
+            sb.Append(FLO(3, 13, 0, 5));
+            sb.Append(FLO(0, 13, 0, 6, 4));
+            sb.AppendLine();
+
+            //New line
+            sb.Append(twox);
+            sb.Append(FLO(0, 13, 0, 6, 6));
+            sb.AppendLine();
+
+            //New line
+            sb.Append(twox);
+            sb.Append(FLO(0, 13, 0, 6, 6));
+            sb.AppendLine();
+
+            //New line
+            sb.Append(twox);
+            sb.Append(FLO(0, 13, 0, 6, 4));
+            sb.Append(FLO(9999.99, 13, 2, 2, 2));
+            sb.AppendLine();
+
+            //New line
+            sb.Append(twox);
+            sb.Append(FLO(0, 13, 0, 6, 6));
+            sb.AppendLine();
+
+            //New line
+            sb.Append(twox);
+            sb.Append(FLO(0, 13, 0, 6, 6));
+            sb.AppendLine();
+
+            //New line
+            sb.Append(twox);
+            sb.Append(FLO(0, 13, 0, 6, 6));
+            sb.AppendLine();
+
+            //New line
+            sb.Append(twox);
+            sb.Append(FLO(0, 13, 0, 6, 6));
+            sb.AppendLine();
+
+            //New line
+            sb.Append(twox);
+            sb.Append(FLO(0, 13, 0, 6, 4));
+            sb.Append(FLO(9999.99, 13, 2, 2, 2));
+            sb.AppendLine();
+
+            //New line
+            sb.Append(twox);
+            sb.Append(FLO(0, 13, 0, 6, 6));
+            sb.AppendLine();
+
+            return sb;
+        }
+
+        internal static StringBuilder wReducer(AnalyticElement ae)
+        {
+            StringBuilder sb = new StringBuilder();
+            string twox = "  ";
+
+            //New line
+            sb.Append(twox);
+            //Second oDia
+            sb.Append(FLO(ae.secondODia, 13, 1, 3));
+            //Second Wthk
+            sb.Append(FLO(ae.secondWallThk, 13, 1, 3));
+            //Rest
+            sb.Append(FLO(0, 13, 0, 6, 3));
             sb.AppendLine();
 
             return sb;
